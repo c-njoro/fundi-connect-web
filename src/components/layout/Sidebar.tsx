@@ -26,10 +26,10 @@ export default function Sidebar() {
   const customerMenuItems = [
     { href: '/dashboard/customer', label: 'Dashboard', icon: Home },
     { href: '/dashboard/customer/jobs', label: 'My Jobs', icon: Briefcase },
-    { href: '/messages', label: 'Messages', icon: MessageSquare },
-    { href: '/notifications', label: 'Notifications', icon: Bell },
+    { href: '/dashboard/messages', label: 'Messages', icon: MessageSquare },
+    { href: '/dashboard/notifications', label: 'Notifications', icon: Bell },
     { href: '/dashboard/customer/profile', label: 'Profile', icon: User },
-    { href: '/settings', label: 'Settings', icon: Settings },
+    { href: '/dashboard/settings', label: 'Settings', icon: Settings },
   ];
 
   // Fundi menu items
@@ -37,12 +37,12 @@ export default function Sidebar() {
     { href: '/dashboard/fundi', label: 'Dashboard', icon: Home },
     { href: '/dashboard/fundi/jobs/available', label: 'Available Jobs', icon: Briefcase },
     { href: '/dashboard/fundi/jobs/my-jobs', label: 'My Jobs', icon: Briefcase },
-    { href: '/messages', label: 'Messages', icon: MessageSquare },
+    { href: '/dashboard/messages', label: 'Messages', icon: MessageSquare },
     { href: '/dashboard/fundi/earnings', label: 'Earnings', icon: DollarSign },
     { href: '/dashboard/fundi/reviews', label: 'Reviews', icon: Star },
     { href: '/dashboard/fundi/availability', label: 'Availability', icon: Calendar },
     { href: '/dashboard/fundi/profile', label: 'Profile', icon: User },
-    { href: '/settings', label: 'Settings', icon: Settings },
+    { href: '/dashboard/settings', label: 'Settings', icon: Settings },
   ];
 
   // Admin menu items
@@ -53,7 +53,7 @@ export default function Sidebar() {
     { href: '/dashboard/admin/services', label: 'Services', icon: Briefcase },
     { href: '/dashboard/admin/jobs', label: 'All Jobs', icon: Briefcase },
     { href: '/dashboard/admin/reports', label: 'Reports', icon: FileText },
-    { href: '/settings', label: 'Settings', icon: Settings },
+    { href: '/dashboard/settings', label: 'Settings', icon: Settings },
   ];
 
   // Determine which menu to show
@@ -65,7 +65,7 @@ export default function Sidebar() {
   }
 
   return (
-    <aside className="fixed left-0 top-16 h-[calc(100vh-4rem)] w-64 bg-white shadow-md overflow-y-auto hidden lg:block">
+    <aside className="fixed left-0 top-16 h-[calc(100vh-4rem)] w-64 bg-white shadow-md border-r border-gray-200 overflow-y-auto hidden lg:block">
       <nav className="p-4 space-y-2">
         {menuItems.map((item) => {
           const Icon = item.icon;
@@ -73,14 +73,17 @@ export default function Sidebar() {
             <Link
               key={item.href}
               href={item.href}
-              className={`flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors ${
+              className={`flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors duration-200 ${
                 isActive(item.href)
-                  ? 'bg-blue-50 text-blue-600'
-                  : 'text-gray-700 hover:bg-gray-50'
+                  ? 'bg-orange-50 text-[#0A2647] border-l-4 border-orange-500'
+                  : 'text-gray-700 hover:bg-orange-50 hover:text-[#0A2647]'
               }`}
             >
-              <Icon size={20} />
-              <span>{item.label}</span>
+              <Icon 
+                size={20} 
+                className={isActive(item.href) ? 'text-orange-500' : 'text-gray-500'} 
+              />
+              <span className="font-medium">{item.label}</span>
             </Link>
           );
         })}
