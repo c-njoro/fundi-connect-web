@@ -1,8 +1,6 @@
-import Layout from "../../components/Layout";
-
 export default function Register() {
   return (
-    <Layout title="Register">
+    <>
       <form className="max-w-md">
         <label className="block mb-2">
           <span>Name</span>
@@ -18,6 +16,6 @@ export default function Register() {
         </label>
         <button className="px-4 py-2 bg-green-600 text-white rounded">Create account</button>
       </form>
-    </Layout>
+    </>
   );
 }

@@ -1,4 +1,3 @@
-import Layout from "../../components/Layout";
 import { useEffect } from "react";
 import { useRouter } from "next/router";
 
@@ -14,8 +13,8 @@ export default function DashboardIndex() {
   }, [router]);
 
   return (
-    <Layout title="Dashboard">
+    <>
       <p>Redirecting to your dashboard…</p>
-    </Layout>
+    </>
   );
 }

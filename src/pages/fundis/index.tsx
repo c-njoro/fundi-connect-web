@@ -1,14 +1,12 @@
 import Link from "next/link";
-import Layout from "../../components/Layout";
 
 export default function Fundis() {
   const sample = [
     { id: "alice", name: "Alice" },
     { id: "bob", name: "Bob" },
   ];
-
   return (
-    <Layout title="Fundis">
+    <>
       <p className="mb-4">Browse and search fundis who offer services in your area.</p>
       <ul className="space-y-2">
         {sample.map((f) => (
@@ -17,6 +15,6 @@ export default function Fundis() {
           </li>
         ))}
       </ul>
-    </Layout>
+    </>
   );
 }

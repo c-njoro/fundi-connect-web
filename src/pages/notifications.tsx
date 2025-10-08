@@ -1,9 +1,9 @@
-import Layout from "../components/Layout";
+import Layout from "../components/layout/Layout";
 
 export default function NotificationsPage() {
   return (
-    <Layout title="Notifications">
+    <>
       <p>Your notifications (placeholder).</p>
-    </Layout>
+    </>
   );
 }

@@ -1,4 +1,3 @@
-import Layout from "../../components/Layout";
 import Link from "next/link";
 
 export default function Services() {
@@ -9,7 +8,7 @@ export default function Services() {
   ];
 
   return (
-    <Layout title="Services">
+    <>
       <ul className="space-y-3">
         {sample.map((s) => (
           <li key={s.id}>
@@ -17,6 +16,6 @@ export default function Services() {
           </li>
         ))}
       </ul>
-    </Layout>
+    </>
   );
 }

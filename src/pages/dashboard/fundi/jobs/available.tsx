@@ -1,10 +1,9 @@
 import Link from "next/link";
-import Layout from "../../../../components/Layout";
 
 export default function AvailableJobs() {
   const sample = [{ id: "101", title: "Fix roof" }];
   return (
-    <Layout title="Available jobs">
+    <>
       <ul>
         {sample.map((j) => (
           <li key={j.id}>
@@ -12,6 +11,6 @@ export default function AvailableJobs() {
           </li>
         ))}
       </ul>
-    </Layout>
+    </>
   );
 }
