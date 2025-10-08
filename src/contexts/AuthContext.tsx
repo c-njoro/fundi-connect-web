@@ -2,6 +2,7 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { useRouter } from 'next/router';
 import apiClient from '@/lib/api/client';
+import { authService } from '@/lib/api/services';
 
 interface User {
   _id: string;
@@ -70,19 +71,20 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const register = async (data: any) => {
-    try {
-      const response = await apiClient.post('/users/register', data);
-      const { token, user } = response.data.data;
-      
+    // Use authService which returns a normalized response (no throw on 4xx)
+    const res = await authService.register(data);
+    if (res?.success && res.data) {
+      const { token, user } = res.data;
       localStorage.setItem('token', token);
       localStorage.setItem('user', JSON.stringify(user));
       setToken(token);
       setUser(user);
-      
       router.push('/dashboard/customer');
-    } catch (error: any) {
-      throw new Error(error.response?.data?.message || 'Registration failed');
+      return;
     }
+
+    // For failure, throw a friendly Error so callers can show an appropriate message
+    throw new Error(res?.message || 'Registration failed');
   };
 
   const logout = () => {

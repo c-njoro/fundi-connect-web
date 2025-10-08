@@ -41,62 +41,121 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8">
-        <div>
-          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-            Sign in to your account
-          </h2>
-        </div>
-        
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-          {error && (
-            <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">
-              {error}
-            </div>
-          )}
+    <div className="h-screen grid lg:grid-cols-2 overflow-hidden">
+      {/* Left Side - Branding Section - Fixed, no scroll */}
+      <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-[#0A2647] to-[#003366] text-white p-8 flex-col justify-center items-center fixed left-0 top-0 h-full">
+        <div className="max-w-md text-center">
+          <h1 className="text-4xl font-bold mb-4">
+            Fundi <span className="text-orange-500">Connect</span>
+          </h1>
+          <p className="text-xl mb-8 text-gray-200">
+            Connecting skilled fundis with people who need them
+          </p>
           
-          <div className="rounded-md shadow-sm -space-y-px">
-            <div>
-                <input
-                  type="tel"
-                  inputMode="tel"
-                  required
-                  value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
-                  className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
-                  placeholder="07xxxxxxxx"
-                  aria-label="Phone number"
-                />
+          <div className="text-left space-y-4">
+            <h3 className="text-xl font-semibold mb-4">Welcome Back!</h3>
+            <div className="space-y-3">
+              <div className="flex items-center">
+                <div className="w-6 h-6 bg-orange-500 rounded-full flex items-center justify-center mr-3">
+                  <span className="text-white text-sm">✓</span>
+                </div>
+                <span>Access your dashboard</span>
+              </div>
+              <div className="flex items-center">
+                <div className="w-6 h-6 bg-orange-500 rounded-full flex items-center justify-center mr-3">
+                  <span className="text-white text-sm">✓</span>
+                </div>
+                <span>Manage your jobs and profile</span>
+              </div>
+              <div className="flex items-center">
+                <div className="w-6 h-6 bg-orange-500 rounded-full flex items-center justify-center mr-3">
+                  <span className="text-white text-sm">✓</span>
+                </div>
+                <span>Connect with clients and fundis</span>
+              </div>
+              <div className="flex items-center">
+                <div className="w-6 h-6 bg-orange-500 rounded-full flex items-center justify-center mr-3">
+                  <span className="text-white text-sm">✓</span>
+                </div>
+                <span>Grow your business</span>
+              </div>
             </div>
-            <div>
-              <input
-                type="password"
-                required
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
-                placeholder="Password"
-              />
+          </div>
+        </div>
+      </div>
+
+      {/* Right Side - Form Section - Scrollable */}
+      <div className="flex-1 lg:ml-1/2 bg-gray-50 overflow-y-auto lg:col-start-2">
+        <div className="min-h-full flex flex-col justify-center py-12 px-4 sm:px-6 lg:px-20 xl:px-24">
+          <div className="mx-auto w-full max-w-md">
+            <div className="lg:hidden text-center mb-8">
+              <h1 className="text-3xl font-bold text-[#0A2647]">
+                Fundi <span className="text-orange-500">Connect</span>
+              </h1>
+              <p className="text-gray-600 mt-2">Sign in to your account</p>
             </div>
-          </div>
 
-          <div>
-            <button
-              type="submit"
-              disabled={loading}
-              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
-            >
-              {loading ? 'Signing in...' : 'Sign in'}
-            </button>
-          </div>
+            <form className="bg-white p-6 rounded-lg shadow-sm border border-gray-200" onSubmit={handleSubmit}>
+              <h2 className="text-2xl font-bold text-gray-900 mb-6">Sign In</h2>
+              
+              {error && (
+                <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md mb-6">
+                  {error}
+                </div>
+              )}
+              
+              <div className="space-y-4">
+                <div>
+                  <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-1">
+                    Phone Number *
+                  </label>
+                  <input
+                    type="tel"
+                    inputMode="tel"
+                    id="phone"
+                    required
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-[#0A2647] focus:border-blue-500 text-gray-900"
+                    placeholder="07xxxxxxxx"
+                    aria-label="Phone number"
+                  />
+                  <p className="text-xs text-gray-500 mt-1">Enter your Kenyan phone number (07xxxxxxxx)</p>
+                </div>
+                
+                <div>
+                  <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
+                    Password *
+                  </label>
+                  <input
+                    type="password"
+                    id="password"
+                    required
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-[#0A2647] focus:border-blue-500 text-gray-900"
+                    placeholder="Enter your password"
+                  />
+                </div>
+              </div>
 
-          <div className="text-center">
-            <Link href="/auth/register" className="text-blue-600 hover:text-blue-500">
-              Don't have an account? Register
-            </Link>
+              <button
+                type="submit"
+                disabled={loading}
+                className="w-full bg-orange-500 text-white py-3 px-4 rounded-md hover:bg-orange-600 focus:outline-none focus:ring-orange-500 focus:ring-offset-2 transition duration-200 font-semibold disabled:opacity-50 disabled:cursor-not-allowed mt-6"
+              >
+                {loading ? 'Signing in...' : 'Sign In'}
+              </button>
+
+              <p className="text-center text-gray-600 mt-4 text-sm">
+                Don't have an account?{' '}
+                <Link href="/auth/register" className="text-[#0A2647] hover:text-orange-500 font-medium">
+                  Register here
+                </Link>
+              </p>
+            </form>
           </div>
-        </form>
+        </div>
       </div>
     </div>
   );
