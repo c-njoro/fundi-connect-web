@@ -102,6 +102,15 @@ export const userService = {
     }
   },
 
+    updateFundiProfile: async (data: any) => {
+    try {
+      const response = await apiClient.put('/users/fundi-profile', data);
+      return response.data;
+    } catch (err: any) {
+      return { success: false, message: err?.response?.data?.message || 'Update fundi-profile failed', errors: err?.response?.data?.errors };
+    }
+  },
+
   becomeFundi: async (data: any) => {
     try {
       const response = await apiClient.post('/users/become-fundi', data);

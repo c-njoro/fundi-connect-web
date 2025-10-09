@@ -1,7 +1,6 @@
 import { useAuth } from "@/contexts/AuthContext";
 import { useEffect, useState } from "react";
 import { userService } from "@/lib/api/services";
-import { IUser, ScheduleDay } from "@/types/UserType";
 import { 
   Loader,
   Clock,
@@ -10,124 +9,163 @@ import {
   Save,
   Calendar as CalendarIcon,
   Sun,
-  Moon
+  Moon,
+  AlertCircle
 } from 'lucide-react';
+
+interface ScheduleDay {
+  available: boolean;
+  hours: {
+    start: string;
+    end: string;
+  };
+}
+
+interface Schedule {
+  monday: ScheduleDay;
+  tuesday: ScheduleDay;
+  wednesday: ScheduleDay;
+  thursday: ScheduleDay;
+  friday: ScheduleDay;
+  saturday: ScheduleDay;
+  sunday: ScheduleDay;
+}
+
+const DEFAULT_SCHEDULE: Schedule = {
+  monday: { available: false, hours: { start: '09:00', end: '17:00' } },
+  tuesday: { available: false, hours: { start: '09:00', end: '17:00' } },
+  wednesday: { available: false, hours: { start: '09:00', end: '17:00' } },
+  thursday: { available: false, hours: { start: '09:00', end: '17:00' } },
+  friday: { available: false, hours: { start: '09:00', end: '17:00' } },
+  saturday: { available: false, hours: { start: '09:00', end: '17:00' } },
+  sunday: { available: false, hours: { start: '09:00', end: '17:00' } }
+};
 
 export default function FundiAvailability() {
   const { token } = useAuth();
-  const [profile, setProfile] = useState<IUser | null>(null);
-  const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
   
-  // State for availability form
-  const [availability, setAvailability] = useState({
-    schedule: {
-      monday: { available: false, hours: { start: '09:00', end: '17:00' } },
-      tuesday: { available: false, hours: { start: '09:00', end: '17:00' } },
-      wednesday: { available: false, hours: { start: '09:00', end: '17:00' } },
-      thursday: { available: false, hours: { start: '09:00', end: '17:00' } },
-      friday: { available: false, hours: { start: '09:00', end: '17:00' } },
-      saturday: { available: false, hours: { start: '09:00', end: '17:00' } },
-      sunday: { available: false, hours: { start: '09:00', end: '17:00' } }
-    },
-    currentStatus: 'offline' as 'available' | 'busy' | 'offline'
-  });
+  const [currentStatus, setCurrentStatus] = useState<'available' | 'busy' | 'offline'>('offline');
+  const [schedule, setSchedule] = useState<Schedule>(DEFAULT_SCHEDULE);
+
+  // Fetch profile data
+  const fetchProfile = async () => {
+    if (!token) return;
+    
+    setLoading(true);
+    setError(null);
+    
+    try {
+      const response = await userService.getProfile();
+      
+      if (response.success && response.data) {
+        const fundiProfile = response.data.fundiProfile;
+        
+        if (fundiProfile?.availability) {
+          // Set current status
+          setCurrentStatus(fundiProfile.availability.currentStatus || 'offline');
+          
+          // Set schedule - merge with defaults to ensure all days exist
+          const fetchedSchedule = fundiProfile.availability.schedule || {};
+          const mergedSchedule: Schedule = { ...DEFAULT_SCHEDULE };
+          
+          Object.keys(DEFAULT_SCHEDULE).forEach((day) => {
+            if (fetchedSchedule[day as keyof Schedule]) {
+              mergedSchedule[day as keyof Schedule] = {
+                available: fetchedSchedule[day as keyof Schedule].available || false,
+                hours: {
+                  start: fetchedSchedule[day as keyof Schedule].hours?.start || '09:00',
+                  end: fetchedSchedule[day as keyof Schedule].hours?.end || '17:00'
+                }
+              };
+            }
+          });
+          
+          setSchedule(mergedSchedule);
+        }
+      } else {
+        setError(response.message || 'Failed to load profile');
+      }
+    } catch (err: any) {
+      console.error('Error fetching profile:', err);
+      setError(err.response?.data?.message || 'Failed to load profile');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchProfile = async () => {
-      setError(null);
-      setLoading(true);
-      try {
-        const data = await userService.getProfile();
-        if (data.success) {
-          setProfile(data.data);
-          // Initialize form with current availability data
-          if (data.data.fundiProfile?.availability) {
-            setAvailability({
-              schedule: {
-                monday: data.data.fundiProfile.availability.schedule?.monday || { available: false, hours: { start: '09:00', end: '17:00' } },
-                tuesday: data.data.fundiProfile.availability.schedule?.tuesday || { available: false, hours: { start: '09:00', end: '17:00' } },
-                wednesday: data.data.fundiProfile.availability.schedule?.wednesday || { available: false, hours: { start: '09:00', end: '17:00' } },
-                thursday: data.data.fundiProfile.availability.schedule?.thursday || { available: false, hours: { start: '09:00', end: '17:00' } },
-                friday: data.data.fundiProfile.availability.schedule?.friday || { available: false, hours: { start: '09:00', end: '17:00' } },
-                saturday: data.data.fundiProfile.availability.schedule?.saturday || { available: false, hours: { start: '09:00', end: '17:00' } },
-                sunday: data.data.fundiProfile.availability.schedule?.sunday || { available: false, hours: { start: '09:00', end: '17:00' } }
-              },
-              currentStatus: data.data.fundiProfile.availability.currentStatus || 'offline'
-            });
-          }
-          return;
-        }
-        setError(data.message || 'Failed to load profile');
-      } catch (err: any) {
-        setError(err.message || 'An error occurred while fetching profile');
-      } finally {
-        setLoading(false);
-      }
-    };
-    if (token) {
-      fetchProfile();
-    }
+    fetchProfile();
   }, [token]);
 
-  // Function to update availability (logic to be implemented later)
-  const updateAvailability = async () => {
+  // Update availability
+  const handleSaveAvailability = async () => {
     setSaving(true);
+    setError(null);
+    setSuccessMessage(null);
+    
     try {
-      // TODO: Implement the actual API call to update availability
-      console.log('Updating availability:', availability);
+      const payload = {
+        availability: {
+          schedule: schedule,
+          currentStatus: currentStatus
+        }
+      };
       
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      console.log('Sending payload:', JSON.stringify(payload, null, 2));
       
-      // TODO: Handle successful update
-      alert('Availability updated successfully!');
       
-    } catch (error) {
-      console.error('Error updating availability:', error);
-      alert('Failed to update availability');
+      const response = await userService.updateFundiProfile({schedule: payload.availability.schedule, currentStatus: payload.availability.currentStatus});
+      
+      if (response.success) {
+        setSuccessMessage('Availability updated successfully!');
+        await fetchProfile();
+        
+        // Clear success message after 3 seconds
+        setTimeout(() => {
+          setSuccessMessage(null);
+        }, 3000);
+      } else {
+        setError(response.message || 'Failed to update availability');
+      }
+    } catch (err: any) {
+      console.error('Error updating availability:', err);
+      const errorMessage = err.response?.data?.message || err.message || 'Failed to update availability';
+      setError(errorMessage);
     } finally {
       setSaving(false);
     }
   };
 
-  const handleDayToggle = (day: string) => {
-    setAvailability(prev => ({
+  // Toggle day availability
+  const handleDayToggle = (day: keyof Schedule) => {
+    setSchedule(prev => ({
       ...prev,
-      schedule: {
-        ...prev.schedule,
-        [day]: {
-          ...prev.schedule[day as keyof typeof prev.schedule],
-          available: !prev.schedule[day as keyof typeof prev.schedule].available
+      [day]: {
+        ...prev[day],
+        available: !prev[day].available
+      }
+    }));
+  };
+
+  // Update time for a day
+  const handleTimeChange = (day: keyof Schedule, field: 'start' | 'end', value: string) => {
+    setSchedule(prev => ({
+      ...prev,
+      [day]: {
+        ...prev[day],
+        hours: {
+          ...prev[day].hours,
+          [field]: value
         }
       }
     }));
   };
 
-  const handleTimeChange = (day: string, field: 'start' | 'end', value: string) => {
-    setAvailability(prev => ({
-      ...prev,
-      schedule: {
-        ...prev.schedule,
-        [day]: {
-          ...prev.schedule[day as keyof typeof prev.schedule],
-          hours: {
-            ...prev.schedule[day as keyof typeof prev.schedule].hours,
-            [field]: value
-          }
-        }
-      }
-    }));
-  };
-
-  const handleStatusChange = (status: 'available' | 'busy' | 'offline') => {
-    setAvailability(prev => ({
-      ...prev,
-      currentStatus: status
-    }));
-  };
-
+  // Status helper functions
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'available':
@@ -154,106 +192,137 @@ export default function FundiAvailability() {
     }
   };
 
+  // Set all days available/unavailable
+  const setAllDays = (available: boolean) => {
+    const newSchedule = { ...schedule };
+    Object.keys(newSchedule).forEach(day => {
+      newSchedule[day as keyof Schedule] = {
+        ...newSchedule[day as keyof Schedule],
+        available: available
+      };
+    });
+    setSchedule(newSchedule);
+  };
+
+  // Loading state
   if (loading) {
     return (
-      <div className="flex-1 flex items-center justify-center">
+      <div className="flex-1 flex items-center justify-center min-h-screen">
         <div className="text-center">
-          <Loader className="animate-spin h-8 w-8 text-[#0A2647] mx-auto mb-4" />
-          <p className="text-gray-600">Loading availability...</p>
+          <Loader className="animate-spin h-12 w-12 text-[#0A2647] mx-auto mb-4" />
+          <p className="text-gray-600 text-lg">Loading availability settings...</p>
         </div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="flex-1 flex items-center justify-center">
-        <div className="text-center">
-          <XCircle className="h-8 w-8 text-red-500 mx-auto mb-4" />
-          <p className="text-red-500">Error: {error}</p>
-        </div>
-      </div>
-    );
-  }
-
-  if (!profile) {
-    return (
-      <div className="flex-1 flex items-center justify-center">
-        <p className="text-gray-600">No profile data available.</p>
       </div>
     );
   }
 
   return (
-    <div className="flex-1 p-6">
-      <div className="max-w-4xl mx-auto">
+    <div className="flex-1 p-6 bg-gray-50 min-h-screen">
+      <div className="max-w-6xl mx-auto">
         {/* Header */}
-        <div className="mb-6">
-          <h1 className="text-2xl font-bold text-[#0A2647] flex items-center space-x-2">
-            <CalendarIcon size={24} />
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-[#0A2647] flex items-center gap-3">
+            <CalendarIcon size={32} />
             <span>Availability Settings</span>
           </h1>
-          <p className="text-gray-600 mt-2">
-            Set your working hours and current availability status to let clients know when you're available for jobs.
+          <p className="text-gray-600 mt-2 text-lg">
+            Manage your working hours and availability status to let clients know when you're ready for jobs.
           </p>
         </div>
+
+        {/* Error Alert */}
+        {error && (
+          <div className="mb-6 bg-red-50 border-l-4 border-red-500 p-4 rounded-lg flex items-start gap-3">
+            <AlertCircle className="text-red-500 flex-shrink-0 mt-0.5" size={20} />
+            <div>
+              <h3 className="font-semibold text-red-800">Error</h3>
+              <p className="text-red-700 text-sm">{error}</p>
+            </div>
+          </div>
+        )}
+
+        {/* Success Alert */}
+        {successMessage && (
+          <div className="mb-6 bg-green-50 border-l-4 border-green-500 p-4 rounded-lg flex items-start gap-3">
+            <CheckCircle className="text-green-500 flex-shrink-0 mt-0.5" size={20} />
+            <div>
+              <h3 className="font-semibold text-green-800">Success</h3>
+              <p className="text-green-700 text-sm">{successMessage}</p>
+            </div>
+          </div>
+        )}
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Current Status Section */}
           <div className="lg:col-span-1">
-            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-              <h2 className="text-lg font-semibold text-[#0A2647] mb-4">Current Status</h2>
+            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+              <h2 className="text-xl font-semibold text-[#0A2647] mb-6">Current Status</h2>
               
-              <div className="space-y-4">
-                <div className="flex items-center justify-between p-4 border rounded-lg">
-                  <div className="flex items-center space-x-3">
-                    <div className="h-3 w-3 rounded-full bg-green-500"></div>
-                    <span className="font-medium">Available</span>
+              <div className="space-y-3">
+                {/* Available Option */}
+                <label className={`flex items-center justify-between p-4 border-2 rounded-lg cursor-pointer transition-all ${
+                  currentStatus === 'available' 
+                    ? 'border-green-500 bg-green-50' 
+                    : 'border-gray-200 hover:border-gray-300'
+                }`}>
+                  <div className="flex items-center gap-3">
+                    <div className="h-4 w-4 rounded-full bg-green-500"></div>
+                    <span className="font-medium text-gray-900">Available</span>
                   </div>
                   <input
                     type="radio"
                     name="status"
-                    checked={availability.currentStatus === 'available'}
-                    onChange={() => handleStatusChange('available')}
-                    className="h-4 w-4 text-orange-500 focus:ring-orange-500"
+                    checked={currentStatus === 'available'}
+                    onChange={() => setCurrentStatus('available')}
+                    className="h-5 w-5 text-green-500 focus:ring-green-500"
                   />
-                </div>
+                </label>
 
-                <div className="flex items-center justify-between p-4 border rounded-lg">
-                  <div className="flex items-center space-x-3">
-                    <div className="h-3 w-3 rounded-full bg-orange-500"></div>
-                    <span className="font-medium">Busy</span>
+                {/* Busy Option */}
+                <label className={`flex items-center justify-between p-4 border-2 rounded-lg cursor-pointer transition-all ${
+                  currentStatus === 'busy' 
+                    ? 'border-orange-500 bg-orange-50' 
+                    : 'border-gray-200 hover:border-gray-300'
+                }`}>
+                  <div className="flex items-center gap-3">
+                    <div className="h-4 w-4 rounded-full bg-orange-500"></div>
+                    <span className="font-medium text-gray-900">Busy</span>
                   </div>
                   <input
                     type="radio"
                     name="status"
-                    checked={availability.currentStatus === 'busy'}
-                    onChange={() => handleStatusChange('busy')}
-                    className="h-4 w-4 text-orange-500 focus:ring-orange-500"
+                    checked={currentStatus === 'busy'}
+                    onChange={() => setCurrentStatus('busy')}
+                    className="h-5 w-5 text-orange-500 focus:ring-orange-500"
                   />
-                </div>
+                </label>
 
-                <div className="flex items-center justify-between p-4 border rounded-lg">
-                  <div className="flex items-center space-x-3">
-                    <div className="h-3 w-3 rounded-full bg-gray-500"></div>
-                    <span className="font-medium">Offline</span>
+                {/* Offline Option */}
+                <label className={`flex items-center justify-between p-4 border-2 rounded-lg cursor-pointer transition-all ${
+                  currentStatus === 'offline' 
+                    ? 'border-gray-500 bg-gray-50' 
+                    : 'border-gray-200 hover:border-gray-300'
+                }`}>
+                  <div className="flex items-center gap-3">
+                    <div className="h-4 w-4 rounded-full bg-gray-500"></div>
+                    <span className="font-medium text-gray-900">Offline</span>
                   </div>
                   <input
                     type="radio"
                     name="status"
-                    checked={availability.currentStatus === 'offline'}
-                    onChange={() => handleStatusChange('offline')}
-                    className="h-4 w-4 text-orange-500 focus:ring-orange-500"
+                    checked={currentStatus === 'offline'}
+                    onChange={() => setCurrentStatus('offline')}
+                    className="h-5 w-5 text-gray-500 focus:ring-gray-500"
                   />
-                </div>
+                </label>
               </div>
 
-              {/* Current Status Display */}
-              <div className="mt-6 p-4 bg-gray-50 rounded-lg">
-                <h3 className="font-medium text-gray-700 mb-2">Your Current Status</h3>
-                <div className={`inline-flex items-center space-x-2 px-3 py-2 rounded-full border ${getStatusColor(availability.currentStatus)}`}>
-                  {getStatusIcon(availability.currentStatus)}
-                  <span className="font-medium capitalize">{availability.currentStatus}</span>
+              {/* Status Display */}
+              <div className="mt-6 p-4 bg-gray-50 rounded-lg border border-gray-200">
+                <p className="text-sm font-medium text-gray-700 mb-2">Your Status</p>
+                <div className={`inline-flex items-center gap-2 px-4 py-2 rounded-full border-2 ${getStatusColor(currentStatus)}`}>
+                  {getStatusIcon(currentStatus)}
+                  <span className="font-semibold capitalize">{currentStatus}</span>
                 </div>
               </div>
             </div>
@@ -261,139 +330,141 @@ export default function FundiAvailability() {
 
           {/* Weekly Schedule Section */}
           <div className="lg:col-span-2">
-            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-              <h2 className="text-lg font-semibold text-[#0A2647] mb-4">Weekly Schedule</h2>
+            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-xl font-semibold text-[#0A2647]">Weekly Schedule</h2>
+                
+                {/* Quick Actions */}
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => setAllDays(true)}
+                    className="px-3 py-1.5 text-sm bg-green-100 text-green-700 rounded-lg hover:bg-green-200 transition-colors font-medium"
+                  >
+                    All Available
+                  </button>
+                  <button
+                    onClick={() => setAllDays(false)}
+                    className="px-3 py-1.5 text-sm bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors font-medium"
+                  >
+                    All Unavailable
+                  </button>
+                </div>
+              </div>
               
-              <div className="space-y-4">
-                {Object.entries(availability.schedule).map(([day, schedule]) => (
-                  <div key={day} className="flex items-center justify-between p-4 border rounded-lg">
-                    <div className="flex items-center space-x-4 flex-1">
-                      <div className="flex items-center space-x-3">
+              <div className="space-y-3">
+                {(Object.keys(schedule) as Array<keyof Schedule>).map((day) => {
+                  const daySchedule = schedule[day];
+                  return (
+                    <div 
+                      key={day} 
+                      className={`flex items-center gap-4 p-4 border-2 rounded-lg transition-all ${
+                        daySchedule.available 
+                          ? 'border-green-200 bg-green-50' 
+                          : 'border-gray-200 bg-white'
+                      }`}
+                    >
+                      {/* Day Checkbox */}
+                      <label className="flex items-center gap-3 min-w-[120px] cursor-pointer">
                         <input
                           type="checkbox"
-                          checked={schedule.available}
+                          checked={daySchedule.available}
                           onChange={() => handleDayToggle(day)}
-                          className="h-4 w-4 text-orange-500 rounded focus:ring-orange-500"
+                          className="h-5 w-5 text-green-500 rounded focus:ring-green-500 cursor-pointer"
                         />
-                        <span className="font-medium capitalize w-20">
+                        <span className="font-semibold capitalize text-gray-900">
                           {day}
                         </span>
-                      </div>
+                      </label>
                       
-                      {schedule.available && (
-                        <div className="flex items-center space-x-4 flex-1">
-                          <div className="flex items-center space-x-2">
-                            <Sun size={16} className="text-gray-500" />
+                      {/* Time Inputs */}
+                      {daySchedule.available ? (
+                        <div className="flex items-center gap-3 flex-1">
+                          <div className="flex items-center gap-2">
+                            <Sun size={18} className="text-orange-500" />
                             <input
                               type="time"
-                              value={schedule.hours?.start || '09:00'}
+                              value={daySchedule.hours.start}
                               onChange={(e) => handleTimeChange(day, 'start', e.target.value)}
-                              className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#0A2647] focus:border-transparent"
+                              className="px-3 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0A2647] focus:border-transparent text-sm text-gray-900"
                             />
                           </div>
-                          <span className="text-gray-500">to</span>
-                          <div className="flex items-center space-x-2">
-                            <Moon size={16} className="text-gray-500" />
+                          <span className="text-gray-500 font-medium">to</span>
+                          <div className="flex items-center gap-2">
+                            <Moon size={18} className="text-indigo-500" />
                             <input
                               type="time"
-                              value={schedule.hours?.end || '17:00'}
+                              value={daySchedule.hours.end}
                               onChange={(e) => handleTimeChange(day, 'end', e.target.value)}
-                              className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#0A2647] focus:border-transparent"
+                              className="px-3 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0A2647] focus:border-transparent text-sm text-gray-900"
                             />
                           </div>
                         </div>
+                      ) : (
+                        <span className="text-gray-500 text-sm font-medium flex-1">
+                          Not available on this day
+                        </span>
                       )}
                     </div>
-                    
-                    {!schedule.available && (
-                      <span className="text-gray-500 text-sm">Unavailable</span>
-                    )}
-                  </div>
-                ))}
-              </div>
-
-              {/* Quick Actions */}
-              <div className="mt-6 flex space-x-3">
-                <button
-                  onClick={() => {
-                    const newSchedule = { ...availability.schedule };
-                    Object.keys(newSchedule).forEach(day => {
-                      newSchedule[day as keyof typeof newSchedule] = {
-                        ...newSchedule[day as keyof typeof newSchedule],
-                        available: true
-                      };
-                    });
-                    setAvailability(prev => ({ ...prev, schedule: newSchedule }));
-                  }}
-                  className="px-4 py-2 text-sm bg-blue-100 text-blue-700 rounded-md hover:bg-blue-200 transition-colors duration-200"
-                >
-                  Set All Days Available
-                </button>
-                <button
-                  onClick={() => {
-                    const newSchedule = { ...availability.schedule };
-                    Object.keys(newSchedule).forEach(day => {
-                      newSchedule[day as keyof typeof newSchedule] = {
-                        ...newSchedule[day as keyof typeof newSchedule],
-                        available: false
-                      };
-                    });
-                    setAvailability(prev => ({ ...prev, schedule: newSchedule }));
-                  }}
-                  className="px-4 py-2 text-sm bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 transition-colors duration-200"
-                >
-                  Set All Days Unavailable
-                </button>
+                  );
+                })}
               </div>
             </div>
           </div>
         </div>
 
         {/* Save Button */}
-        <div className="mt-6 flex justify-end">
+        <div className="mt-8 flex justify-end">
           <button
-            onClick={updateAvailability}
+            onClick={handleSaveAvailability}
             disabled={saving}
-            className="bg-orange-500 text-white px-6 py-3 rounded-lg hover:bg-orange-600 transition-colors duration-200 font-semibold flex items-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="bg-[#FF6B35] text-white px-8 py-4 rounded-lg hover:bg-[#ff5722] transition-all duration-200 font-semibold text-lg flex items-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl"
           >
             {saving ? (
               <>
-                <Loader className="animate-spin h-4 w-4" />
-                <span>Saving...</span>
+                <Loader className="animate-spin h-5 w-5" />
+                <span>Updating Availability...</span>
               </>
             ) : (
               <>
-                <Save size={16} />
-                <span>Save Availability</span>
+                <Save size={20} />
+                <span>Save Availability Settings</span>
               </>
             )}
           </button>
         </div>
 
-        {/* Current Availability Display */}
-        <div className="mt-8 bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-          <h2 className="text-lg font-semibold text-[#0A2647] mb-4">Current Availability</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-7 gap-4">
-            {Object.entries(availability.schedule).map(([day, schedule]) => (
-              <div key={day} className={`text-center p-4 rounded-lg border ${
-                schedule.available 
-                  ? 'bg-green-50 border-green-200' 
-                  : 'bg-gray-50 border-gray-200'
-              }`}>
-                <div className="font-medium text-gray-900 capitalize mb-2">
-                  {day.slice(0, 3)}
-                </div>
-                {schedule.available ? (
-                  <div className="text-sm text-green-700">
-                    <div>{schedule.hours?.start || '09:00'}</div>
-                    <div>to</div>
-                    <div>{schedule.hours?.end || '17:00'}</div>
+        {/* Current Availability Preview */}
+        <div className="mt-8 bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+          <h2 className="text-xl font-semibold text-[#0A2647] mb-6">Availability Preview</h2>
+          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-3">
+            {(Object.keys(schedule) as Array<keyof Schedule>).map((day) => {
+              const daySchedule = schedule[day];
+              return (
+                <div 
+                  key={day} 
+                  className={`text-center p-4 rounded-lg border-2 ${
+                    daySchedule.available 
+                      ? 'bg-green-50 border-green-300' 
+                      : 'bg-gray-50 border-gray-200'
+                  }`}
+                >
+                  <div className="font-bold text-gray-900 capitalize mb-2 text-sm">
+                    {day.slice(0, 3)}
                   </div>
-                ) : (
-                  <div className="text-sm text-gray-500">Unavailable</div>
-                )}
-              </div>
-            ))}
+                  {daySchedule.available ? (
+                    <div className="text-xs text-green-700 space-y-1">
+                      <div className="font-semibold">{daySchedule.hours.start}</div>
+                      <div className="text-gray-500">to</div>
+                      <div className="font-semibold">{daySchedule.hours.end}</div>
+                    </div>
+                  ) : (
+                    <div className="text-xs text-gray-500 font-medium">
+                      Unavailable
+                    </div>
+                  )}
+                </div>
+              );
+            })}
           </div>
         </div>
       </div>

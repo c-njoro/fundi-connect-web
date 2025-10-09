@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { Bell, Menu, X } from 'lucide-react';
+import Image from 'next/image';
 
 export default function Navbar() {
   const { user, isAuthenticated, logout } = useAuth();
@@ -22,6 +23,7 @@ export default function Navbar() {
           {/* Logo */}
           <div className="flex items-center">
             <Link href="/" className="flex items-center">
+              <Image src="/company-logo.png" width={48} height={100} alt="FundiConnect logo" className="rounded-full mr-2" />
               <span className="text-2xl font-bold text-[#0A2647]">
                 Fundi<span className="text-orange-500">Connect</span>
               </span>
