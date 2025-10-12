@@ -1,4 +1,5 @@
 import { Types } from "mongoose";
+import { IService } from "./ServiceTypes";
 
 export interface IUser {
   _id: Types.ObjectId;
@@ -34,7 +35,7 @@ export interface IUser {
 
   // Only when role includes 'fundi'
   fundiProfile?: {
-    services?: Types.ObjectId[]; // Array of service IDs
+    services?: (Types.ObjectId | IService)[]; // Array of service IDs
     experience?: number;
     bio?: string;
 

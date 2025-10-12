@@ -1,4 +1,5 @@
 // src/lib/api/services.ts
+import { create } from 'domain';
 import apiClient from './client';
 
 export const authService = {
@@ -253,4 +254,22 @@ export const serviceService = {
       return { success: false, message: err?.response?.data?.message || 'Get categories failed', errors: err?.response?.data?.errors };
     }
   },
+
+  createService: async (data: any) => {
+    try {
+      const response = await apiClient.post('/services', data);
+      return response.data;
+    } catch (err: any) {
+      return { success: false, message: err?.response?.data?.message || 'Create service failed', errors: err?.response?.data?.errors };
+    }
+  },
+
+  updateService: async (id: string, data: any) => {
+    try {
+      const response = await apiClient.put(`/services/${id}`, data);
+      return response.data;
+    } catch (err: any) {
+      return { success: false, message: err?.response?.data?.message || 'Update service failed', errors: err?.response?.data?.errors };
+    }
+  }
 };

@@ -61,7 +61,7 @@ export default function Navbar() {
                   {/* Add notification badge */}
                 </Link>
                 
-                <div className="relative group">
+                <div className="relative group ">
                   <button className="flex items-center space-x-2 text-gray-700 hover:text-[#0A2647] transition-colors duration-200">
                     <div className="h-8 w-8 rounded-full bg-gradient-to-br from-[#0A2647] to-[#003366] flex items-center justify-center text-white text-sm font-semibold">
                       {user?.profile?.firstName?.[0] || 'U'}
@@ -72,7 +72,7 @@ export default function Navbar() {
                   </button>
                   
                   {/* Dropdown */}
-                  <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-1 hidden group-hover:block border border-gray-200">
+                  <div className="absolute right-0 w-48 bg-white rounded-lg shadow-lg py-1 hidden group-hover:block border border-gray-200 ">
                     <Link
                       href="/dashboard"
                       className="block px-4 py-2 text-sm text-gray-700 hover:bg-orange-50 hover:text-[#0A2647] transition-colors duration-200"
