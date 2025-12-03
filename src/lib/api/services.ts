@@ -45,7 +45,7 @@ export const jobService = {
 
   getMyJobs: async (role?: string, status?: string) => {
     try {
-      const response = await apiClient.get("/jobs/my-jobs", {
+      const response = await apiClient.get("/jobs/me/my-jobs", {
         params: { role, status },
       });
       return response.data;
