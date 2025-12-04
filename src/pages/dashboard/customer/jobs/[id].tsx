@@ -41,6 +41,7 @@ import {
   CalendarDays,
   MapPin as MapPinIcon,
 } from "lucide-react";
+import { set } from "mongoose";
 
 // Simplified interface focused on the job details page
 export interface IJob {
@@ -319,6 +320,12 @@ export default function CustomerJobDetail() {
   const [job, setJob] = useState<IJob | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+  const [accepting, setAccepting] = useState<boolean>(false);
+  const [acceptingError, setAcceptingError] = useState<string | null>(null);
+  const [approvingPayment, setApprovingPayment] = useState<boolean>(false);
+  const [approvingPaymentError, setApprovingPaymentError] = useState<
+    string | null
+  >(null);
 
   const fetchJob = async (jobId: string) => {
     setLoading(true);
@@ -374,6 +381,51 @@ export default function CustomerJobDetail() {
       hour: "2-digit",
       minute: "2-digit",
     });
+  };
+
+  const acceptProposal = async (jobId: string, proposalIndex: number) => {
+    setAccepting(true);
+    setAcceptingError(null);
+    try {
+      const response = await jobService.acceptProposal(jobId, proposalIndex);
+      if (response.success) {
+        fetchJob(id!);
+        console.log("Proposal accepted successfully.");
+      } else {
+        console.error("Failed to accept proposal:", response.message);
+        setAcceptingError(response.message || "Failed to accept proposal");
+      }
+    } catch (error) {
+      console.error("Error accepting proposal:", error);
+      setAcceptingError("An error occurred while accepting the proposal");
+    } finally {
+      setAccepting(false);
+    }
+  };
+
+  const approveJobPayment = async (jobId: string) => {
+    setApprovingPayment(true);
+    setApprovingPaymentError(null);
+
+    try {
+      const response = await jobService.approveCompletion(jobId);
+      if (response.success) {
+        fetchJob(id!);
+        console.log("Completion approved successfully.");
+      } else {
+        console.error("Failed to approve completion:", response.message);
+        setApprovingPaymentError(
+          response.message || "Failed to approve completion"
+        );
+      }
+    } catch (error) {
+      console.error("Error approving completion:", error);
+      setApprovingPaymentError(
+        "An error occurred while approving the completion"
+      );
+    } finally {
+      setApprovingPayment(false);
+    }
   };
 
   if (loading) {
@@ -683,8 +735,12 @@ export default function CustomerJobDetail() {
                         <div className="lg:w-48 flex flex-col gap-3">
                           {proposal.status === "pending" && (
                             <>
-                              <button className="w-full bg-[#FF6B35] text-white py-2 rounded-lg hover:bg-[#ff5722] transition-colors font-semibold">
-                                Accept Proposal
+                              <button
+                                className="w-full bg-[#FF6B35] text-white py-2 rounded-lg hover:bg-[#ff5722] transition-colors font-semibold"
+                                onClick={() => acceptProposal(job._id, index)}
+                                disabled={accepting}
+                              >
+                                {accepting ? "Accepting..." : "Accept Proposal"}
                               </button>
                               <button className="w-full border border-red-300 text-red-600 py-2 rounded-lg hover:bg-red-50 transition-colors font-semibold">
                                 Reject
@@ -890,9 +946,6 @@ export default function CustomerJobDetail() {
 
                 {job.status === "in_progress" && (
                   <>
-                    <button className="w-full bg-green-600 text-white py-3 rounded-lg hover:bg-green-700 transition-colors font-semibold text-center">
-                      Mark as Completed
-                    </button>
                     <button className="w-full border border-red-300 text-red-600 py-3 rounded-lg hover:bg-red-50 transition-colors font-semibold text-center">
                       Report Issue
                     </button>
@@ -900,9 +953,14 @@ export default function CustomerJobDetail() {
                 )}
 
                 {job.status === "completed" &&
-                  job.payment?.status !== "released" && (
-                    <button className="w-full bg-[#0A2647] text-white py-3 rounded-lg hover:bg-[#0d3157] transition-colors font-semibold text-center">
-                      Release Payment
+                  !job.completion?.customerApproved && (
+                    <button
+                      className="w-full bg-[#0A2647] text-white py-3 rounded-lg hover:bg-[#0d3157] transition-colors font-semibold text-center"
+                      onClick={() => approveJobPayment(job._id)}
+                    >
+                      {approvingPayment
+                        ? "Approving..."
+                        : "Approve Completion & Release Payment"}
                     </button>
                   )}
 

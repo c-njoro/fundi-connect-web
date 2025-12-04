@@ -1,6 +1,7 @@
 // src/lib/api/services.ts
 import { create } from "domain";
 import apiClient from "./client";
+import { start } from "repl";
 
 export const authService = {
   login: async (email: string, password: string) => {
@@ -107,6 +108,58 @@ export const jobService = {
       return {
         success: false,
         message: err?.response?.data?.message || "Accept proposal failed",
+        errors: err?.response?.data?.errors,
+      };
+    }
+  },
+
+  startJob: async (jobId: string) => {
+    try {
+      const response = await apiClient.patch(`/jobs/${jobId}/start`);
+      return response.data;
+    } catch (err: any) {
+      return {
+        success: false,
+        message: err?.response?.data?.message || "Start job failed",
+        errors: err?.response?.data?.errors,
+      };
+    }
+  },
+
+  updateProgress: async (jobId: string, data: any) => {
+    try {
+      const response = await apiClient.post(`/jobs/${jobId}/progress`, data);
+      return response.data;
+    } catch (err: any) {
+      return {
+        success: false,
+        message: err?.response?.data?.message || "Update progress failed",
+        errors: err?.response?.data?.errors,
+      };
+    }
+  },
+
+  completeJob: async (jobId: string, data: any) => {
+    try {
+      const response = await apiClient.patch(`/jobs/${jobId}/complete`, data);
+      return response.data;
+    } catch (err: any) {
+      return {
+        success: false,
+        message: err?.response?.data?.message || "Complete job failed",
+        errors: err?.response?.data?.errors,
+      };
+    }
+  },
+
+  approveCompletion: async (jobId: string) => {
+    try {
+      const response = await apiClient.patch(`/jobs/${jobId}/approve`);
+      return response.data;
+    } catch (err: any) {
+      return {
+        success: false,
+        message: err?.response?.data?.message || "Approve completion failed",
         errors: err?.response?.data?.errors,
       };
     }

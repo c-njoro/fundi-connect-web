@@ -25,11 +25,17 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
-
 .the-menu-dropdown {
   z-index: 1000; /* Ensure the dropdown is above other elements */
 }
 
 .the-menu:hover .the-menu-dropdown {
   display: block;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  outline: none;
+  border-color: #2563eb; /* Tailwind's blue-600 */
 }
