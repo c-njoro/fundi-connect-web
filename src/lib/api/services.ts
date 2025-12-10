@@ -87,7 +87,10 @@ export const jobService = {
 
   submitProposal: async (jobId: string, data: any) => {
     try {
-      const response = await apiClient.post(`/jobs/${jobId}/proposals`, data);
+      const response = await apiClient.post(
+        `/jobs/${jobId}/submit-proposal`,
+        data
+      );
       return response.data;
     } catch (err: any) {
       return {

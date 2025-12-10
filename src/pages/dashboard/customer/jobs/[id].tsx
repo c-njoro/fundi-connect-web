@@ -1141,14 +1141,15 @@ export default function CustomerJobDetail() {
                   </div>
                 </div>
 
-                {job.payment?.escrowAmount > 0 && (
-                  <div className="flex justify-between items-center">
-                    <span className="text-gray-600">Escrow Amount</span>
-                    <span className="font-bold text-gray-900">
-                      KSh {job.payment.escrowAmount}
-                    </span>
-                  </div>
-                )}
+                {!job.payment?.escrowAmount ||
+                  (job.payment?.escrowAmount > 0 && (
+                    <div className="flex justify-between items-center">
+                      <span className="text-gray-600">Escrow Amount</span>
+                      <span className="font-bold text-gray-900">
+                        KSh {job.payment.escrowAmount}
+                      </span>
+                    </div>
+                  ))}
 
                 {job.payment?.releaseDate && (
                   <div className="flex justify-between items-center">
