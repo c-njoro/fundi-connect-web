@@ -209,9 +209,9 @@ export const userService = {
     }
   },
 
-  becomeFundi: async (data: any) => {
+  becomeFundi: async (userId: string) => {
     try {
-      const response = await apiClient.post("/users/become-fundi", data);
+      const response = await apiClient.post("/users/become-fundi", { userId });
       return response.data;
     } catch (err: any) {
       return {
@@ -243,6 +243,52 @@ export const userService = {
       return {
         success: false,
         message: err?.response?.data?.message || "Get fundi failed",
+        errors: err?.response?.data?.errors,
+      };
+    }
+  },
+
+  getAllUsers: async () => {
+    try {
+      const response = await apiClient.get("/users/admin/all");
+      return response.data;
+    } catch (err: any) {
+      return {
+        success: false,
+        message: err?.response?.data?.message || "Get users failed",
+        errors: err?.response?.data?.errors,
+      };
+    }
+  },
+
+  getPendingApprovals: async () => {
+    try {
+      const response = await apiClient.get("/users/admin/pending-fundis");
+      return response.data;
+    } catch (err: any) {
+      return {
+        success: false,
+        message: err?.response?.data?.message || "Get pending approvals failed",
+        errors: err?.response?.data?.errors,
+      };
+    }
+  },
+
+  updateFundiStatus: async (
+    userId: string,
+    status: string,
+    reason?: string
+  ) => {
+    try {
+      const response = await apiClient.patch(
+        `/users/admin/fundi/${userId}/status`,
+        { status, reason }
+      );
+      return response.data;
+    } catch (err: any) {
+      return {
+        success: false,
+        message: err?.response?.data?.message || "Update fundi status failed",
         errors: err?.response?.data?.errors,
       };
     }

@@ -2,13 +2,13 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useEffect, useState } from "react";
 import { userService } from "@/lib/api/services";
 import { IUser } from "@/types/UserType";
-import { useRouter } from 'next/router';
-import { 
-  User, 
-  MapPin, 
-  Mail, 
-  Phone, 
-  Calendar, 
+import { useRouter } from "next/router";
+import {
+  User,
+  MapPin,
+  Mail,
+  Phone,
+  Calendar,
   Shield,
   Edit,
   Briefcase,
@@ -16,8 +16,8 @@ import {
   CheckCircle,
   XCircle,
   Clock,
-  Loader
-} from 'lucide-react';
+  Loader,
+} from "lucide-react";
 
 export default function CustomerProfile() {
   const { token, user } = useAuth();
@@ -27,6 +27,7 @@ export default function CustomerProfile() {
   const [loading, setLoading] = useState(false);
   const [upgradeLoading, setUpgradeLoading] = useState(false);
   const [showBecomeFundiModal, setShowBecomeFundiModal] = useState(false);
+  const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -38,9 +39,9 @@ export default function CustomerProfile() {
           setProfile(data.data);
           return;
         }
-        setError(data.message || 'Failed to load profile');
+        setError(data.message || "Failed to load profile");
       } catch (err: any) {
-        setError(err.message || 'An error occurred while fetching profile');
+        setError(err.message || "An error occurred while fetching profile");
       } finally {
         setLoading(false);
       }
@@ -50,33 +51,44 @@ export default function CustomerProfile() {
     }
   }, [token]);
 
-  const handleBecomeFundi = async () => {
-    console.log('Upgrading to Fundi...');
+  const handleBecomeFundi = async (userId: string) => {
+    setUpgradeLoading(true);
+    try {
+      const data = await userService.becomeFundi(userId);
+      if (data.success) {
+        setShowBecomeFundiModal(false);
+        router.reload();
+        return;
+      }
+      alert(data.message || "Failed to process request");
+    } catch (err: any) {
+      alert(err.message || "An error occurred while processing request");
+    } finally {
+      setUpgradeLoading(false);
+    }
   };
 
-
   const formatDate = (dateInput: string | Date) => {
-    const d = typeof dateInput === 'string' ? new Date(dateInput) : dateInput;
-    if (!(d instanceof Date) || isNaN(d.getTime())) return 'Invalid date';
-    return d.toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
+    const d = typeof dateInput === "string" ? new Date(dateInput) : dateInput;
+    if (!(d instanceof Date) || isNaN(d.getTime())) return "Invalid date";
+    return d.toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
     });
   };
 
   const formatDateTime = (dateInput: string | Date) => {
-    const d = typeof dateInput === 'string' ? new Date(dateInput) : dateInput;
-    if (!(d instanceof Date) || isNaN(d.getTime())) return 'Invalid date';
-    return d.toLocaleString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
+    const d = typeof dateInput === "string" ? new Date(dateInput) : dateInput;
+    if (!(d instanceof Date) || isNaN(d.getTime())) return "Invalid date";
+    return d.toLocaleString("en-US", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
     });
   };
-
 
   if (loading) {
     return (
@@ -118,9 +130,9 @@ export default function CustomerProfile() {
               <div className="flex items-center space-x-4">
                 <div className="h-20 w-20 rounded-full bg-white flex items-center justify-center text-[#0A2647] text-2xl font-bold">
                   {profile.profile.avatar ? (
-                    <img 
-                      src={profile.profile.avatar} 
-                      alt="Profile" 
+                    <img
+                      src={profile.profile.avatar}
+                      alt="Profile"
                       className="h-20 w-20 rounded-full object-cover"
                     />
                   ) : (
@@ -134,16 +146,26 @@ export default function CustomerProfile() {
                   <p className="text-gray-200">Customer Account</p>
                 </div>
               </div>
-              
+
               {!profile.isFundi && (
                 <button
-                  onClick={() => setShowBecomeFundiModal(true)}
+                  onClick={() => {
+                    setShowBecomeFundiModal(true);
+                    setSelectedUserId(profile._id.toString());
+                  }}
                   className="mt-4 sm:mt-0 bg-orange-500 text-white px-6 py-3 rounded-lg hover:bg-orange-600 transition-colors duration-200 font-semibold flex items-center space-x-2"
                 >
                   <Briefcase size={20} />
                   <span>Become a Fundi</span>
                   <ArrowRight size={16} />
                 </button>
+              )}
+
+              {profile.fundiProfile?.profileStatus === "pending_review" && (
+                <div className="mt-4 sm:mt-0 bg-green-500 text-white px-6 py-3 rounded-lg font-semibold flex items-center space-x-2">
+                  <Briefcase size={20} />
+                  <span>Fundi Account Pending Approval</span>
+                </div>
               )}
             </div>
           </div>
@@ -162,33 +184,40 @@ export default function CustomerProfile() {
                     <Edit size={16} />
                   </button>
                 </div>
-                
+
                 <div className="space-y-3">
                   <div className="flex justify-between">
                     <span className="text-gray-600">First Name:</span>
-                    <span className="font-medium text-gray-900">{profile.profile.firstName}</span>
+                    <span className="font-medium text-gray-900">
+                      {profile.profile.firstName}
+                    </span>
                   </div>
-                  
+
                   <div className="flex justify-between">
                     <span className="text-gray-600">Last Name:</span>
-                    <span className="font-medium text-gray-900">{profile.profile.lastName}</span>
+                    <span className="font-medium text-gray-900">
+                      {profile.profile.lastName}
+                    </span>
                   </div>
-                  
+
                   {profile.profile.gender && (
                     <div className="flex justify-between">
                       <span className="text-gray-600">Gender:</span>
-                      <span className="font-medium text-gray-900 capitalize">{profile.profile.gender}</span>
-                    </div>
-                  )}
-                  
-                  {profile.profile.languages && profile.profile.languages.length > 0 && (
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">Languages:</span>
-                      <span className="font-medium text-gray-900">
-                        {profile.profile.languages.join(', ')}
+                      <span className="font-medium text-gray-900 capitalize">
+                        {profile.profile.gender}
                       </span>
                     </div>
                   )}
+
+                  {profile.profile.languages &&
+                    profile.profile.languages.length > 0 && (
+                      <div className="flex justify-between">
+                        <span className="text-gray-600">Languages:</span>
+                        <span className="font-medium text-gray-900">
+                          {profile.profile.languages.join(", ")}
+                        </span>
+                      </div>
+                    )}
 
                   <div className="flex justify-between items-center">
                     <span className="text-gray-600">Profile Verified:</span>
@@ -196,12 +225,16 @@ export default function CustomerProfile() {
                       {profile.profile.isVerified ? (
                         <>
                           <CheckCircle size={16} className="text-green-500" />
-                          <span className="text-green-600 font-medium">Verified</span>
+                          <span className="text-green-600 font-medium">
+                            Verified
+                          </span>
                         </>
                       ) : (
                         <>
                           <XCircle size={16} className="text-orange-500" />
-                          <span className="text-orange-600 font-medium">Not Verified</span>
+                          <span className="text-orange-600 font-medium">
+                            Not Verified
+                          </span>
                         </>
                       )}
                     </div>
@@ -220,7 +253,7 @@ export default function CustomerProfile() {
                     <Edit size={16} />
                   </button>
                 </div>
-                
+
                 <div className="space-y-3">
                   <div className="flex justify-between items-center">
                     <span className="text-gray-600 flex items-center space-x-2">
@@ -228,7 +261,9 @@ export default function CustomerProfile() {
                       <span>Email:</span>
                     </span>
                     <div className="flex items-center space-x-2">
-                      <span className="font-medium text-gray-900">{profile.email}</span>
+                      <span className="font-medium text-gray-900">
+                        {profile.email}
+                      </span>
                       {profile.emailVerified ? (
                         <CheckCircle size={16} className="text-green-500" />
                       ) : (
@@ -236,14 +271,16 @@ export default function CustomerProfile() {
                       )}
                     </div>
                   </div>
-                  
+
                   <div className="flex justify-between items-center">
                     <span className="text-gray-600 flex items-center space-x-2">
                       <Phone size={16} />
                       <span>Phone:</span>
                     </span>
                     <div className="flex items-center space-x-2">
-                      <span className="font-medium text-gray-900">{profile.phone}</span>
+                      <span className="font-medium text-gray-900">
+                        {profile.phone}
+                      </span>
                       {profile.phoneVerified ? (
                         <CheckCircle size={16} className="text-green-500" />
                       ) : (
@@ -266,26 +303,32 @@ export default function CustomerProfile() {
                       <Edit size={16} />
                     </button>
                   </div>
-                  
+
                   <div className="space-y-3">
                     {profile.location.county && (
                       <div className="flex justify-between">
                         <span className="text-gray-600">County:</span>
-                        <span className="font-medium text-gray-900">{profile.location.county}</span>
+                        <span className="font-medium text-gray-900">
+                          {profile.location.county}
+                        </span>
                       </div>
                     )}
-                    
+
                     {profile.location.city && (
                       <div className="flex justify-between">
                         <span className="text-gray-600">City:</span>
-                        <span className="font-medium text-gray-900">{profile.location.city}</span>
+                        <span className="font-medium text-gray-900">
+                          {profile.location.city}
+                        </span>
                       </div>
                     )}
-                    
+
                     {profile.location.area && (
                       <div className="flex justify-between">
                         <span className="text-gray-600">Area:</span>
-                        <span className="font-medium text-gray-900">{profile.location.area}</span>
+                        <span className="font-medium text-gray-900">
+                          {profile.location.area}
+                        </span>
                       </div>
                     )}
                   </div>
@@ -300,37 +343,47 @@ export default function CustomerProfile() {
                     <span>Account Information</span>
                   </h2>
                 </div>
-                
+
                 <div className="space-y-3">
                   <div className="flex justify-between">
                     <span className="text-gray-600">Account Type:</span>
-                    <span className="font-medium text-gray-900 capitalize">{profile.role}</span>
+                    <span className="font-medium text-gray-900 capitalize">
+                      {profile.role}
+                    </span>
                   </div>
-                  
+
                   <div className="flex justify-between">
                     <span className="text-gray-600">Member Since:</span>
-                    <span className="font-medium text-gray-900">{formatDate(profile.createdAt)}</span>
+                    <span className="font-medium text-gray-900">
+                      {formatDate(profile.createdAt)}
+                    </span>
                   </div>
-                  
+
                   {profile.lastLogin && (
                     <div className="flex justify-between">
                       <span className="text-gray-600">Last Login:</span>
-                      <span className="font-medium text-gray-900">{formatDateTime(profile.lastLogin)}</span>
+                      <span className="font-medium text-gray-900">
+                        {formatDateTime(profile.lastLogin)}
+                      </span>
                     </div>
                   )}
-                  
+
                   <div className="flex justify-between items-center">
                     <span className="text-gray-600">Account Status:</span>
                     <div className="flex items-center space-x-1">
                       {profile.isActive ? (
                         <>
                           <CheckCircle size={16} className="text-green-500" />
-                          <span className="text-green-600 font-medium">Active</span>
+                          <span className="text-green-600 font-medium">
+                            Active
+                          </span>
                         </>
                       ) : (
                         <>
                           <XCircle size={16} className="text-red-500" />
-                          <span className="text-red-600 font-medium">Inactive</span>
+                          <span className="text-red-600 font-medium">
+                            Inactive
+                          </span>
                         </>
                       )}
                     </div>
@@ -346,16 +399,20 @@ export default function CustomerProfile() {
       {showBecomeFundiModal && (
         <div className="fixed inset-0 bg-black/70 bg-opacity-20 flex items-center justify-center p-4 z-50">
           <div className="bg-white rounded-lg max-w-md w-full p-6">
-            <h3 className="text-xl font-bold text-[#0A2647] mb-4">Become a Fundi</h3>
+            <h3 className="text-xl font-bold text-[#0A2647] mb-4">
+              Become a Fundi
+            </h3>
             <p className="text-gray-600 mb-6">
-              Are you sure you want to upgrade your account to become a Fundi? 
-              This will give you access to start offering services and earning on FundiConnect.
+              Are you sure you want to upgrade your account to become a Fundi?
+              This will give you access to start offering services and earning
+              on FundiConnect.
             </p>
-            
+
             <div className="bg-orange-50 border border-orange-200 rounded-lg p-4 mb-6">
               <p className="text-orange-800 text-sm">
-                <strong>Note:</strong> After upgrading, you'll need to complete your Fundi profile 
-                setup before you can start receiving job requests.
+                <strong>Note:</strong> After upgrading, you'll need to complete
+                your Fundi profile setup before you can start receiving job
+                requests.
               </p>
             </div>
 
@@ -368,8 +425,8 @@ export default function CustomerProfile() {
                 Cancel
               </button>
               <button
-                onClick={handleBecomeFundi}
-                disabled={upgradeLoading}
+                onClick={() => handleBecomeFundi(selectedUserId!)}
+                disabled={upgradeLoading || !selectedUserId}
                 className="flex-1 bg-orange-500 text-white py-2 px-4 rounded-lg hover:bg-orange-600 transition-colors duration-200 font-medium flex items-center justify-center space-x-2"
               >
                 {upgradeLoading ? (
