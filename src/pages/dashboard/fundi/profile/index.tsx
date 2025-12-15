@@ -2,12 +2,12 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useEffect, useState } from "react";
 import { userService } from "@/lib/api/services";
 import { IUser } from "@/types/UserType";
-import { 
-  User, 
-  MapPin, 
-  Mail, 
-  Phone, 
-  Calendar, 
+import {
+  User,
+  MapPin,
+  Mail,
+  Phone,
+  Calendar,
   Shield,
   Edit,
   Briefcase,
@@ -20,8 +20,8 @@ import {
   FileText,
   Loader,
   TrendingUp,
-  Calendar as CalendarIcon
-} from 'lucide-react';
+  Calendar as CalendarIcon,
+} from "lucide-react";
 import Link from "next/link";
 
 export default function FundiProfile() {
@@ -36,13 +36,14 @@ export default function FundiProfile() {
       setLoading(true);
       try {
         const data = await userService.getProfile();
+        console.log("Fetched profile data:", data);
         if (data.success) {
           setProfile(data.data);
           return;
         }
-        setError(data.message || 'Failed to load profile');
+        setError(data.message || "Failed to load profile");
       } catch (err: any) {
-        setError(err.message || 'An error occurred while fetching profile');
+        setError(err.message || "An error occurred while fetching profile");
       } finally {
         setLoading(false);
       }
@@ -53,40 +54,40 @@ export default function FundiProfile() {
   }, [token]);
 
   const formatDate = (dateInput: string | Date) => {
-    const d = typeof dateInput === 'string' ? new Date(dateInput) : dateInput;
-    if (!(d instanceof Date) || isNaN(d.getTime())) return 'Invalid date';
-    return d.toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
+    const d = typeof dateInput === "string" ? new Date(dateInput) : dateInput;
+    if (!(d instanceof Date) || isNaN(d.getTime())) return "Invalid date";
+    return d.toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
     });
   };
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'approved':
-        return 'text-green-600 bg-green-50 border-green-200';
-      case 'pending_review':
-        return 'text-orange-600 bg-orange-50 border-orange-200';
-      case 'suspended':
-        return 'text-red-600 bg-red-50 border-red-200';
-      case 'rejected':
-        return 'text-red-600 bg-red-50 border-red-200';
-      case 'draft':
-        return 'text-gray-600 bg-gray-50 border-gray-200';
+      case "approved":
+        return "text-green-600 bg-green-50 border-green-200";
+      case "pending_review":
+        return "text-orange-600 bg-orange-50 border-orange-200";
+      case "suspended":
+        return "text-red-600 bg-red-50 border-red-200";
+      case "rejected":
+        return "text-red-600 bg-red-50 border-red-200";
+      case "draft":
+        return "text-gray-600 bg-gray-50 border-gray-200";
       default:
-        return 'text-gray-600 bg-gray-50 border-gray-200';
+        return "text-gray-600 bg-gray-50 border-gray-200";
     }
   };
 
   const getStatusIcon = (status: string) => {
     switch (status) {
-      case 'approved':
+      case "approved":
         return <CheckCircle size={16} className="text-green-500" />;
-      case 'pending_review':
+      case "pending_review":
         return <Clock size={16} className="text-orange-500" />;
-      case 'suspended':
-      case 'rejected':
+      case "suspended":
+      case "rejected":
         return <XCircle size={16} className="text-red-500" />;
       default:
         return <FileText size={16} className="text-gray-500" />;
@@ -133,9 +134,9 @@ export default function FundiProfile() {
               <div className="flex items-center space-x-4">
                 <div className="h-20 w-20 rounded-full bg-white flex items-center justify-center text-[#0A2647] text-2xl font-bold">
                   {profile.profile.avatar ? (
-                    <img 
-                      src={profile.profile.avatar} 
-                      alt="Profile" 
+                    <img
+                      src={profile.profile.avatar}
+                      alt="Profile"
                       className="h-20 w-20 rounded-full object-cover"
                     />
                   ) : (
@@ -148,25 +149,37 @@ export default function FundiProfile() {
                   </h1>
                   <p className="text-gray-200">Professional Fundi</p>
                   <div className="flex items-center space-x-2 mt-1">
-                    <div className={`inline-flex items-center space-x-1 px-3 py-1 rounded-full border ${getStatusColor(profile.fundiProfile?.profileStatus || 'draft')}`}>
-                      {getStatusIcon(profile.fundiProfile?.profileStatus || 'draft')}
+                    <div
+                      className={`inline-flex items-center space-x-1 px-3 py-1 rounded-full border ${getStatusColor(
+                        profile.fundiProfile?.profileStatus || "draft"
+                      )}`}
+                    >
+                      {getStatusIcon(
+                        profile.fundiProfile?.profileStatus || "draft"
+                      )}
                       <span className="text-sm font-medium capitalize">
-                        {profile.fundiProfile?.profileStatus?.replace('_', ' ') || 'draft'}
+                        {profile.fundiProfile?.profileStatus?.replace(
+                          "_",
+                          " "
+                        ) || "draft"}
                       </span>
                     </div>
                   </div>
                 </div>
               </div>
-              
+
               <div className="mt-4 sm:mt-0 flex items-center space-x-4">
                 <div className="text-center text-white">
-                  <div className="text-2xl font-bold">{profile.fundiProfile?.completedJobs || 0}</div>
+                  <div className="text-2xl font-bold">
+                    {profile.fundiProfile?.completedJobs || 0}
+                  </div>
                   <div className="text-sm text-gray-200">Jobs Completed</div>
                 </div>
                 <div className="text-center text-white">
                   <div className="text-2xl font-bold flex items-center justify-center">
                     <Star size={20} className="text-yellow-400 mr-1" />
-                    {profile.fundiProfile?.ratings?.average?.toFixed(1) || '0.0'}
+                    {profile.fundiProfile?.ratings?.average?.toFixed(1) ||
+                      "0.0"}
                   </div>
                   <div className="text-sm text-gray-200">Rating</div>
                 </div>
@@ -186,37 +199,41 @@ export default function FundiProfile() {
                       <User size={20} />
                       <span>Personal Information</span>
                     </h2>
-                    <button className="text-gray-500 hover:text-[#0A2647] transition-colors duration-200">
-                      <Edit size={16} />
-                    </button>
                   </div>
-                  
+
                   <div className="space-y-3">
                     <div className="flex justify-between">
                       <span className="text-gray-600">First Name:</span>
-                      <span className="font-medium text-gray-900">{profile.profile.firstName}</span>
+                      <span className="font-medium text-gray-900">
+                        {profile.profile.firstName}
+                      </span>
                     </div>
-                    
+
                     <div className="flex justify-between">
                       <span className="text-gray-600">Last Name:</span>
-                      <span className="font-medium text-gray-900">{profile.profile.lastName}</span>
+                      <span className="font-medium text-gray-900">
+                        {profile.profile.lastName}
+                      </span>
                     </div>
-                    
+
                     {profile.profile.gender && (
                       <div className="flex justify-between">
                         <span className="text-gray-600">Gender:</span>
-                        <span className="font-medium text-gray-900 capitalize">{profile.profile.gender}</span>
-                      </div>
-                    )}
-                    
-                    {profile.profile.languages && profile.profile.languages.length > 0 && (
-                      <div className="flex justify-between">
-                        <span className="text-gray-600">Languages:</span>
-                        <span className="font-medium text-gray-900">
-                          {profile.profile.languages.join(', ')}
+                        <span className="font-medium text-gray-900 capitalize">
+                          {profile.profile.gender}
                         </span>
                       </div>
                     )}
+
+                    {profile.profile.languages &&
+                      profile.profile.languages.length > 0 && (
+                        <div className="flex justify-between">
+                          <span className="text-gray-600">Languages:</span>
+                          <span className="font-medium text-gray-900">
+                            {profile.profile.languages.join(", ")}
+                          </span>
+                        </div>
+                      )}
                   </div>
                 </div>
 
@@ -227,11 +244,8 @@ export default function FundiProfile() {
                       <Mail size={20} />
                       <span>Contact Information</span>
                     </h2>
-                    <button className="text-gray-500 hover:text-[#0A2647] transition-colors duration-200">
-                      <Edit size={16} />
-                    </button>
                   </div>
-                  
+
                   <div className="space-y-3">
                     <div className="flex justify-between items-center">
                       <span className="text-gray-600 flex items-center space-x-2">
@@ -239,7 +253,9 @@ export default function FundiProfile() {
                         <span>Email:</span>
                       </span>
                       <div className="flex items-center space-x-2">
-                        <span className="font-medium text-gray-900">{profile.email}</span>
+                        <span className="font-medium text-gray-900">
+                          {profile.email}
+                        </span>
                         {profile.emailVerified ? (
                           <CheckCircle size={16} className="text-green-500" />
                         ) : (
@@ -247,14 +263,16 @@ export default function FundiProfile() {
                         )}
                       </div>
                     </div>
-                    
+
                     <div className="flex justify-between items-center">
                       <span className="text-gray-600 flex items-center space-x-2">
                         <Phone size={16} />
                         <span>Phone:</span>
                       </span>
                       <div className="flex items-center space-x-2">
-                        <span className="font-medium text-gray-900">{profile.phone}</span>
+                        <span className="font-medium text-gray-900">
+                          {profile.phone}
+                        </span>
                         {profile.phoneVerified ? (
                           <CheckCircle size={16} className="text-green-500" />
                         ) : (
@@ -273,30 +291,33 @@ export default function FundiProfile() {
                         <MapPin size={20} />
                         <span>Location Information</span>
                       </h2>
-                      <button className="text-gray-500 hover:text-[#0A2647] transition-colors duration-200">
-                        <Edit size={16} />
-                      </button>
                     </div>
-                    
+
                     <div className="space-y-3">
                       {profile.location.county && (
                         <div className="flex justify-between">
                           <span className="text-gray-600">County:</span>
-                          <span className="font-medium text-gray-900">{profile.location.county}</span>
+                          <span className="font-medium text-gray-900">
+                            {profile.location.county}
+                          </span>
                         </div>
                       )}
-                      
+
                       {profile.location.city && (
                         <div className="flex justify-between">
                           <span className="text-gray-600">City:</span>
-                          <span className="font-medium text-gray-900">{profile.location.city}</span>
+                          <span className="font-medium text-gray-900">
+                            {profile.location.city}
+                          </span>
                         </div>
                       )}
-                      
+
                       {profile.location.area && (
                         <div className="flex justify-between">
                           <span className="text-gray-600">Area:</span>
-                          <span className="font-medium text-gray-900">{profile.location.area}</span>
+                          <span className="font-medium text-gray-900">
+                            {profile.location.area}
+                          </span>
                         </div>
                       )}
                     </div>
@@ -313,16 +334,15 @@ export default function FundiProfile() {
                       <Briefcase size={20} />
                       <span>Professional Information</span>
                     </h2>
-                    <button className="text-gray-500 hover:text-[#0A2647] transition-colors duration-200">
-                      <Edit size={16} />
-                    </button>
                   </div>
-                  
+
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     {/* Experience & Bio */}
                     <div className="space-y-4">
                       <div>
-                        <label className="text-sm font-medium text-gray-700">Experience</label>
+                        <label className="text-sm font-medium text-gray-700">
+                          Experience
+                        </label>
                         <div className="flex items-center space-x-2 mt-1">
                           <TrendingUp size={16} className="text-gray-500" />
                           <span className="text-gray-900 font-medium">
@@ -330,9 +350,11 @@ export default function FundiProfile() {
                           </span>
                         </div>
                       </div>
-                      
+
                       <div>
-                        <label className="text-sm font-medium text-gray-700">Bio</label>
+                        <label className="text-sm font-medium text-gray-700">
+                          Bio
+                        </label>
                         <p className="mt-1 text-gray-900 text-sm">
                           {profile.fundiProfile?.bio || "No bio provided yet."}
                         </p>
@@ -341,22 +363,32 @@ export default function FundiProfile() {
 
                     {/* Availability */}
                     <div>
-                      <label className="text-sm font-medium text-gray-700">Current Status</label>
+                      <label className="text-sm font-medium text-gray-700">
+                        Current Status
+                      </label>
                       <div className="flex items-center space-x-2 mt-1">
-                        <div className={`h-3 w-3 rounded-full ${
-                          profile.fundiProfile?.availability?.currentStatus === 'available' 
-                            ? 'bg-green-500' 
-                            : profile.fundiProfile?.availability?.currentStatus === 'busy'
-                            ? 'bg-orange-500'
-                            : 'bg-gray-500'
-                        }`} />
+                        <div
+                          className={`h-3 w-3 rounded-full ${
+                            profile.fundiProfile?.availability
+                              ?.currentStatus === "available"
+                              ? "bg-green-500"
+                              : profile.fundiProfile?.availability
+                                  ?.currentStatus === "busy"
+                              ? "bg-orange-500"
+                              : "bg-gray-500"
+                          }`}
+                        />
                         <span className="text-gray-900 font-medium capitalize">
-                          {profile.fundiProfile?.availability?.currentStatus || 'offline'}
+                          {profile.fundiProfile?.availability?.currentStatus ||
+                            "offline"}
                         </span>
                       </div>
                       {profile.fundiProfile?.availability?.lastUpdated && (
                         <p className="text-xs text-gray-500 mt-1">
-                          Last updated: {formatDate(profile.fundiProfile.availability.lastUpdated)}
+                          Last updated:{" "}
+                          {formatDate(
+                            profile.fundiProfile.availability.lastUpdated
+                          )}
                         </p>
                       )}
                     </div>
@@ -370,49 +402,73 @@ export default function FundiProfile() {
                       <DollarSign size={20} />
                       <span>Services & Pricing</span>
                     </h2>
-                    <button className="text-gray-500 hover:text-[#0A2647] transition-colors duration-200">
-                      <Edit size={16} />
-                    </button>
                   </div>
-                  
+
                   <div className="space-y-4">
                     <div>
-                      <label className="text-sm font-medium text-gray-700">Services Offered</label>
+                      <label className="text-sm font-medium text-gray-700">
+                        Services Offered
+                      </label>
                       <div className="mt-2">
-                        {profile.fundiProfile?.services && profile.fundiProfile.services.length > 0 ? (
+                        {profile.fundiProfile?.services &&
+                        profile.fundiProfile.services.length > 0 ? (
                           <div className="flex flex-wrap gap-2">
-                            {profile.fundiProfile.services.map((service, index) => (
-                              <span key={index} className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm">
-                                {String(service)}
-                              </span>
-                            ))}
+                            {profile.fundiProfile.services.map(
+                              (service, index) => (
+                                <span
+                                  key={index}
+                                  className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm"
+                                >
+                                  {String(service.name)}
+                                </span>
+                              )
+                            )}
                           </div>
                         ) : (
-                          <p className="text-gray-500 text-sm">No services added yet.</p>
+                          <p className="text-gray-500 text-sm">
+                            No services added yet.
+                          </p>
                         )}
                       </div>
                     </div>
-                    
+
                     <div>
-                      <label className="text-sm font-medium text-gray-700">Pricing</label>
+                      <label className="text-sm font-medium text-gray-700">
+                        Pricing
+                      </label>
                       <div className="mt-2">
-                        {profile.fundiProfile?.pricing && profile.fundiProfile.pricing.length > 0 ? (
+                        {profile.fundiProfile?.pricing &&
+                        profile.fundiProfile.pricing.length > 0 ? (
                           <div className="space-y-2">
-                            {profile.fundiProfile.pricing.map((price, index) => (
-                              <div key={index} className="flex justify-between items-center p-3 bg-white rounded border">
-                                <span className="font-medium text-gray-900">{String(price.serviceId)}</span>
-                                <div className="text-right">
-                                  <span className="text-gray-900 font-bold">
-                                    KSh {price.minRate}
-                                    {price.maxRate && ` - KSh ${price.maxRate}`}
+                            {profile.fundiProfile.pricing.map(
+                              (price, index) => (
+                                <div
+                                  key={index}
+                                  className="flex justify-between items-center p-3 bg-white rounded border"
+                                >
+                                  <span className="font-medium text-gray-900">
+                                    {profile.fundiProfile?.services?.filter(
+                                      (s) => s._id === price.serviceId
+                                    )[0]?.name || "Service"}
                                   </span>
-                                  <span className="text-gray-500 text-sm block capitalize">{price.rateType}</span>
+                                  <div className="text-right">
+                                    <span className="text-gray-900 font-bold">
+                                      KSh {price.minRate}
+                                      {price.maxRate &&
+                                        ` - KSh ${price.maxRate}`}
+                                    </span>
+                                    <span className="text-gray-500 text-sm block capitalize">
+                                      {price.rateType}
+                                    </span>
+                                  </div>
                                 </div>
-                              </div>
-                            ))}
+                              )
+                            )}
                           </div>
                         ) : (
-                          <p className="text-gray-500 text-sm">No pricing information added yet.</p>
+                          <p className="text-gray-500 text-sm">
+                            No pricing information added yet.
+                          </p>
                         )}
                       </div>
                     </div>
@@ -428,29 +484,38 @@ export default function FundiProfile() {
                         <Award size={20} />
                         <span>Certifications</span>
                       </h2>
-                      <button className="text-gray-500 hover:text-[#0A2647] transition-colors duration-200">
-                        <Edit size={16} />
-                      </button>
                     </div>
-                    
-                    {profile.fundiProfile?.certifications && profile.fundiProfile.certifications.length > 0 ? (
+
+                    {profile.fundiProfile?.certifications &&
+                    profile.fundiProfile.certifications.length > 0 ? (
                       <div className="space-y-3">
-                        {profile.fundiProfile.certifications.map((cert, index) => (
-                          <div key={index} className="bg-white p-3 rounded border">
-                            <div className="font-medium text-gray-900">{cert.name}</div>
-                            {cert.issuedBy && (
-                              <div className="text-sm text-gray-600">Issued by: {cert.issuedBy}</div>
-                            )}
-                            {cert.dateIssued && (
-                              <div className="text-xs text-gray-500">
-                                Issued: {formatDate(cert.dateIssued)}
+                        {profile.fundiProfile.certifications.map(
+                          (cert, index) => (
+                            <div
+                              key={index}
+                              className="bg-white p-3 rounded border"
+                            >
+                              <div className="font-medium text-gray-900">
+                                {cert.name}
                               </div>
-                            )}
-                          </div>
-                        ))}
+                              {cert.issuedBy && (
+                                <div className="text-sm text-gray-600">
+                                  Issued by: {cert.issuedBy}
+                                </div>
+                              )}
+                              {cert.dateIssued && (
+                                <div className="text-xs text-gray-500">
+                                  Issued: {formatDate(cert.dateIssued)}
+                                </div>
+                              )}
+                            </div>
+                          )
+                        )}
                       </div>
                     ) : (
-                      <p className="text-gray-500 text-sm">No certifications added yet.</p>
+                      <p className="text-gray-500 text-sm">
+                        No certifications added yet.
+                      </p>
                     )}
                   </div>
 
@@ -461,29 +526,39 @@ export default function FundiProfile() {
                         <FileText size={20} />
                         <span>Portfolio</span>
                       </h2>
-                      <button className="text-gray-500 hover:text-[#0A2647] transition-colors duration-200">
-                        <Edit size={16} />
-                      </button>
                     </div>
-                    
-                    {profile.fundiProfile?.portfolio && profile.fundiProfile.portfolio.length > 0 ? (
+
+                    {profile.fundiProfile?.portfolio &&
+                    profile.fundiProfile.portfolio.length > 0 ? (
                       <div className="space-y-3">
-                        {profile.fundiProfile.portfolio.slice(0, 3).map((item, index) => (
-                          <div key={index} className="bg-white p-3 rounded border">
-                            <div className="font-medium text-gray-900">{item.title}</div>
-                            {item.description && (
-                              <div className="text-sm text-gray-600 mt-1">{item.description}</div>
-                            )}
-                          </div>
-                        ))}
+                        {profile.fundiProfile.portfolio
+                          .slice(0, 3)
+                          .map((item, index) => (
+                            <div
+                              key={index}
+                              className="bg-white p-3 rounded border"
+                            >
+                              <div className="font-medium text-gray-900">
+                                {item.title}
+                              </div>
+                              {item.description && (
+                                <div className="text-sm text-gray-600 mt-1">
+                                  {item.description}
+                                </div>
+                              )}
+                            </div>
+                          ))}
                         {profile.fundiProfile.portfolio.length > 3 && (
                           <p className="text-sm text-gray-500 text-center">
-                            +{profile.fundiProfile.portfolio.length - 3} more projects
+                            +{profile.fundiProfile.portfolio.length - 3} more
+                            projects
                           </p>
                         )}
                       </div>
                     ) : (
-                      <p className="text-gray-500 text-sm">No portfolio items added yet.</p>
+                      <p className="text-gray-500 text-sm">
+                        No portfolio items added yet.
+                      </p>
                     )}
                   </div>
                 </div>
@@ -496,50 +571,64 @@ export default function FundiProfile() {
                       <span>Account Status</span>
                     </h2>
                   </div>
-                  
+
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <div className="flex justify-between">
                         <span className="text-gray-600">Application Date:</span>
                         <span className="font-medium text-gray-900">
-                          {profile.fundiProfile?.applicationDate ? formatDate(profile.fundiProfile.applicationDate) : 'N/A'}
+                          {profile.fundiProfile?.applicationDate
+                            ? formatDate(profile.fundiProfile.applicationDate)
+                            : "N/A"}
                         </span>
                       </div>
-                      
+
                       <div className="flex justify-between">
                         <span className="text-gray-600">Approval Date:</span>
                         <span className="font-medium text-gray-900">
-                          {profile.fundiProfile?.approvedDate ? formatDate(profile.fundiProfile.approvedDate) : 'N/A'}
+                          {profile.fundiProfile?.approvedDate
+                            ? formatDate(profile.fundiProfile.approvedDate)
+                            : "N/A"}
                         </span>
                       </div>
                     </div>
-                    
+
                     <div className="space-y-2">
                       <div className="flex justify-between">
                         <span className="text-gray-600">Completed Jobs:</span>
-                        <span className="font-medium text-gray-900">{profile.fundiProfile?.completedJobs || 0}</span>
+                        <span className="font-medium text-gray-900">
+                          {profile.fundiProfile?.completedJobs || 0}
+                        </span>
                       </div>
-                      
+
                       <div className="flex justify-between">
                         <span className="text-gray-600">Cancelled Jobs:</span>
-                        <span className="font-medium text-gray-900">{profile.fundiProfile?.cancelledJobs || 0}</span>
+                        <span className="font-medium text-gray-900">
+                          {profile.fundiProfile?.cancelledJobs || 0}
+                        </span>
                       </div>
                     </div>
                   </div>
 
-                  
-
                   {/* Show suspension reason only if profile is suspended */}
-                  {profile.fundiProfile?.profileStatus === 'suspended' && profile.fundiProfile?.suspensionReason && (
-                    <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-lg">
-                      <h3 className="font-medium text-red-800 mb-2">Suspension Reason</h3>
-                      <p className="text-red-700 text-sm">{profile.fundiProfile.suspensionReason}</p>
-                    </div>
-                  )}
+                  {profile.fundiProfile?.profileStatus === "suspended" &&
+                    profile.fundiProfile?.suspensionReason && (
+                      <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-lg">
+                        <h3 className="font-medium text-red-800 mb-2">
+                          Suspension Reason
+                        </h3>
+                        <p className="text-red-700 text-sm">
+                          {profile.fundiProfile.suspensionReason}
+                        </p>
+                      </div>
+                    )}
 
                   {/* button to take me to update profile */}
                   <div className="mt-6 text-center">
-                    <Link href="/dashboard/fundi/profile/edit" className="inline-block mt-4 px-4 py-2 bg-[#0A2647] text-white rounded hover:bg-[#003366] transition-colors duration-200">
+                    <Link
+                      href="/dashboard/fundi/profile/edit"
+                      className="inline-block mt-4 px-4 py-2 bg-[#0A2647] text-white rounded hover:bg-[#003366] transition-colors duration-200"
+                    >
                       Edit Profile
                     </Link>
                   </div>

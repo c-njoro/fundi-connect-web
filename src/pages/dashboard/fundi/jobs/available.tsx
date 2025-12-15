@@ -149,6 +149,7 @@ export default function AvailableJobs() {
   });
   const [applying, setApplying] = useState(false);
   const [proposalError, setProposalError] = useState<string | null>(null);
+  const [alreadyApplied, setAlreadyApplied] = useState<boolean>(false);
 
   // Format date
   const formatDate = (dateString: string) => {
@@ -175,9 +176,16 @@ export default function AvailableJobs() {
   };
 
   // Check if fundi can apply to job
+  const alreadyAppliedToJob = (job: Job) => {
+    return job.proposals.some((proposal) => proposal.fundiId === user?._id);
+  };
   const canApplyToJob = (job: Job) => {
     if (!user?.fundiProfile?.services) return false;
-    console.log("Fundi services:", user.fundiProfile.services);
+    const alreadyApplied = job.proposals.some(
+      (proposal) => proposal.fundiId === user._id
+    );
+
+    if (alreadyApplied) return false;
 
     // Check if the job's service is in fundi's services
     const fundiServiceIds = user.fundiProfile.services || [];
@@ -210,9 +218,10 @@ export default function AvailableJobs() {
     setLoading(true);
     try {
       const data = await jobService.getAllJobs();
+      console.log("Fetched Jobs:", data);
       if (data.success) {
         const availableJobs = (data.data || []).filter(
-          (job: Job) => job.status === "posted" || job.status === "pending"
+          (j: Job) => j.status === "posted" || j.status === "applied"
         );
         setJobs(availableJobs);
         setFilteredJobs(availableJobs);
@@ -545,8 +554,14 @@ export default function AvailableJobs() {
 
                       {/* Apply Status Message */}
                       {!canApply && (
-                        <p className="text-sm text-red-500 mt-2 text-center">
-                          You don't offer this service
+                        <p
+                          className={`text-sm text-${
+                            alreadyAppliedToJob(job) ? "green" : "red"
+                          }-500 mt-2 text-center`}
+                        >
+                          {alreadyAppliedToJob(job)
+                            ? "You have already applied to this job."
+                            : "You do not offer services required for this job."}
                         </p>
                       )}
                     </div>
@@ -786,7 +801,7 @@ export default function AvailableJobs() {
 
       {/* Apply Modal */}
       {showApplyModal && selectedJob && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
           <div className="bg-white rounded-xl shadow-xl max-w-lg w-full">
             <div className="p-6">
               <div className="flex items-center justify-between mb-6">

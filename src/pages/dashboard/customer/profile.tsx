@@ -180,9 +180,6 @@ export default function CustomerProfile() {
                     <User size={20} />
                     <span>Personal Information</span>
                   </h2>
-                  <button className="text-gray-500 hover:text-[#0A2647] transition-colors duration-200">
-                    <Edit size={16} />
-                  </button>
                 </div>
 
                 <div className="space-y-3">
@@ -249,9 +246,6 @@ export default function CustomerProfile() {
                     <Mail size={20} />
                     <span>Contact Information</span>
                   </h2>
-                  <button className="text-gray-500 hover:text-[#0A2647] transition-colors duration-200">
-                    <Edit size={16} />
-                  </button>
                 </div>
 
                 <div className="space-y-3">
