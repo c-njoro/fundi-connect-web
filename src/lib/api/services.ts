@@ -167,6 +167,32 @@ export const jobService = {
       };
     }
   },
+
+  getMyProposals: async () => {
+    try {
+      const response = await apiClient.get("/jobs/fundi/proposals");
+      return response.data;
+    } catch (err: any) {
+      return {
+        success: false,
+        message: err?.response?.data?.message || "Get my proposals failed",
+        errors: err?.response?.data?.errors,
+      };
+    }
+  },
+
+  getMyProposalStats: async () => {
+    try {
+      const response = await apiClient.get("/jobs/fundi/proposals/stats");
+      return response.data;
+    } catch (err: any) {
+      return {
+        success: false,
+        message: err?.response?.data?.message || "Get my proposal stats failed",
+        errors: err?.response?.data?.errors,
+      };
+    }
+  },
 };
 
 export const userService = {
