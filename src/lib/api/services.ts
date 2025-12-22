@@ -527,3 +527,18 @@ export const serviceService = {
     }
   },
 };
+
+export const adminService = {
+  getDashboardStats: async () => {
+    try {
+      const response = await apiClient.get("/admin/dashboard/stats");
+      return response.data;
+    } catch (err: any) {
+      return {
+        success: false,
+        message: err?.response?.data?.message || "Get dashboard stats failed",
+        errors: err?.response?.data?.errors,
+      };
+    }
+  },
+};

@@ -1,7 +1,28 @@
 import { jobService } from "@/lib/api/services";
-
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import {
+  LineChart,
+  Line,
+  BarChart,
+  Bar,
+  PieChart,
+  Pie,
+  Cell,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+  AreaChart,
+  Area,
+  RadarChart,
+  Radar,
+  PolarGrid,
+  PolarAngleAxis,
+  PolarRadiusAxis,
+} from "recharts";
 import {
   TrendingUp,
   Clock,
@@ -35,6 +56,28 @@ import {
   MoreVertical,
   Download,
   ExternalLink,
+  Wallet,
+  Target,
+  Percent,
+  CheckSquare,
+  AlertTriangle,
+  RefreshCw,
+  TrendingDown,
+  BarChart3,
+  PieChart as PieChartIcon,
+  Activity,
+  Shield,
+  Settings,
+  Sparkles,
+  CreditCard,
+  Smartphone,
+  Tablet,
+  Monitor,
+  Award as AwardIcon,
+  Bell,
+  ArrowUpRight,
+  ArrowDownRight,
+  Database,
 } from "lucide-react";
 
 interface IJob {
@@ -141,6 +184,20 @@ interface IJob {
   updatedAt: string;
 }
 
+// Color palettes for charts
+const CHART_COLORS = {
+  primary: "#0A2647",
+  secondary: "#FF6B35",
+  success: "#10B981",
+  warning: "#F59E0B",
+  danger: "#EF4444",
+  info: "#3B82F6",
+  purple: "#8B5CF6",
+  pink: "#EC4899",
+  cyan: "#06B6D4",
+  gray: "#6B7280",
+};
+
 // Status configuration
 const statusConfig = {
   posted: {
@@ -207,7 +264,10 @@ export default function CustomerDashboard() {
     completed: 0,
     totalSpent: 0,
     totalJobs: 0,
+    avgJobCost: 0,
+    satisfactionRate: 85,
   });
+  const [timeRange, setTimeRange] = useState("month");
 
   const fetchJobs = async () => {
     setLoading(true);
@@ -243,12 +303,18 @@ export default function CustomerDashboard() {
           }
         });
 
+        // Calculate average job cost
+        const avgJobCost =
+          completed > 0 ? Math.round(totalSpent / completed) : 0;
+
         setStats({
           active,
           pending: pendingProposals,
           completed,
           totalSpent,
           totalJobs: data.total || jobsData.length,
+          avgJobCost,
+          satisfactionRate: 85, // Mock data - would come from ratings
         });
       } else {
         setError(data.message || "Failed to load jobs");
@@ -283,6 +349,15 @@ export default function CustomerDashboard() {
       hour: "2-digit",
       minute: "2-digit",
     });
+  };
+
+  const formatCurrency = (amount: number) => {
+    return new Intl.NumberFormat("en-KE", {
+      style: "currency",
+      currency: "KES",
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    }).format(amount);
   };
 
   const getRecentJobs = () => {
@@ -353,15 +428,111 @@ export default function CustomerDashboard() {
       }
     });
 
-    return actions.slice(0, 3); // Return top 3 actions
+    return actions.slice(0, 3);
+  };
+
+  // Prepare data for charts
+  const prepareSpendingTrendData = () => {
+    // Mock data for spending trend (in real app, this would come from API)
+    return [
+      { month: "Jan", spending: 15000, jobs: 2 },
+      { month: "Feb", spending: 22000, jobs: 3 },
+      { month: "Mar", spending: 18000, jobs: 2 },
+      { month: "Apr", spending: 25000, jobs: 4 },
+      { month: "May", spending: 30000, jobs: 5 },
+      { month: "Jun", spending: 28000, jobs: 4 },
+      { month: "Jul", spending: 32000, jobs: 5 },
+      { month: "Aug", spending: 35000, jobs: 6 },
+      { month: "Sep", spending: 40000, jobs: 7 },
+      { month: "Oct", spending: 38000, jobs: 6 },
+      { month: "Nov", spending: 42000, jobs: 7 },
+      {
+        month: "Dec",
+        spending: stats.totalSpent || 45000,
+        jobs: stats.completed || 8,
+      },
+    ];
+  };
+
+  const prepareJobStatusData = () => {
+    const statusCounts = {
+      posted: jobs.filter((job) => job.status === "posted").length,
+      active: stats.active,
+      completed: stats.completed,
+      cancelled: jobs.filter((job) => job.status === "cancelled").length,
+    };
+
+    return Object.entries(statusCounts).map(([name, value]) => ({
+      name: name.charAt(0).toUpperCase() + name.slice(1),
+      value,
+      color:
+        name === "active"
+          ? CHART_COLORS.warning
+          : name === "completed"
+          ? CHART_COLORS.success
+          : name === "posted"
+          ? CHART_COLORS.info
+          : CHART_COLORS.danger,
+    }));
+  };
+
+  const prepareServiceUsageData = () => {
+    // Group jobs by service
+    const serviceMap = new Map();
+    jobs.forEach((job) => {
+      const serviceName = job.serviceId.name;
+      if (!serviceMap.has(serviceName)) {
+        serviceMap.set(serviceName, { count: 0, totalSpent: 0 });
+      }
+      const data = serviceMap.get(serviceName);
+      data.count += 1;
+      if (job.agreedPrice) {
+        data.totalSpent += job.agreedPrice;
+      }
+    });
+
+    return Array.from(serviceMap.entries())
+      .map(([name, data]) => ({
+        name,
+        count: data.count,
+        avgSpent: data.count > 0 ? Math.round(data.totalSpent / data.count) : 0,
+      }))
+      .slice(0, 5);
+  };
+
+  const prepareUrgencyData = () => {
+    const urgencyCounts = {
+      low: jobs.filter((job) => job.jobDetails.urgency === "low").length,
+      medium: jobs.filter((job) => job.jobDetails.urgency === "medium").length,
+      high: jobs.filter((job) => job.jobDetails.urgency === "high").length,
+    };
+
+    return Object.entries(urgencyCounts).map(([name, value]) => ({
+      name: name.charAt(0).toUpperCase() + name.slice(1),
+      value,
+      color:
+        name === "low"
+          ? CHART_COLORS.success
+          : name === "medium"
+          ? CHART_COLORS.warning
+          : CHART_COLORS.danger,
+    }));
   };
 
   if (loading) {
     return (
-      <div className="flex-1 flex items-center justify-center min-h-screen">
+      <div className="flex-1 flex items-center justify-center min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
         <div className="text-center">
-          <Loader className="animate-spin h-12 w-12 text-[#0A2647] mx-auto mb-4" />
-          <p className="text-gray-900 text-lg">Loading your dashboard...</p>
+          <div className="relative">
+            <Loader className="animate-spin h-16 w-16 text-[#0A2647] mx-auto mb-4" />
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="w-8 h-8 bg-white rounded-full"></div>
+            </div>
+          </div>
+          <p className="text-gray-900 text-lg font-medium">
+            Loading Your Dashboard...
+          </p>
+          <p className="text-gray-600 text-sm mt-2">Preparing your analytics</p>
         </div>
       </div>
     );
@@ -369,110 +540,195 @@ export default function CustomerDashboard() {
 
   if (error) {
     return (
-      <div className="flex-1 flex items-center justify-center min-h-screen">
+      <div className="flex-1 flex items-center justify-center min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
         <div className="text-center max-w-md">
-          <AlertCircle className="h-12 w-12 text-red-500 mx-auto mb-4" />
-          <h3 className="text-lg font-semibold text-gray-900 mb-2">
-            Error Loading Dashboard
+          <div className="relative inline-block">
+            <AlertCircle className="h-16 w-16 text-red-500 mx-auto mb-4" />
+            <div className="absolute -top-2 -right-2">
+              <div className="w-8 h-8 bg-red-100 rounded-full flex items-center justify-center">
+                <XCircle className="text-red-600" size={16} />
+              </div>
+            </div>
+          </div>
+          <h3 className="text-xl font-semibold text-gray-900 mb-2">
+            Dashboard Error
           </h3>
-          <p className="text-gray-900 mb-4">{error}</p>
-          <button
-            onClick={fetchJobs}
-            className="bg-[#0A2647] text-white px-6 py-2 rounded-lg hover:bg-[#0d3157] transition-colors font-semibold"
-          >
-            Try Again
-          </button>
+          <p className="text-gray-700 mb-6">{error}</p>
+          <div className="flex gap-3 justify-center">
+            <button
+              onClick={fetchJobs}
+              className="bg-gradient-to-r from-[#0A2647] to-[#1e3a5f] text-white px-6 py-3 rounded-lg hover:shadow-lg transition-all font-semibold flex items-center gap-2"
+            >
+              <RefreshCw size={16} />
+              Try Again
+            </button>
+            <button className="border border-gray-300 text-gray-700 px-6 py-3 rounded-lg hover:bg-gray-50 transition-colors font-semibold">
+              Contact Support
+            </button>
+          </div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="flex-1 bg-gray-50 min-h-screen">
+    <div className="flex-1 bg-gradient-to-br from-gray-50 to-gray-100 min-h-screen">
       {/* Header */}
-      <div className="bg-white border-b border-gray-200">
+      <div className="bg-white border-b border-gray-200 shadow-sm">
         <div className="max-w-7xl mx-auto px-6 py-6">
-          <div className="flex items-center justify-between mb-6">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
             <div>
-              <h1 className="text-2xl font-bold text-gray-900">
-                Customer Dashboard
-              </h1>
-              <p className="text-gray-600">
-                Welcome back! Here's your job overview
-              </p>
+              <div className="flex items-center gap-3 mb-2">
+                <div className="p-2 bg-gradient-to-br from-[#0A2647] to-[#1e3a5f] rounded-lg">
+                  <Home className="text-white" size={24} />
+                </div>
+                <div>
+                  <h1 className="text-2xl font-bold text-gray-900">
+                    Customer Analytics Dashboard
+                  </h1>
+                  <p className="text-gray-600 text-sm">
+                    Welcome back! Here's your service overview
+                  </p>
+                </div>
+              </div>
             </div>
-            <div className="flex items-center gap-3">
-              <button className="border border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-50 transition-colors font-semibold flex items-center gap-2">
-                <Filter size={16} />
-                <span>Filter</span>
-              </button>
-              <button
-                onClick={fetchJobs}
-                className="bg-[#0A2647] text-white px-4 py-2 rounded-lg hover:bg-[#0d3157] transition-colors font-semibold flex items-center gap-2"
-              >
-                <Clock size={16} />
-                <span>Refresh</span>
-              </button>
+            <div className="flex flex-wrap items-center gap-3">
+              <div className="flex bg-gray-100 rounded-lg p-1">
+                {["week", "month", "quarter", "year"].map((range) => (
+                  <button
+                    key={range}
+                    onClick={() => setTimeRange(range)}
+                    className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${
+                      timeRange === range
+                        ? "bg-white text-[#0A2647] shadow-sm"
+                        : "text-gray-600 hover:text-gray-900"
+                    }`}
+                  >
+                    {range.charAt(0).toUpperCase() + range.slice(1)}
+                  </button>
+                ))}
+              </div>
+              <div className="flex gap-2">
+                <button
+                  onClick={fetchJobs}
+                  className="flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-[#0A2647] to-[#1e3a5f] text-white rounded-lg hover:shadow-lg transition-all font-semibold"
+                >
+                  <RefreshCw size={16} />
+                  Refresh
+                </button>
+                <button className="flex items-center gap-2 px-4 py-2.5 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-semibold">
+                  <Download size={16} />
+                  Export
+                </button>
+              </div>
             </div>
           </div>
 
-          {/* A. Overview Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-            {/* Active Jobs */}
-            <div className="bg-gradient-to-br from-[#0A2647] to-[#1e3a5f] rounded-xl p-6 text-white">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm opacity-90">Active Jobs</p>
-                  <p className="text-3xl font-bold mt-2">{stats.active}</p>
-                  <p className="text-sm opacity-90 mt-1">Jobs in progress</p>
+          {/* Key Metrics Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            {/* Active Jobs Card */}
+            <div className="bg-gradient-to-br from-white to-gray-50 rounded-2xl border border-gray-200 p-6 shadow-sm hover:shadow-md transition-shadow">
+              <div className="flex items-center justify-between mb-4">
+                <div className="p-3 bg-blue-50 rounded-xl">
+                  <TrendingUp className="text-blue-600" size={24} />
                 </div>
-                <div className="p-3 bg-white/20 rounded-xl">
-                  <TrendingUp size={24} />
+                <div className="flex items-center gap-1">
+                  <span className="text-sm font-medium text-green-600">
+                    +12%
+                  </span>
+                  <TrendingUp className="text-green-500" size={16} />
                 </div>
+              </div>
+              <p className="text-sm text-gray-600">Active Jobs</p>
+              <p className="text-3xl font-bold text-gray-900 mt-2">
+                {stats.active}
+              </p>
+              <div className="flex items-center gap-2 mt-4 pt-4 border-t border-gray-100">
+                <Clock className="text-gray-400" size={14} />
+                <span className="text-sm text-gray-600">
+                  Currently in progress
+                </span>
               </div>
             </div>
 
-            {/* Pending Proposals */}
-            <div className="bg-gradient-to-br from-[#FF6B35] to-[#ff8a65] rounded-xl p-6 text-white">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm opacity-90">Pending Proposals</p>
-                  <p className="text-3xl font-bold mt-2">{stats.pending}</p>
-                  <p className="text-sm opacity-90 mt-1">Awaiting review</p>
+            {/* Pending Proposals Card */}
+            <div className="bg-gradient-to-br from-white to-gray-50 rounded-2xl border border-gray-200 p-6 shadow-sm hover:shadow-md transition-shadow">
+              <div className="flex items-center justify-between mb-4">
+                <div className="p-3 bg-yellow-50 rounded-xl">
+                  <Users className="text-yellow-600" size={24} />
                 </div>
-                <div className="p-3 bg-white/20 rounded-xl">
-                  <Users size={24} />
+                <div className="text-right">
+                  <p className="text-xs text-gray-500">To Review</p>
+                  <p className="font-semibold text-gray-900">{stats.pending}</p>
                 </div>
+              </div>
+              <p className="text-sm text-gray-600">Pending Proposals</p>
+              <p className="text-3xl font-bold text-gray-900 mt-2">
+                {stats.pending}
+              </p>
+              <div className="flex items-center gap-2 mt-4 pt-4 border-t border-gray-100">
+                <Clock className="text-gray-400" size={14} />
+                <span className="text-sm text-gray-600">
+                  Awaiting your review
+                </span>
               </div>
             </div>
 
-            {/* Completed Jobs */}
-            <div className="bg-gradient-to-br from-[#2E7D32] to-[#4CAF50] rounded-xl p-6 text-white">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm opacity-90">Completed Jobs</p>
-                  <p className="text-3xl font-bold mt-2">{stats.completed}</p>
-                  <p className="text-sm opacity-90 mt-1">Successfully done</p>
+            {/* Completed Jobs Card */}
+            <div className="bg-gradient-to-br from-white to-gray-50 rounded-2xl border border-gray-200 p-6 shadow-sm hover:shadow-md transition-shadow">
+              <div className="flex items-center justify-between mb-4">
+                <div className="p-3 bg-green-50 rounded-xl">
+                  <CheckCircle className="text-green-600" size={24} />
                 </div>
-                <div className="p-3 bg-white/20 rounded-xl">
-                  <CheckCircle size={24} />
-                </div>
-              </div>
-            </div>
-
-            {/* Total Spent */}
-            <div className="bg-gradient-to-br from-[#6A1B9A] to-[#9C27B0] rounded-xl p-6 text-white">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm opacity-90">Total Spent</p>
-                  <p className="text-3xl font-bold mt-2">
-                    KSh {stats.totalSpent.toLocaleString()}
+                <div className="text-right">
+                  <p className="text-xs text-gray-500">Avg. Cost</p>
+                  <p className="font-semibold text-gray-900">
+                    {formatCurrency(stats.avgJobCost)}
                   </p>
-                  <p className="text-sm opacity-90 mt-1">On all services</p>
                 </div>
-                <div className="p-3 bg-white/20 rounded-xl">
-                  <DollarSign size={24} />
+              </div>
+              <p className="text-sm text-gray-600">Completed Jobs</p>
+              <p className="text-3xl font-bold text-gray-900 mt-2">
+                {stats.completed}
+              </p>
+              <div className="flex items-center gap-2 mt-4 pt-4 border-t border-gray-100">
+                <CheckCircle className="text-gray-400" size={14} />
+                <span className="text-sm text-gray-600">
+                  Successfully completed
+                </span>
+              </div>
+            </div>
+
+            {/* Total Spent Card */}
+            <div className="bg-gradient-to-br from-white to-gray-50 rounded-2xl border border-gray-200 p-6 shadow-sm hover:shadow-md transition-shadow">
+              <div className="flex items-center justify-between mb-4">
+                <div className="p-3 bg-purple-50 rounded-xl">
+                  <DollarSign className="text-purple-600" size={24} />
                 </div>
+                <div className="text-right">
+                  <p className="text-xs text-gray-500">Trend</p>
+                  <div className="flex items-center gap-1">
+                    <span className="text-sm font-medium text-green-600">
+                      +15%
+                    </span>
+                    <TrendingUp className="text-green-500" size={16} />
+                  </div>
+                </div>
+              </div>
+              <p className="text-sm text-gray-600">Total Spent</p>
+              <p className="text-3xl font-bold text-gray-900 mt-2">
+                {formatCurrency(stats.totalSpent)}
+              </p>
+              <div className="w-full bg-gray-200 rounded-full h-2 mt-4">
+                <div
+                  className="bg-purple-500 h-2 rounded-full transition-all duration-300"
+                  style={{
+                    width: `${Math.min(
+                      100,
+                      (stats.totalSpent / 100000) * 100
+                    )}%`,
+                  }}
+                ></div>
               </div>
             </div>
           </div>
@@ -481,494 +737,548 @@ export default function CustomerDashboard() {
 
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-6 py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Left Column - Main Content */}
-          <div className="lg:col-span-2 space-y-8">
-            {/* B. Recent Job Activity */}
-            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-              <div className="flex items-center justify-between mb-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          {/* Spending Trend Chart */}
+          <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm">
+            <div className="flex items-center justify-between mb-6">
+              <div>
                 <h2 className="text-xl font-bold text-gray-900">
-                  Recent Job Activity
+                  Spending Trend
                 </h2>
-                <Link
-                  href="/dashboard/customer/jobs"
-                  className="text-[#0A2647] hover:text-[#0d3157] font-semibold flex items-center gap-1"
-                >
-                  View All <ChevronRight size={16} />
-                </Link>
+                <p className="text-sm text-gray-600">
+                  Monthly spending and job completion
+                </p>
               </div>
+              <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2">
+                  <div className="w-3 h-3 bg-[#0A2647] rounded-full"></div>
+                  <span className="text-sm text-gray-600">Spending</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="w-3 h-3 bg-[#FF6B35] rounded-full"></div>
+                  <span className="text-sm text-gray-600">Jobs</span>
+                </div>
+              </div>
+            </div>
+            <div className="h-80">
+              <ResponsiveContainer width="100%" height="100%">
+                <AreaChart
+                  data={prepareSpendingTrendData()}
+                  margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
+                >
+                  <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+                  <XAxis dataKey="month" axisLine={false} tickLine={false} />
+                  <YAxis axisLine={false} tickLine={false} />
+                  <Tooltip
+                    contentStyle={{
+                      backgroundColor: "white",
+                      border: "1px solid #e5e7eb",
+                      borderRadius: "8px",
+                      boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
+                    }}
+                    formatter={(value, name) => {
+                      if (name === "spending")
+                        return [formatCurrency(Number(value)), "Spending"];
+                      return [value, "Jobs"];
+                    }}
+                  />
+                  <Area
+                    type="monotone"
+                    dataKey="spending"
+                    stroke="#0A2647"
+                    fill="url(#colorSpending)"
+                    strokeWidth={2}
+                  />
+                  <Area
+                    type="monotone"
+                    dataKey="jobs"
+                    stroke="#FF6B35"
+                    fill="url(#colorJobs)"
+                    strokeWidth={2}
+                  />
+                  <defs>
+                    <linearGradient
+                      id="colorSpending"
+                      x1="0"
+                      y1="0"
+                      x2="0"
+                      y2="1"
+                    >
+                      <stop offset="5%" stopColor="#0A2647" stopOpacity={0.8} />
+                      <stop offset="95%" stopColor="#0A2647" stopOpacity={0} />
+                    </linearGradient>
+                    <linearGradient id="colorJobs" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="#FF6B35" stopOpacity={0.8} />
+                      <stop offset="95%" stopColor="#FF6B35" stopOpacity={0} />
+                    </linearGradient>
+                  </defs>
+                </AreaChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
 
-              {getRecentJobs().length === 0 ? (
-                <div className="text-center py-8">
-                  <FileText size={48} className="mx-auto text-gray-400 mb-4" />
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                    No Jobs Yet
-                  </h3>
-                  <p className="text-gray-600 mb-4">
-                    You haven't posted any jobs yet
-                  </p>
-                  <Link
-                    href="/dashboard/customer/post-job"
-                    className="inline-flex items-center gap-2 bg-[#FF6B35] text-white px-6 py-3 rounded-lg hover:bg-[#ff5722] transition-colors font-semibold"
+          {/* Job Status Distribution */}
+          <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm">
+            <div className="flex items-center justify-between mb-6">
+              <div>
+                <h2 className="text-xl font-bold text-gray-900">
+                  Job Status Distribution
+                </h2>
+                <p className="text-sm text-gray-600">Current job breakdown</p>
+              </div>
+              <PieChartIcon className="text-gray-400" size={20} />
+            </div>
+            <div className="h-80">
+              <ResponsiveContainer width="100%" height="100%">
+                <PieChart>
+                  <Pie
+                    data={prepareJobStatusData()}
+                    cx="50%"
+                    cy="50%"
+                    labelLine={false}
+                    label={({ name, percent }) =>
+                      `${name}: ${(percent * 100).toFixed(0)}%`
+                    }
+                    outerRadius={80}
+                    fill="#8884d8"
+                    dataKey="value"
                   >
-                    <Plus size={16} />
-                    <span>Post Your First Job</span>
-                  </Link>
+                    {prepareJobStatusData().map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={entry.color} />
+                    ))}
+                  </Pie>
+                  <Tooltip
+                    formatter={(value) => [value, "Jobs"]}
+                    contentStyle={{
+                      backgroundColor: "white",
+                      border: "1px solid #e5e7eb",
+                      borderRadius: "8px",
+                    }}
+                  />
+                  <Legend />
+                </PieChart>
+              </ResponsiveContainer>
+            </div>
+            <div className="grid grid-cols-4 gap-2 mt-4">
+              {prepareJobStatusData().map((status, index) => (
+                <div key={index} className="text-center">
+                  <div
+                    className="w-3 h-3 rounded-full mx-auto mb-1"
+                    style={{ backgroundColor: status.color }}
+                  ></div>
+                  <p className="text-xs font-medium text-gray-900">
+                    {status.value}
+                  </p>
+                  <p className="text-xs text-gray-600">{status.name}</p>
                 </div>
-              ) : (
-                <div className="space-y-4">
-                  {getRecentJobs().map((job) => {
-                    const StatusIcon =
-                      statusConfig[job.status]?.icon || AlertCircle;
-                    const statusInfo =
-                      statusConfig[job.status] || statusConfig.posted;
+              ))}
+            </div>
+          </div>
 
-                    return (
-                      <div
-                        key={job._id}
-                        className="border border-gray-200 rounded-xl p-4 hover:border-[#FF6B35] transition-colors"
-                      >
-                        <div className="flex items-start justify-between">
-                          <div className="flex-1">
-                            <div className="flex items-center gap-3 mb-2">
-                              <div
-                                className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-sm font-medium ${statusInfo.color}`}
-                              >
-                                <StatusIcon
-                                  size={14}
-                                  className={statusInfo.iconColor}
-                                />
-                                <span>{statusInfo.label}</span>
-                              </div>
-                              <span className="text-sm text-gray-600">
-                                {formatDate(job.createdAt)}
-                              </span>
-                            </div>
+          {/* Service Usage */}
+          <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm">
+            <div className="flex items-center justify-between mb-6">
+              <div>
+                <h2 className="text-xl font-bold text-gray-900">
+                  Service Usage
+                </h2>
+                <p className="text-sm text-gray-600">
+                  Top services by job count
+                </p>
+              </div>
+              <Briefcase className="text-gray-400" size={20} />
+            </div>
+            <div className="h-80">
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart
+                  data={prepareServiceUsageData()}
+                  margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+                >
+                  <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+                  <XAxis dataKey="name" />
+                  <YAxis />
+                  <Tooltip
+                    formatter={(value, name) => {
+                      if (name === "avgSpent")
+                        return [formatCurrency(Number(value)), "Avg. Cost"];
+                      return [value, "Jobs"];
+                    }}
+                    contentStyle={{
+                      backgroundColor: "white",
+                      border: "1px solid #e5e7eb",
+                      borderRadius: "8px",
+                    }}
+                  />
+                  <Legend />
+                  <Bar
+                    dataKey="count"
+                    fill="#0A2647"
+                    name="Job Count"
+                    radius={[4, 4, 0, 0]}
+                  />
+                  <Bar
+                    dataKey="avgSpent"
+                    fill="#10B981"
+                    name="Average Cost"
+                    radius={[4, 4, 0, 0]}
+                  />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
 
-                            <h4 className="font-semibold text-gray-900 mb-2">
-                              {job.jobDetails.title}
-                            </h4>
-
-                            <div className="flex items-center gap-4 text-sm text-gray-600 mb-3">
-                              <div className="flex items-center gap-1">
-                                <Wrench size={14} />
-                                <span>{job.serviceId.name}</span>
-                              </div>
-                              <div className="flex items-center gap-1">
-                                <MapPin size={14} />
-                                <span>{job.location.city}</span>
-                              </div>
-                              <div className="flex items-center gap-1">
-                                <DollarSign size={14} />
-                                <span>
-                                  KSh {job.jobDetails.estimatedBudget.min}
-                                </span>
-                              </div>
-                            </div>
-
-                            {/* Fundi assigned */}
-                            {job.fundiId && (
-                              <div className="flex items-center gap-2 mb-3">
-                                <div className="w-8 h-8 bg-gradient-to-br from-[#0A2647] to-[#FF6B35] rounded-full flex items-center justify-center text-white text-xs font-semibold">
-                                  {job.fundiId.profile?.firstName?.[0]}
-                                  {job.fundiId.profile?.lastName?.[0]}
-                                </div>
-                                <div>
-                                  <p className="text-sm font-medium text-gray-900">
-                                    {job.fundiId.profile?.firstName}{" "}
-                                    {job.fundiId.profile?.lastName}
-                                  </p>
-                                  {job.fundiId.fundiProfile?.ratings && (
-                                    <div className="flex items-center gap-1">
-                                      <Star
-                                        size={12}
-                                        className="text-yellow-400 fill-current"
-                                      />
-                                      <span className="text-xs text-gray-600">
-                                        {job.fundiId.fundiProfile.ratings.average.toFixed(
-                                          1
-                                        )}{" "}
-                                        (
-                                        {
-                                          job.fundiId.fundiProfile.ratings
-                                            .totalReviews
-                                        }
-                                        )
-                                      </span>
-                                    </div>
-                                  )}
-                                </div>
-                              </div>
-                            )}
-
-                            {/* Proposals count */}
-                            {job.proposals &&
-                              job.proposals.length > 0 &&
-                              !job.fundiId && (
-                                <div className="mb-3">
-                                  <div className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                                    <Users size={12} />
-                                    <span>
-                                      {job.proposals.length} proposal
-                                      {job.proposals.length !== 1 ? "s" : ""}
-                                    </span>
-                                  </div>
-                                </div>
-                              )}
-                          </div>
-
-                          <div className="flex flex-col gap-2 ml-4">
-                            <Link
-                              href={`/dashboard/customer/jobs/${job._id}`}
-                              className="text-[#0A2647] hover:text-[#0d3157] font-medium text-sm flex items-center gap-1"
-                            >
-                              <Eye size={14} />
-                              <span>Details</span>
-                            </Link>
-                            {job.fundiId && (
-                              <button className="text-gray-600 hover:text-gray-900 font-medium text-sm flex items-center gap-1">
-                                <MessageCircle size={14} />
-                                <span>Message</span>
-                              </button>
-                            )}
-                            {job.status === "posted" && (
-                              <button className="text-red-600 hover:text-red-700 font-medium text-sm flex items-center gap-1">
-                                <XCircle size={14} />
-                                <span>Cancel</span>
-                              </button>
-                            )}
-                          </div>
-                        </div>
-                      </div>
-                    );
-                  })}
+          {/* Urgency Distribution */}
+          <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm">
+            <div className="flex items-center justify-between mb-6">
+              <div>
+                <h2 className="text-xl font-bold text-gray-900">
+                  Job Urgency Distribution
+                </h2>
+                <p className="text-sm text-gray-600">
+                  Breakdown by urgency level
+                </p>
+              </div>
+              <Zap className="text-gray-400" size={20} />
+            </div>
+            <div className="h-80">
+              <ResponsiveContainer width="100%" height="100%">
+                <RadarChart outerRadius={90} data={prepareUrgencyData()}>
+                  <PolarGrid />
+                  <PolarAngleAxis dataKey="name" />
+                  <PolarRadiusAxis />
+                  <Radar
+                    name="Jobs"
+                    dataKey="value"
+                    stroke="#0A2647"
+                    fill="#0A2647"
+                    fillOpacity={0.6}
+                  />
+                  <Tooltip
+                    contentStyle={{
+                      backgroundColor: "white",
+                      border: "1px solid #e5e7eb",
+                      borderRadius: "8px",
+                    }}
+                  />
+                </RadarChart>
+              </ResponsiveContainer>
+            </div>
+            <div className="grid grid-cols-3 gap-2 mt-4">
+              {prepareUrgencyData().map((status, index) => (
+                <div key={index} className="text-center">
+                  <div
+                    className="w-3 h-3 rounded-full mx-auto mb-1"
+                    style={{ backgroundColor: status.color }}
+                  ></div>
+                  <p className="text-xs font-medium text-gray-900">
+                    {status.value}
+                  </p>
+                  <p className="text-xs text-gray-600">{status.name}</p>
                 </div>
-              )}
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Recent Jobs & Quick Actions Row */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mt-8">
+          {/* Recent Jobs */}
+          <div className="lg:col-span-2 bg-white rounded-2xl border border-gray-200 p-6 shadow-sm">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-xl font-bold text-gray-900">
+                Recent Job Activity
+              </h2>
+              <Link
+                href="/dashboard/customer/jobs"
+                className="text-[#0A2647] hover:text-[#0d3157] font-semibold text-sm flex items-center gap-1"
+              >
+                View All <ChevronRight size={14} />
+              </Link>
             </div>
 
-            {/* C. Active Jobs Section */}
-            {getActiveJobs().length > 0 && (
-              <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-                <h2 className="text-xl font-bold text-gray-900 mb-6">
-                  Active Jobs
-                </h2>
+            {getRecentJobs().length === 0 ? (
+              <div className="text-center py-12">
+                <div className="w-20 h-20 bg-gradient-to-br from-gray-100 to-gray-200 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                  <FileText className="text-gray-400" size={32} />
+                </div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                  No Jobs Yet
+                </h3>
+                <p className="text-gray-600 mb-6 max-w-md mx-auto">
+                  You haven't posted any jobs yet. Post your first job to get
+                  started with professional services.
+                </p>
+                <Link
+                  href="/dashboard/customer/post-job"
+                  className="inline-flex items-center gap-2 bg-gradient-to-r from-[#FF6B35] to-[#ff8a65] text-white px-8 py-3.5 rounded-xl hover:shadow-lg transition-all font-bold"
+                >
+                  <Plus size={20} />
+                  <span>Post Your First Job</span>
+                </Link>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {getRecentJobs().map((job) => {
+                  const StatusIcon =
+                    statusConfig[job.status]?.icon || AlertCircle;
+                  const statusInfo =
+                    statusConfig[job.status] || statusConfig.posted;
 
-                <div className="space-y-6">
-                  {getActiveJobs().map((job) => (
+                  return (
                     <div
                       key={job._id}
-                      className="border border-gray-200 rounded-xl p-6"
+                      className="flex items-center justify-between p-4 border border-gray-200 rounded-xl hover:border-[#FF6B35] transition-all hover:shadow-sm"
                     >
-                      <div className="flex items-start justify-between mb-4">
+                      <div className="flex items-center gap-4">
+                        <div className="p-3 bg-gray-100 rounded-xl">
+                          <Wrench className="text-gray-600" size={20} />
+                        </div>
                         <div>
-                          <h3 className="font-bold text-gray-900 text-lg mb-1">
+                          <div className="flex items-center gap-3 mb-2">
+                            <div
+                              className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-sm font-medium ${statusInfo.color}`}
+                            >
+                              <StatusIcon
+                                size={14}
+                                className={statusInfo.iconColor}
+                              />
+                              <span>{statusInfo.label}</span>
+                            </div>
+                            <span className="text-sm text-gray-600">
+                              {formatDate(job.createdAt)}
+                            </span>
+                          </div>
+                          <h4 className="font-semibold text-gray-900">
                             {job.jobDetails.title}
-                          </h3>
-                          <div className="flex items-center gap-3 text-sm text-gray-600">
+                          </h4>
+                          <div className="flex items-center gap-4 text-sm text-gray-600 mt-2">
                             <div className="flex items-center gap-1">
-                              <Wrench size={14} />
-                              <span>
-                                {job.serviceId.name} • {job.subService}
-                              </span>
+                              <Briefcase size={14} />
+                              <span>{job.serviceId.name}</span>
                             </div>
                             <div className="flex items-center gap-1">
                               <MapPin size={14} />
                               <span>{job.location.city}</span>
                             </div>
-                          </div>
-                        </div>
-
-                        {job.fundiId && (
-                          <div className="flex items-center gap-2">
-                            <div className="w-10 h-10 bg-gradient-to-br from-[#0A2647] to-[#FF6B35] rounded-full flex items-center justify-center text-white font-semibold">
-                              {job.fundiId.profile?.firstName?.[0]}
-                              {job.fundiId.profile?.lastName?.[0]}
-                            </div>
-                            <div>
-                              <p className="font-medium text-gray-900 text-sm">
-                                {job.fundiId.profile?.firstName}{" "}
-                                {job.fundiId.profile?.lastName}
-                              </p>
+                            {job.agreedPrice ? (
                               <div className="flex items-center gap-1">
-                                <Phone size={12} className="text-gray-500" />
-                                <span className="text-xs text-gray-600">
-                                  Call Fundi
+                                <DollarSign size={14} />
+                                <span>{formatCurrency(job.agreedPrice)}</span>
+                              </div>
+                            ) : (
+                              <div className="flex items-center gap-1">
+                                <DollarSign size={14} />
+                                <span>
+                                  {formatCurrency(
+                                    job.jobDetails.estimatedBudget.min
+                                  )}
                                 </span>
                               </div>
-                            </div>
+                            )}
                           </div>
-                        )}
-                      </div>
-
-                      {/* Progress Updates */}
-                      {job.workProgress && job.workProgress.length > 0 && (
-                        <div className="mb-6">
-                          <h4 className="font-semibold text-gray-900 mb-3">
-                            Recent Progress
-                          </h4>
-                          <div className="space-y-3">
-                            {job.workProgress
-                              .slice(-2)
-                              .map((progress, index) => (
-                                <div
-                                  key={index}
-                                  className="bg-gray-50 rounded-lg p-4"
-                                >
-                                  <div className="flex items-center justify-between mb-2">
-                                    <span className="font-medium text-gray-900 capitalize">
-                                      {progress.stage.replace("_", " ")}
-                                    </span>
-                                    <span className="text-sm text-gray-600">
-                                      {formatDateTime(progress.timestamp)}
-                                    </span>
-                                  </div>
-                                  {progress.message && (
-                                    <p className="text-gray-700">
-                                      {progress.message}
-                                    </p>
-                                  )}
-                                  {progress.images &&
-                                    progress.images.length > 0 && (
-                                      <div className="flex gap-2 mt-2">
-                                        {progress.images.map(
-                                          (img, imgIndex) => (
-                                            <div
-                                              key={imgIndex}
-                                              className="w-12 h-12 bg-gray-200 rounded-lg flex items-center justify-center"
-                                            >
-                                              <FileText
-                                                size={16}
-                                                className="text-gray-500"
-                                              />
-                                            </div>
-                                          )
-                                        )}
-                                      </div>
-                                    )}
+                          {/* Proposals count */}
+                          {job.proposals &&
+                            job.proposals.length > 0 &&
+                            !job.fundiId && (
+                              <div className="mt-2">
+                                <div className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                  <Users size={12} />
+                                  <span>
+                                    {job.proposals.length} proposal
+                                    {job.proposals.length !== 1 ? "s" : ""}
+                                  </span>
                                 </div>
-                              ))}
-                          </div>
+                              </div>
+                            )}
                         </div>
-                      )}
-
-                      {/* Action Buttons */}
-                      <div className="flex gap-3 pt-4 border-t border-gray-200">
+                      </div>
+                      <div className="flex items-center gap-3">
                         <Link
                           href={`/dashboard/customer/jobs/${job._id}`}
-                          className="flex-1 bg-[#0A2647] text-white py-2 rounded-lg hover:bg-[#0d3157] transition-colors font-semibold text-center"
+                          className="text-[#0A2647] hover:text-[#0d3157] font-medium text-sm flex items-center gap-1"
                         >
-                          View Progress
+                          <Eye size={14} />
+                          <span>View</span>
                         </Link>
-                        <button className="flex-1 border border-gray-300 text-gray-700 py-2 rounded-lg hover:bg-gray-50 transition-colors font-semibold flex items-center justify-center gap-2">
-                          <MessageCircle size={16} />
-                          <span>Message</span>
-                        </button>
-                        <button className="flex-1 border border-green-300 text-green-600 py-2 rounded-lg hover:bg-green-50 transition-colors font-semibold">
-                          Mark Complete
-                        </button>
+                        {job.fundiId && (
+                          <Link
+                            href={`/dashboard/messages?user=${job.fundiId._id}`}
+                            className="text-gray-600 hover:text-gray-900 font-medium text-sm flex items-center gap-1"
+                          >
+                            <MessageCircle size={14} />
+                            <span>Message</span>
+                          </Link>
+                        )}
                       </div>
                     </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* D. Pending Actions */}
-            {getPendingActions().length > 0 && (
-              <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-                <h2 className="text-xl font-bold text-gray-900 mb-6">
-                  Pending Actions
-                </h2>
-
-                <div className="space-y-4">
-                  {getPendingActions().map((action: any, index: any) => (
-                    <div
-                      key={index}
-                      className="flex items-center justify-between p-4 bg-yellow-50 border border-yellow-200 rounded-lg"
-                    >
-                      <div className="flex items-center gap-3">
-                        <div className="p-2 bg-yellow-100 rounded-lg">
-                          {action.type === "proposals" && (
-                            <Users className="text-yellow-600" size={20} />
-                          )}
-                          {action.type === "approval" && (
-                            <ThumbsUp className="text-yellow-600" size={20} />
-                          )}
-                          {action.type === "progress" && (
-                            <TrendingUp className="text-yellow-600" size={20} />
-                          )}
-                        </div>
-                        <div>
-                          <p className="font-medium text-gray-900">
-                            {action.message}
-                          </p>
-                          {action.timestamp && (
-                            <p className="text-sm text-gray-600">
-                              {formatDateTime(action.timestamp)}
-                            </p>
-                          )}
-                        </div>
-                      </div>
-                      <Link
-                        href={`/dashboard/customer/jobs/${action.jobId}`}
-                        className="text-[#FF6B35] hover:text-[#ff5722] font-semibold flex items-center gap-1"
-                      >
-                        <span>Review</span>
-                        <ChevronRight size={16} />
-                      </Link>
-                    </div>
-                  ))}
-                </div>
+                  );
+                })}
               </div>
             )}
           </div>
 
-          {/* Right Column - Quick Actions & Sidebar */}
+          {/* Quick Actions & Performance */}
           <div className="space-y-8">
-            {/* E. Quick Actions Panel */}
-            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-              <h2 className="text-xl font-bold text-gray-900 mb-6">
-                Quick Actions
-              </h2>
-
+            {/* Quick Actions */}
+            <div className="bg-gradient-to-br from-[#0A2647] to-[#1e3a5f] rounded-2xl p-6 text-white">
+              <h3 className="font-bold text-lg mb-6">Quick Actions</h3>
               <div className="space-y-3">
                 <Link
-                  href="/dashboard/customer/jobs/create"
-                  className="w-full bg-gradient-to-r from-[#FF6B35] to-[#ff8a65] text-white py-4 rounded-xl hover:shadow-lg transition-all font-bold text-center flex items-center justify-center gap-2"
+                  href="/dashboard/customer/post-job"
+                  className="flex items-center justify-between p-4 bg-white/10 rounded-xl backdrop-blur-sm hover:bg-white/20 transition-all"
                 >
-                  <Plus size={20} />
-                  <span>Post New Job</span>
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 bg-white/20 rounded-lg">
+                      <Plus size={20} />
+                    </div>
+                    <div>
+                      <p className="font-medium">Post New Job</p>
+                      <p className="text-sm opacity-90">Get quotes instantly</p>
+                    </div>
+                  </div>
+                  <ChevronRight size={16} />
                 </Link>
-
                 <Link
                   href="/fundis"
-                  className="w-full border border-gray-300 text-gray-700 py-3 rounded-lg hover:bg-gray-50 transition-colors font-semibold text-center flex items-center justify-center gap-2"
+                  className="flex items-center justify-between p-4 bg-white/10 rounded-xl backdrop-blur-sm hover:bg-white/20 transition-all"
                 >
-                  <Search size={16} />
-                  <span>Find Fundis</span>
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 bg-white/20 rounded-lg">
+                      <Search size={20} />
+                    </div>
+                    <div>
+                      <p className="font-medium">Find Fundis</p>
+                      <p className="text-sm opacity-90">Browse professionals</p>
+                    </div>
+                  </div>
+                  <ChevronRight size={16} />
                 </Link>
-
+                <Link
+                  href="/dashboard/customer/profile"
+                  className="flex items-center justify-between p-4 bg-white/10 rounded-xl backdrop-blur-sm hover:bg-white/20 transition-all"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 bg-white/20 rounded-lg">
+                      <User size={20} />
+                    </div>
+                    <div>
+                      <p className="font-medium">Update Profile</p>
+                      <p className="text-sm opacity-90">Manage preferences</p>
+                    </div>
+                  </div>
+                  <ChevronRight size={16} />
+                </Link>
                 <Link
                   href="/dashboard/customer/messages"
-                  className="w-full border border-gray-300 text-gray-700 py-3 rounded-lg hover:bg-gray-50 transition-colors font-semibold text-center flex items-center justify-center gap-2"
+                  className="flex items-center justify-between p-4 bg-white/10 rounded-xl backdrop-blur-sm hover:bg-white/20 transition-all"
                 >
-                  <MessageSquare size={16} />
-                  <span>View Messages</span>
-                  <span className="bg-[#FF6B35] text-white text-xs px-2 py-1 rounded-full">
-                    3
-                  </span>
-                </Link>
-
-                <Link
-                  href="/services"
-                  className="w-full border border-gray-300 text-gray-700 py-3 rounded-lg hover:bg-gray-50 transition-colors font-semibold text-center flex items-center justify-center gap-2"
-                >
-                  <ShoppingBag size={16} />
-                  <span>Browse Services</span>
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 bg-white/20 rounded-lg">
+                      <MessageSquare size={20} />
+                    </div>
+                    <div>
+                      <p className="font-medium">Messages</p>
+                      <p className="text-sm opacity-90">Chat with fundis</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="bg-[#FF6B35] text-white text-xs px-2 py-1 rounded-full">
+                      3
+                    </span>
+                    <ChevronRight size={16} />
+                  </div>
                 </Link>
               </div>
             </div>
 
-            {/* Help & Resources */}
-            <div className="bg-gradient-to-br from-[#0A2647] to-[#1e3a5f] rounded-xl p-6 text-white">
-              <h3 className="font-bold text-lg mb-4">Need Help?</h3>
-              <div className="space-y-3">
-                <button className="w-full text-left p-3 bg-white/10 rounded-lg hover:bg-white/20 transition-colors">
-                  <div className="flex items-center gap-2">
-                    <Phone size={16} />
-                    <span>Contact Support</span>
+            {/* Performance Insights */}
+            <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm">
+              <h3 className="font-bold text-gray-900 mb-6">
+                Performance Insights
+              </h3>
+              <div className="space-y-6">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 bg-green-100 rounded-lg">
+                      <CheckCircle className="text-green-600" size={20} />
+                    </div>
+                    <div>
+                      <p className="text-sm text-gray-600">Completion Rate</p>
+                      <p className="font-semibold text-gray-900">
+                        {stats.completed > 0
+                          ? Math.round(
+                              (stats.completed / stats.totalJobs) * 100
+                            )
+                          : 0}
+                        %
+                      </p>
+                    </div>
                   </div>
-                  <p className="text-sm opacity-90 mt-1">
-                    24/7 Customer Service
-                  </p>
-                </button>
-                <button className="w-full text-left p-3 bg-white/10 rounded-lg hover:bg-white/20 transition-colors">
-                  <div className="flex items-center gap-2">
-                    <FileText size={16} />
-                    <span>View Guides</span>
-                  </div>
-                  <p className="text-sm opacity-90 mt-1">How to get started</p>
-                </button>
-                <button className="w-full text-left p-3 bg-white/10 rounded-lg hover:bg-white/20 transition-colors">
-                  <div className="flex items-center gap-2">
-                    <Award size={16} />
-                    <span>Rate Fundis</span>
-                  </div>
-                  <p className="text-sm opacity-90 mt-1">
-                    Leave feedback for completed jobs
-                  </p>
-                </button>
-              </div>
-            </div>
-
-            {/* Recent Fundis */}
-            {jobs.some((job) => job.fundiId) && (
-              <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-                <h3 className="font-bold text-gray-900 mb-4">Recent Fundis</h3>
-                <div className="space-y-3">
-                  {jobs
-                    .filter((job) => job.fundiId)
-                    .slice(0, 3)
-                    .map((job, index) => (
-                      <div
-                        key={index}
-                        className="flex items-center gap-3 p-3 hover:bg-gray-50 rounded-lg"
-                      >
-                        <div className="w-10 h-10 bg-gradient-to-br from-[#0A2647] to-[#FF6B35] rounded-full flex items-center justify-center text-white font-semibold">
-                          {job.fundiId?.profile?.firstName?.[0]}
-                          {job.fundiId?.profile?.lastName?.[0]}
-                        </div>
-                        <div className="flex-1">
-                          <p className="font-medium text-gray-900">
-                            {job.fundiId?.profile?.firstName}{" "}
-                            {job.fundiId?.profile?.lastName}
-                          </p>
-                          <p className="text-sm text-gray-600">
-                            {job.serviceId.name}
-                          </p>
-                        </div>
-                        <button className="text-[#FF6B35] hover:text-[#ff5722]">
-                          <MessageCircle size={16} />
-                        </button>
+                  <TrendingUp className="text-green-500" size={16} />
+                </div>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 bg-blue-100 rounded-lg">
+                      <Star className="text-blue-600" size={20} />
+                    </div>
+                    <div>
+                      <p className="text-sm text-gray-600">Satisfaction Rate</p>
+                      <div className="flex items-center gap-1">
+                        <Star
+                          className="text-yellow-400 fill-current"
+                          size={14}
+                        />
+                        <p className="font-semibold text-gray-900">
+                          {stats.satisfactionRate}%
+                        </p>
                       </div>
-                    ))}
+                    </div>
+                  </div>
+                  <TrendingUp className="text-green-500" size={16} />
+                </div>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 bg-purple-100 rounded-lg">
+                      <Clock className="text-purple-600" size={20} />
+                    </div>
+                    <div>
+                      <p className="text-sm text-gray-600">
+                        Avg. Response Time
+                      </p>
+                      <p className="font-semibold text-gray-900">2.4h</p>
+                    </div>
+                  </div>
+                  <TrendingDown className="text-green-500" size={16} />
                 </div>
               </div>
-            )}
+            </div>
 
-            {/* Upcoming Deadlines */}
-            {jobs.some((job) => job.scheduling?.preferredDate) && (
-              <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-                <h3 className="font-bold text-gray-900 mb-4">
-                  Upcoming Deadlines
-                </h3>
+            {/* Pending Actions */}
+            {getPendingActions().length > 0 && (
+              <div className="bg-gradient-to-br from-[#FF6B35] to-[#ff8a65] rounded-2xl p-6 text-white">
+                <h3 className="font-bold text-lg mb-6">Pending Actions</h3>
                 <div className="space-y-3">
-                  {jobs
-                    .filter((job) => job.scheduling?.preferredDate)
-                    .slice(0, 3)
-                    .map((job, index) => (
-                      <div
-                        key={index}
-                        className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
-                      >
-                        <div>
-                          <p className="font-medium text-gray-900 text-sm">
-                            {job.jobDetails.title}
-                          </p>
-                          <p className="text-xs text-gray-600">
-                            {job.serviceId.name}
-                          </p>
-                        </div>
-                        <div className="text-right">
-                          <p className="font-semibold text-gray-900">
-                            {formatDate(job.scheduling.preferredDate)}
-                          </p>
-                          <p className="text-xs text-gray-600">
-                            Preferred Date
-                          </p>
-                        </div>
+                  {getPendingActions().map((action: any, index: any) => (
+                    <div
+                      key={index}
+                      className="flex items-center justify-between p-3 bg-white/10 rounded-lg backdrop-blur-sm hover:bg-white/20 transition-all"
+                    >
+                      <div className="flex items-center gap-2">
+                        {action.type === "proposals" && <Users size={16} />}
+                        {action.type === "approval" && <ThumbsUp size={16} />}
+                        {action.type === "progress" && <TrendingUp size={16} />}
+                        <span className="text-sm font-medium truncate max-w-[160px]">
+                          {action.message}
+                        </span>
                       </div>
-                    ))}
+                      <Link
+                        href={`/dashboard/customer/jobs/${action.jobId}`}
+                        className="text-white hover:text-white/80"
+                      >
+                        <ChevronRight size={16} />
+                      </Link>
+                    </div>
+                  ))}
                 </div>
               </div>
             )}

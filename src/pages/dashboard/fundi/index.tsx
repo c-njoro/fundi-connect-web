@@ -3,6 +3,28 @@ import { jobService } from "@/lib/api/services";
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import {
+  LineChart,
+  Line,
+  BarChart,
+  Bar,
+  PieChart,
+  Pie,
+  Cell,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+  AreaChart,
+  Area,
+  RadarChart,
+  Radar,
+  PolarGrid,
+  PolarAngleAxis,
+  PolarRadiusAxis,
+} from "recharts";
+import {
   TrendingUp,
   Clock,
   CheckCircle,
@@ -40,6 +62,23 @@ import {
   Percent,
   CheckSquare,
   AlertTriangle,
+  RefreshCw,
+  TrendingDown,
+  BarChart3,
+  PieChart as PieChartIcon,
+  Activity,
+  Shield,
+  Settings,
+  Sparkles,
+  CreditCard,
+  Smartphone,
+  Tablet,
+  Monitor,
+  Award as AwardIcon,
+  Bell,
+  ArrowUpRight,
+  ArrowDownRight,
+  Database,
 } from "lucide-react";
 
 interface IJob {
@@ -219,6 +258,20 @@ interface IProposalStats {
   successRate: number;
 }
 
+// Color palettes for charts
+const CHART_COLORS = {
+  primary: "#0A2647",
+  secondary: "#FF6B35",
+  success: "#10B981",
+  warning: "#F59E0B",
+  danger: "#EF4444",
+  info: "#3B82F6",
+  purple: "#8B5CF6",
+  pink: "#EC4899",
+  cyan: "#06B6D4",
+  gray: "#6B7280",
+};
+
 // Status configuration
 const statusConfig = {
   posted: {
@@ -308,6 +361,8 @@ export default function FundiDashboard() {
     totalEarned: 0,
     pendingPayments: 0,
     successRate: 0,
+    avgJobValue: 0,
+    responseTime: 0,
   });
   const [proposals, setProposals] = useState<IProposal[]>([]);
   const [proposalsLoading, setProposalsLoading] = useState(true);
@@ -323,6 +378,7 @@ export default function FundiDashboard() {
   const [proposalStatsError, setProposalStatsError] = useState<string | null>(
     null
   );
+  const [timeRange, setTimeRange] = useState("month");
 
   // Fetch jobs where fundi is assigned (fundiId matches user._id)
   const fetchAssignedJobs = async () => {
@@ -343,6 +399,7 @@ export default function FundiDashboard() {
         let completed = 0;
         let totalEarned = 0;
         let pendingPayments = 0;
+        let totalJobValue = 0;
 
         assignedJobs.forEach((job: IJob) => {
           if (job.status === "in_progress") {
@@ -357,6 +414,7 @@ export default function FundiDashboard() {
             // Calculate total earned from completed jobs
             if (job.agreedPrice) {
               totalEarned += job.agreedPrice;
+              totalJobValue += job.agreedPrice;
             }
           }
         });
@@ -367,12 +425,21 @@ export default function FundiDashboard() {
             ? Math.round((completed / assignedJobs.length) * 100)
             : 0;
 
+        // Calculate average job value
+        const avgJobValue =
+          completed > 0 ? Math.round(totalJobValue / completed) : 0;
+
+        // Mock response time (in real app, this would be calculated)
+        const responseTime = 24; // hours
+
         setStats({
           active,
           completed,
           totalEarned,
           pendingPayments,
           successRate,
+          avgJobValue,
+          responseTime,
         });
       } else {
         setError(data.message || "Failed to load jobs");
@@ -449,6 +516,15 @@ export default function FundiDashboard() {
       hour: "2-digit",
       minute: "2-digit",
     });
+  };
+
+  const formatCurrency = (amount: number) => {
+    return new Intl.NumberFormat("en-KE", {
+      style: "currency",
+      currency: "KES",
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    }).format(amount);
   };
 
   const getRecentAssignedJobs = () => {
@@ -529,12 +605,107 @@ export default function FundiDashboard() {
     return actions.slice(0, 3);
   };
 
+  // Prepare data for charts
+  const prepareJobStatusData = () => {
+    const statusCounts = {
+      active: stats.active,
+      completed: stats.completed,
+      posted: jobs.filter((job) => job.status === "posted").length,
+    };
+
+    return Object.entries(statusCounts).map(([name, value]) => ({
+      name: name.charAt(0).toUpperCase() + name.slice(1),
+      value,
+      color:
+        name === "active"
+          ? CHART_COLORS.warning
+          : name === "completed"
+          ? CHART_COLORS.success
+          : CHART_COLORS.info,
+    }));
+  };
+
+  const prepareProposalStatusData = () => {
+    return [
+      {
+        name: "Pending",
+        value: proposalStats.pending,
+        color: CHART_COLORS.warning,
+      },
+      {
+        name: "Accepted",
+        value: proposalStats.accepted,
+        color: CHART_COLORS.success,
+      },
+      {
+        name: "Rejected",
+        value: proposalStats.rejected,
+        color: CHART_COLORS.danger,
+      },
+    ];
+  };
+
+  const prepareEarningsTrendData = () => {
+    // Mock data for earnings trend (in real app, this would come from API)
+    return [
+      { month: "Jan", earnings: 15000, jobs: 2 },
+      { month: "Feb", earnings: 22000, jobs: 3 },
+      { month: "Mar", earnings: 18000, jobs: 2 },
+      { month: "Apr", earnings: 25000, jobs: 4 },
+      { month: "May", earnings: 30000, jobs: 5 },
+      { month: "Jun", earnings: 28000, jobs: 4 },
+      { month: "Jul", earnings: 32000, jobs: 5 },
+      { month: "Aug", earnings: 35000, jobs: 6 },
+      { month: "Sep", earnings: 40000, jobs: 7 },
+      { month: "Oct", earnings: 38000, jobs: 6 },
+      { month: "Nov", earnings: 42000, jobs: 7 },
+      {
+        month: "Dec",
+        earnings: stats.totalEarned || 45000,
+        jobs: stats.completed || 8,
+      },
+    ];
+  };
+
+  const prepareServicePerformanceData = () => {
+    // Group jobs by service
+    const serviceMap = new Map();
+    jobs.forEach((job) => {
+      const serviceName = job.serviceId.name;
+      if (!serviceMap.has(serviceName)) {
+        serviceMap.set(serviceName, { total: 0, completed: 0 });
+      }
+      const data = serviceMap.get(serviceName);
+      data.total += 1;
+      if (job.status === "completed") {
+        data.completed += 1;
+      }
+    });
+
+    return Array.from(serviceMap.entries())
+      .map(([name, data]) => ({
+        name,
+        completionRate:
+          data.total > 0 ? Math.round((data.completed / data.total) * 100) : 0,
+        totalJobs: data.total,
+      }))
+      .slice(0, 5);
+  };
+
   if (loading || proposalsLoading) {
     return (
-      <div className="flex-1 flex items-center justify-center min-h-screen">
+      <div className="flex-1 flex items-center justify-center min-h-screen bg-gray-50">
         <div className="text-center">
-          <Loader className="animate-spin h-12 w-12 text-[#0A2647] mx-auto mb-4" />
-          <p className="text-gray-900 text-lg">Loading your dashboard...</p>
+          <div className="relative">
+            <Loader className="animate-spin h-16 w-16 text-[#0A2647] mx-auto mb-4" />
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="w-8 h-8 bg-white rounded-full"></div>
+            </div>
+          </div>
+          <p className="text-gray-900 text-lg font-medium">
+            Loading Your Dashboard...
+          </p>
+          <p className="text-gray-600 text-sm mt-2">Preparing your analytics</p>
         </div>
       </div>
     );
@@ -542,118 +713,192 @@ export default function FundiDashboard() {
 
   if (error) {
     return (
-      <div className="flex-1 flex items-center justify-center min-h-screen">
+      <div className="flex-1 flex items-center justify-center min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
         <div className="text-center max-w-md">
-          <AlertCircle className="h-12 w-12 text-red-500 mx-auto mb-4" />
-          <h3 className="text-lg font-semibold text-gray-900 mb-2">
-            Error Loading Dashboard
+          <div className="relative inline-block">
+            <AlertCircle className="h-16 w-16 text-red-500 mx-auto mb-4" />
+            <div className="absolute -top-2 -right-2">
+              <div className="w-8 h-8 bg-red-100 rounded-full flex items-center justify-center">
+                <XCircle className="text-red-600" size={16} />
+              </div>
+            </div>
+          </div>
+          <h3 className="text-xl font-semibold text-gray-900 mb-2">
+            Dashboard Error
           </h3>
-          <p className="text-gray-900 mb-4">{error}</p>
-          <button
-            onClick={fetchAssignedJobs}
-            className="bg-[#0A2647] text-white px-6 py-2 rounded-lg hover:bg-[#0d3157] transition-colors font-semibold"
-          >
-            Try Again
-          </button>
+          <p className="text-gray-700 mb-6">{error}</p>
+          <div className="flex gap-3 justify-center">
+            <button
+              onClick={fetchAssignedJobs}
+              className="bg-gradient-to-r from-[#0A2647] to-[#1e3a5f] text-white px-6 py-3 rounded-lg hover:shadow-lg transition-all font-semibold flex items-center gap-2"
+            >
+              <RefreshCw size={16} />
+              Try Again
+            </button>
+            <button className="border border-gray-300 text-gray-700 px-6 py-3 rounded-lg hover:bg-gray-50 transition-colors font-semibold">
+              Contact Support
+            </button>
+          </div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="flex-1 bg-gray-50 min-h-screen">
+    <div className="flex-1 bg-gradient-to-br from-gray-50 to-gray-100 min-h-screen">
       {/* Header */}
-      <div className="bg-white border-b border-gray-200">
+      <div className="bg-white border-b border-gray-200 shadow-sm">
         <div className="max-w-7xl mx-auto px-6 py-6">
-          <div className="flex items-center justify-between mb-6">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
             <div>
-              <h1 className="text-2xl font-bold text-gray-900">
-                Fundi Dashboard
-              </h1>
-              <p className="text-gray-600">
-                Welcome back! Manage your jobs and proposals
-              </p>
+              <div className="flex items-center gap-3 mb-2">
+                <div className="p-2 bg-gradient-to-br from-[#0A2647] to-[#1e3a5f] rounded-lg">
+                  <Briefcase className="text-white" size={24} />
+                </div>
+                <div>
+                  <h1 className="text-2xl font-bold text-gray-900">
+                    Fundi Analytics Dashboard
+                  </h1>
+                  <p className="text-gray-600 text-sm">
+                    Welcome back! Here's your performance overview
+                  </p>
+                </div>
+              </div>
             </div>
-            <div className="flex items-center gap-3">
-              <button className="border border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-50 transition-colors font-semibold flex items-center gap-2">
-                <Filter size={16} />
-                <span>Filter</span>
-              </button>
-              <button
-                onClick={() => {
-                  fetchAssignedJobs();
-                  fetchProposals();
-                  fetchProposalsStats();
-                }}
-                className="bg-[#0A2647] text-white px-4 py-2 rounded-lg hover:bg-[#0d3157] transition-colors font-semibold flex items-center gap-2"
-              >
-                <Clock size={16} />
-                <span>Refresh</span>
-              </button>
+            <div className="flex flex-wrap items-center gap-3">
+              <div className="flex bg-gray-100 rounded-lg p-1">
+                {["week", "month", "quarter", "year"].map((range) => (
+                  <button
+                    key={range}
+                    onClick={() => setTimeRange(range)}
+                    className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${
+                      timeRange === range
+                        ? "bg-white text-[#0A2647] shadow-sm"
+                        : "text-gray-600 hover:text-gray-900"
+                    }`}
+                  >
+                    {range.charAt(0).toUpperCase() + range.slice(1)}
+                  </button>
+                ))}
+              </div>
+              <div className="flex gap-2">
+                <button
+                  onClick={() => {
+                    fetchAssignedJobs();
+                    fetchProposals();
+                    fetchProposalsStats();
+                  }}
+                  className="flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-[#0A2647] to-[#1e3a5f] text-white rounded-lg hover:shadow-lg transition-all font-semibold"
+                >
+                  <RefreshCw size={16} />
+                  Refresh
+                </button>
+                <button className="flex items-center gap-2 px-4 py-2.5 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-semibold">
+                  <Download size={16} />
+                  Export
+                </button>
+              </div>
             </div>
           </div>
 
-          {/* A. Overview Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-            {/* Active Jobs */}
-            <div className="bg-gradient-to-br from-[#0A2647] to-[#1e3a5f] rounded-xl p-6 text-white">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm opacity-90">Active Jobs</p>
-                  <p className="text-3xl font-bold mt-2">{stats.active}</p>
-                  <p className="text-sm opacity-90 mt-1">Currently working</p>
+          {/* Key Metrics Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            {/* Active Jobs Card */}
+            <div className="bg-gradient-to-br from-white to-gray-50 rounded-2xl border border-gray-200 p-6 shadow-sm hover:shadow-md transition-shadow">
+              <div className="flex items-center justify-between mb-4">
+                <div className="p-3 bg-blue-50 rounded-xl">
+                  <TrendingUp className="text-blue-600" size={24} />
                 </div>
-                <div className="p-3 bg-white/20 rounded-xl">
-                  <TrendingUp size={24} />
+                <div className="flex items-center gap-1">
+                  <span className="text-sm font-medium text-green-600">
+                    +12%
+                  </span>
+                  <TrendingUp className="text-green-500" size={16} />
                 </div>
+              </div>
+              <p className="text-sm text-gray-600">Active Jobs</p>
+              <p className="text-3xl font-bold text-gray-900 mt-2">
+                {stats.active}
+              </p>
+              <div className="flex items-center gap-2 mt-4 pt-4 border-t border-gray-100">
+                <Clock className="text-gray-400" size={14} />
+                <span className="text-sm text-gray-600">Currently working</span>
               </div>
             </div>
 
-            {/* Completed Jobs */}
-            <div className="bg-gradient-to-br from-[#2E7D32] to-[#4CAF50] rounded-xl p-6 text-white">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm opacity-90">Completed Jobs</p>
-                  <p className="text-3xl font-bold mt-2">{stats.completed}</p>
-                  <p className="text-sm opacity-90 mt-1">
-                    Successfully delivered
+            {/* Total Earnings Card */}
+            <div className="bg-gradient-to-br from-white to-gray-50 rounded-2xl border border-gray-200 p-6 shadow-sm hover:shadow-md transition-shadow">
+              <div className="flex items-center justify-between mb-4">
+                <div className="p-3 bg-green-50 rounded-xl">
+                  <DollarSign className="text-green-600" size={24} />
+                </div>
+                <div className="text-right">
+                  <p className="text-xs text-gray-500">Avg. Job</p>
+                  <p className="font-semibold text-gray-900">
+                    {formatCurrency(stats.avgJobValue)}
                   </p>
                 </div>
-                <div className="p-3 bg-white/20 rounded-xl">
-                  <CheckCircle size={24} />
-                </div>
+              </div>
+              <p className="text-sm text-gray-600">Total Earnings</p>
+              <p className="text-3xl font-bold text-gray-900 mt-2">
+                {formatCurrency(stats.totalEarned)}
+              </p>
+              <div className="flex items-center gap-2 mt-4 pt-4 border-t border-gray-100">
+                <CheckCircle className="text-gray-400" size={14} />
+                <span className="text-sm text-gray-600">
+                  {stats.completed} completed jobs
+                </span>
               </div>
             </div>
 
-            {/* Total Earned */}
-            <div className="bg-gradient-to-br from-[#6A1B9A] to-[#9C27B0] rounded-xl p-6 text-white">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm opacity-90">Total Earned</p>
-                  <p className="text-3xl font-bold mt-2">
-                    KSh {stats.totalEarned.toLocaleString()}
-                  </p>
-                  <p className="text-sm opacity-90 mt-1">From completed jobs</p>
+            {/* Success Rate Card */}
+            <div className="bg-gradient-to-br from-white to-gray-50 rounded-2xl border border-gray-200 p-6 shadow-sm hover:shadow-md transition-shadow">
+              <div className="flex items-center justify-between mb-4">
+                <div className="p-3 bg-purple-50 rounded-xl">
+                  <Target className="text-purple-600" size={24} />
                 </div>
-                <div className="p-3 bg-white/20 rounded-xl">
-                  <DollarSign size={24} />
+                <div className="text-right">
+                  <p className="text-xs text-gray-500">Trend</p>
+                  <div className="flex items-center gap-1">
+                    <span className="text-sm font-medium text-green-600">
+                      +5%
+                    </span>
+                    <TrendingUp className="text-green-500" size={16} />
+                  </div>
                 </div>
+              </div>
+              <p className="text-sm text-gray-600">Success Rate</p>
+              <p className="text-3xl font-bold text-gray-900 mt-2">
+                {stats.successRate}%
+              </p>
+              <div className="w-full bg-gray-200 rounded-full h-2 mt-4">
+                <div
+                  className="bg-purple-500 h-2 rounded-full transition-all duration-300"
+                  style={{ width: `${stats.successRate}%` }}
+                ></div>
               </div>
             </div>
 
-            {/* Success Rate */}
-            <div className="bg-gradient-to-br from-[#FF6B35] to-[#ff8a65] rounded-xl p-6 text-white">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm opacity-90">Success Rate</p>
-                  <p className="text-3xl font-bold mt-2">
-                    {stats.successRate}%
+            {/* Pending Payments Card */}
+            <div className="bg-gradient-to-br from-white to-gray-50 rounded-2xl border border-gray-200 p-6 shadow-sm hover:shadow-md transition-shadow">
+              <div className="flex items-center justify-between mb-4">
+                <div className="p-3 bg-orange-50 rounded-xl">
+                  <Wallet className="text-orange-600" size={24} />
+                </div>
+                <div className="text-right">
+                  <p className="text-xs text-gray-500">Awaiting</p>
+                  <p className="font-semibold text-gray-900">
+                    {formatCurrency(stats.pendingPayments)}
                   </p>
-                  <p className="text-sm opacity-90 mt-1">Job completion rate</p>
                 </div>
-                <div className="p-3 bg-white/20 rounded-xl">
-                  <Target size={24} />
-                </div>
+              </div>
+              <p className="text-sm text-gray-600">Pending Payments</p>
+              <p className="text-3xl font-bold text-gray-900 mt-2">
+                {formatCurrency(stats.pendingPayments)}
+              </p>
+              <div className="flex items-center gap-2 mt-4 pt-4 border-t border-gray-100">
+                <Clock className="text-gray-400" size={14} />
+                <span className="text-sm text-gray-600">To be released</span>
               </div>
             </div>
           </div>
@@ -665,7 +910,7 @@ export default function FundiDashboard() {
                 Proposal Performance
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <div className="bg-white rounded-lg p-4 shadow-sm border border-gray-200">
+                <div className="bg-white rounded-xl border border-gray-200 p-4 shadow-sm">
                   <div className="flex items-center gap-3">
                     <div className="p-2 bg-blue-100 rounded-lg">
                       <FileText className="text-blue-600" size={20} />
@@ -678,7 +923,7 @@ export default function FundiDashboard() {
                     </div>
                   </div>
                 </div>
-                <div className="bg-white rounded-lg p-4 shadow-sm border border-gray-200">
+                <div className="bg-white rounded-xl border border-gray-200 p-4 shadow-sm">
                   <div className="flex items-center gap-3">
                     <div className="p-2 bg-yellow-100 rounded-lg">
                       <Clock className="text-yellow-600" size={20} />
@@ -691,7 +936,7 @@ export default function FundiDashboard() {
                     </div>
                   </div>
                 </div>
-                <div className="bg-white rounded-lg p-4 shadow-sm border border-gray-200">
+                <div className="bg-white rounded-xl border border-gray-200 p-4 shadow-sm">
                   <div className="flex items-center gap-3">
                     <div className="p-2 bg-green-100 rounded-lg">
                       <CheckCircle className="text-green-600" size={20} />
@@ -704,7 +949,7 @@ export default function FundiDashboard() {
                     </div>
                   </div>
                 </div>
-                <div className="bg-white rounded-lg p-4 shadow-sm border border-gray-200">
+                <div className="bg-white rounded-xl border border-gray-200 p-4 shadow-sm">
                   <div className="flex items-center gap-3">
                     <div className="p-2 bg-purple-100 rounded-lg">
                       <Percent className="text-purple-600" size={20} />
@@ -725,173 +970,321 @@ export default function FundiDashboard() {
 
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-6 py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Left Column - Main Content */}
-          <div className="lg:col-span-2 space-y-8">
-            {/* B. Recent Assigned Jobs */}
-            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-              <div className="flex items-center justify-between mb-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          {/* Earnings Trend Chart */}
+          <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm">
+            <div className="flex items-center justify-between mb-6">
+              <div>
                 <h2 className="text-xl font-bold text-gray-900">
-                  Recent Assigned Jobs
+                  Earnings Trend
                 </h2>
-                <Link
-                  href="/dashboard/fundi/jobs"
-                  className="text-[#0A2647] hover:text-[#0d3157] font-semibold flex items-center gap-1"
-                >
-                  View All <ChevronRight size={16} />
-                </Link>
+                <p className="text-sm text-gray-600">
+                  Monthly earnings and job completion
+                </p>
               </div>
+              <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2">
+                  <div className="w-3 h-3 bg-[#0A2647] rounded-full"></div>
+                  <span className="text-sm text-gray-600">Earnings</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="w-3 h-3 bg-[#FF6B35] rounded-full"></div>
+                  <span className="text-sm text-gray-600">Jobs</span>
+                </div>
+              </div>
+            </div>
+            <div className="h-80">
+              <ResponsiveContainer width="100%" height="100%">
+                <AreaChart
+                  data={prepareEarningsTrendData()}
+                  margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
+                >
+                  <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+                  <XAxis dataKey="month" axisLine={false} tickLine={false} />
+                  <YAxis axisLine={false} tickLine={false} />
+                  <Tooltip
+                    contentStyle={{
+                      backgroundColor: "white",
+                      border: "1px solid #e5e7eb",
+                      borderRadius: "8px",
+                      boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
+                    }}
+                    formatter={(value, name) => {
+                      if (name === "earnings")
+                        return [formatCurrency(Number(value)), "Earnings"];
+                      return [value, "Jobs"];
+                    }}
+                  />
+                  <Area
+                    type="monotone"
+                    dataKey="earnings"
+                    stroke="#0A2647"
+                    fill="url(#colorEarnings)"
+                    strokeWidth={2}
+                  />
+                  <Area
+                    type="monotone"
+                    dataKey="jobs"
+                    stroke="#FF6B35"
+                    fill="url(#colorJobs)"
+                    strokeWidth={2}
+                  />
+                  <defs>
+                    <linearGradient
+                      id="colorEarnings"
+                      x1="0"
+                      y1="0"
+                      x2="0"
+                      y2="1"
+                    >
+                      <stop offset="5%" stopColor="#0A2647" stopOpacity={0.8} />
+                      <stop offset="95%" stopColor="#0A2647" stopOpacity={0} />
+                    </linearGradient>
+                    <linearGradient id="colorJobs" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="#FF6B35" stopOpacity={0.8} />
+                      <stop offset="95%" stopColor="#FF6B35" stopOpacity={0} />
+                    </linearGradient>
+                  </defs>
+                </AreaChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
 
-              {getRecentAssignedJobs().length === 0 ? (
-                <div className="text-center py-8">
-                  <Briefcase size={48} className="mx-auto text-gray-400 mb-4" />
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                    No Assigned Jobs Yet
-                  </h3>
-                  <p className="text-gray-600 mb-4">
-                    You haven't been assigned any jobs yet
-                  </p>
-                  <Link
-                    href="/jobs"
-                    className="inline-flex items-center gap-2 bg-[#FF6B35] text-white px-6 py-3 rounded-lg hover:bg-[#ff5722] transition-colors font-semibold"
+          {/* Job Status Distribution */}
+          <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm">
+            <div className="flex items-center justify-between mb-6">
+              <div>
+                <h2 className="text-xl font-bold text-gray-900">
+                  Job Status Distribution
+                </h2>
+                <p className="text-sm text-gray-600">Current job breakdown</p>
+              </div>
+              <PieChartIcon className="text-gray-400" size={20} />
+            </div>
+            <div className="h-80">
+              <ResponsiveContainer width="100%" height="100%">
+                <PieChart>
+                  <Pie
+                    data={prepareJobStatusData()}
+                    cx="50%"
+                    cy="50%"
+                    labelLine={false}
+                    label={({ name, percent }) =>
+                      `${name}: ${(percent * 100).toFixed(0)}%`
+                    }
+                    outerRadius={80}
+                    fill="#8884d8"
+                    dataKey="value"
                   >
-                    <Search size={16} />
-                    <span>Browse Available Jobs</span>
-                  </Link>
+                    {prepareJobStatusData().map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={entry.color} />
+                    ))}
+                  </Pie>
+                  <Tooltip
+                    formatter={(value) => [value, "Jobs"]}
+                    contentStyle={{
+                      backgroundColor: "white",
+                      border: "1px solid #e5e7eb",
+                      borderRadius: "8px",
+                    }}
+                  />
+                  <Legend />
+                </PieChart>
+              </ResponsiveContainer>
+            </div>
+            <div className="grid grid-cols-3 gap-2 mt-4">
+              {prepareJobStatusData().map((status, index) => (
+                <div key={index} className="text-center">
+                  <div
+                    className="w-3 h-3 rounded-full mx-auto mb-1"
+                    style={{ backgroundColor: status.color }}
+                  ></div>
+                  <p className="text-xs font-medium text-gray-900">
+                    {status.value}
+                  </p>
+                  <p className="text-xs text-gray-600">{status.name}</p>
                 </div>
-              ) : (
-                <div className="space-y-4">
-                  {getRecentAssignedJobs().map((job) => {
-                    const StatusIcon =
-                      statusConfig[job.status]?.icon || AlertCircle;
-                    const statusInfo =
-                      statusConfig[job.status] || statusConfig.posted;
+              ))}
+            </div>
+          </div>
 
-                    return (
-                      <div
-                        key={job._id}
-                        className="border border-gray-200 rounded-xl p-4 hover:border-[#FF6B35] transition-colors"
-                      >
-                        <div className="flex items-start justify-between">
-                          <div className="flex-1">
-                            <div className="flex items-center gap-3 mb-2">
-                              <div
-                                className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-sm font-medium ${statusInfo.color}`}
-                              >
-                                <StatusIcon
-                                  size={14}
-                                  className={statusInfo.iconColor}
-                                />
-                                <span>{statusInfo.label}</span>
-                              </div>
-                              <span className="text-sm text-gray-600">
-                                {formatDate(job.createdAt)}
-                              </span>
-                            </div>
+          {/* Service Performance */}
+          <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm">
+            <div className="flex items-center justify-between mb-6">
+              <div>
+                <h2 className="text-xl font-bold text-gray-900">
+                  Service Performance
+                </h2>
+                <p className="text-sm text-gray-600">
+                  Completion rates by service
+                </p>
+              </div>
+              <Target className="text-gray-400" size={20} />
+            </div>
+            <div className="h-80">
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart
+                  data={prepareServicePerformanceData()}
+                  margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+                >
+                  <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+                  <XAxis dataKey="name" />
+                  <YAxis />
+                  <Tooltip
+                    formatter={(value, name) => {
+                      if (name === "completionRate")
+                        return [`${value}%`, "Completion Rate"];
+                      return [value, "Jobs"];
+                    }}
+                    contentStyle={{
+                      backgroundColor: "white",
+                      border: "1px solid #e5e7eb",
+                      borderRadius: "8px",
+                    }}
+                  />
+                  <Legend />
+                  <Bar
+                    dataKey="totalJobs"
+                    fill="#0A2647"
+                    name="Total Jobs"
+                    radius={[4, 4, 0, 0]}
+                  />
+                  <Bar
+                    dataKey="completionRate"
+                    fill="#10B981"
+                    name="Completion Rate"
+                    radius={[4, 4, 0, 0]}
+                  />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
 
-                            <h4 className="font-semibold text-gray-900 mb-2">
-                              {job.jobDetails.title}
-                            </h4>
-
-                            <div className="flex items-center gap-4 text-sm text-gray-600 mb-3">
-                              <div className="flex items-center gap-1">
-                                <Wrench size={14} />
-                                <span>{job.serviceId.name}</span>
-                              </div>
-                              <div className="flex items-center gap-1">
-                                <MapPin size={14} />
-                                <span>{job.location.city}</span>
-                              </div>
-                              <div className="flex items-center gap-1">
-                                <User size={14} />
-                                <span>{job.customerId.profile.fullName}</span>
-                              </div>
-                              {job.agreedPrice && (
-                                <div className="flex items-center gap-1">
-                                  <DollarSign size={14} />
-                                  <span>
-                                    KSh {job.agreedPrice.toLocaleString()}
-                                  </span>
-                                </div>
-                              )}
-                            </div>
-
-                            {/* Urgency badge */}
-                            <div className="mb-3">
-                              <div
-                                className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${
-                                  urgencyConfig[job.jobDetails.urgency]?.color
-                                }`}
-                              >
-                                <Zap size={12} />
-                                <span>
-                                  {urgencyConfig[job.jobDetails.urgency]?.label}{" "}
-                                  Urgency
-                                </span>
-                              </div>
-                            </div>
-
-                            {/* Progress updates count */}
-                            {job.workProgress &&
-                              job.workProgress.length > 0 && (
-                                <div className="mb-3">
-                                  <div className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
-                                    <TrendingUp size={12} />
-                                    <span>
-                                      {job.workProgress.length} progress update
-                                      {job.workProgress.length !== 1 ? "s" : ""}
-                                    </span>
-                                  </div>
-                                </div>
-                              )}
-                          </div>
-
-                          <div className="flex flex-col gap-2 ml-4">
-                            <Link
-                              href={`/dashboard/fundi/jobs/${job._id}`}
-                              className="text-[#0A2647] hover:text-[#0d3157] font-medium text-sm flex items-center gap-1"
-                            >
-                              <Eye size={14} />
-                              <span>View Job</span>
-                            </Link>
-                            <button className="text-gray-600 hover:text-gray-900 font-medium text-sm flex items-center gap-1">
-                              <MessageCircle size={14} />
-                              <span>Message Customer</span>
-                            </button>
-                            {job.status === "in_progress" && (
-                              <button className="text-green-600 hover:text-green-700 font-medium text-sm flex items-center gap-1">
-                                <CheckSquare size={14} />
-                                <span>Update Progress</span>
-                              </button>
-                            )}
-                          </div>
-                        </div>
-                      </div>
-                    );
-                  })}
+          {/* Proposal Status Chart */}
+          <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm">
+            <div className="flex items-center justify-between mb-6">
+              <div>
+                <h2 className="text-xl font-bold text-gray-900">
+                  Proposal Status
+                </h2>
+                <p className="text-sm text-gray-600">
+                  Breakdown of your proposals
+                </p>
+              </div>
+              <FileText className="text-gray-400" size={20} />
+            </div>
+            <div className="h-80">
+              <ResponsiveContainer width="100%" height="100%">
+                <RadarChart outerRadius={90} data={prepareProposalStatusData()}>
+                  <PolarGrid />
+                  <PolarAngleAxis dataKey="name" />
+                  <PolarRadiusAxis />
+                  <Radar
+                    name="Proposals"
+                    dataKey="value"
+                    stroke="#0A2647"
+                    fill="#0A2647"
+                    fillOpacity={0.6}
+                  />
+                  <Tooltip
+                    contentStyle={{
+                      backgroundColor: "white",
+                      border: "1px solid #e5e7eb",
+                      borderRadius: "8px",
+                    }}
+                  />
+                </RadarChart>
+              </ResponsiveContainer>
+            </div>
+            <div className="grid grid-cols-3 gap-2 mt-4">
+              {prepareProposalStatusData().map((status, index) => (
+                <div key={index} className="text-center">
+                  <div
+                    className="w-3 h-3 rounded-full mx-auto mb-1"
+                    style={{ backgroundColor: status.color }}
+                  ></div>
+                  <p className="text-xs font-medium text-gray-900">
+                    {status.value}
+                  </p>
+                  <p className="text-xs text-gray-600">{status.name}</p>
                 </div>
-              )}
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Recent Jobs & Quick Actions Row */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mt-8">
+          {/* Recent Jobs */}
+          <div className="lg:col-span-2 bg-white rounded-2xl border border-gray-200 p-6 shadow-sm">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-xl font-bold text-gray-900">
+                Recent Assigned Jobs
+              </h2>
+              <Link
+                href="/dashboard/fundi/jobs"
+                className="text-[#0A2647] hover:text-[#0d3157] font-semibold text-sm flex items-center gap-1"
+              >
+                View All <ChevronRight size={14} />
+              </Link>
             </div>
 
-            {/* C. Active Jobs Section */}
-            {getActiveJobs().length > 0 && (
-              <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-                <h2 className="text-xl font-bold text-gray-900 mb-6">
-                  Active Jobs
-                </h2>
+            {getRecentAssignedJobs().length === 0 ? (
+              <div className="text-center py-12">
+                <div className="w-20 h-20 bg-gradient-to-br from-gray-100 to-gray-200 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                  <Briefcase className="text-gray-400" size={32} />
+                </div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                  No Assigned Jobs Yet
+                </h3>
+                <p className="text-gray-600 mb-6 max-w-md mx-auto">
+                  You haven't been assigned any jobs yet. Browse available jobs
+                  and submit proposals to get started.
+                </p>
+                <Link
+                  href="/jobs"
+                  className="inline-flex items-center gap-2 bg-gradient-to-r from-[#FF6B35] to-[#ff8a65] text-white px-8 py-3.5 rounded-xl hover:shadow-lg transition-all font-bold"
+                >
+                  <Search size={20} />
+                  <span>Browse Available Jobs</span>
+                </Link>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {getRecentAssignedJobs().map((job) => {
+                  const StatusIcon =
+                    statusConfig[job.status]?.icon || AlertCircle;
+                  const statusInfo =
+                    statusConfig[job.status] || statusConfig.posted;
 
-                <div className="space-y-6">
-                  {getActiveJobs().map((job) => (
+                  return (
                     <div
                       key={job._id}
-                      className="border border-gray-200 rounded-xl p-6"
+                      className="flex items-center justify-between p-4 border border-gray-200 rounded-xl hover:border-[#FF6B35] transition-all hover:shadow-sm"
                     >
-                      <div className="flex items-start justify-between mb-4">
+                      <div className="flex items-center gap-4">
+                        <div className="p-3 bg-gray-100 rounded-xl">
+                          <Wrench className="text-gray-600" size={20} />
+                        </div>
                         <div>
-                          <h3 className="font-bold text-gray-900 text-lg mb-1">
+                          <div className="flex items-center gap-3 mb-2">
+                            <div
+                              className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-sm font-medium ${statusInfo.color}`}
+                            >
+                              <StatusIcon
+                                size={14}
+                                className={statusInfo.iconColor}
+                              />
+                              <span>{statusInfo.label}</span>
+                            </div>
+                            <span className="text-sm text-gray-600">
+                              {formatDate(job.createdAt)}
+                            </span>
+                          </div>
+                          <h4 className="font-semibold text-gray-900">
                             {job.jobDetails.title}
-                          </h3>
-                          <div className="flex items-center gap-3 text-sm text-gray-600">
+                          </h4>
+                          <div className="flex items-center gap-4 text-sm text-gray-600 mt-2">
                             <div className="flex items-center gap-1">
                               <User size={14} />
                               <span>{job.customerId.profile.fullName}</span>
@@ -900,347 +1293,177 @@ export default function FundiDashboard() {
                               <MapPin size={14} />
                               <span>{job.location.city}</span>
                             </div>
-                            <div className="flex items-center gap-1">
-                              <DollarSign size={14} />
-                              <span>
-                                KSh{" "}
-                                {job.agreedPrice?.toLocaleString() ||
-                                  "Negotiable"}
-                              </span>
-                            </div>
-                          </div>
-                        </div>
-
-                        <div className="flex items-center gap-2">
-                          <div className="text-right">
-                            <p className="font-medium text-gray-900 text-sm">
-                              Deadline
-                            </p>
-                            <p className="text-sm text-gray-600">
-                              {formatDate(job.scheduling.preferredDate)}
-                            </p>
+                            {job.agreedPrice && (
+                              <div className="flex items-center gap-1">
+                                <DollarSign size={14} />
+                                <span>{formatCurrency(job.agreedPrice)}</span>
+                              </div>
+                            )}
                           </div>
                         </div>
                       </div>
-
-                      {/* Progress Updates */}
-                      {job.workProgress && job.workProgress.length > 0 && (
-                        <div className="mb-6">
-                          <h4 className="font-semibold text-gray-900 mb-3">
-                            Recent Progress
-                          </h4>
-                          <div className="space-y-3">
-                            {job.workProgress
-                              .slice(-2)
-                              .map((progress, index) => (
-                                <div
-                                  key={index}
-                                  className="bg-gray-50 rounded-lg p-4"
-                                >
-                                  <div className="flex items-center justify-between mb-2">
-                                    <span className="font-medium text-gray-900 capitalize">
-                                      {progress.stage.replace("_", " ")}
-                                    </span>
-                                    <span className="text-sm text-gray-600">
-                                      {formatDateTime(progress.timestamp)}
-                                    </span>
-                                  </div>
-                                  {progress.message && (
-                                    <p className="text-gray-700">
-                                      {progress.message}
-                                    </p>
-                                  )}
-                                  {progress.images &&
-                                    progress.images.length > 0 && (
-                                      <div className="flex gap-2 mt-2">
-                                        {progress.images.map(
-                                          (img, imgIndex) => (
-                                            <div
-                                              key={imgIndex}
-                                              className="w-12 h-12 bg-gray-200 rounded-lg flex items-center justify-center"
-                                            >
-                                              <FileText
-                                                size={16}
-                                                className="text-gray-500"
-                                              />
-                                            </div>
-                                          )
-                                        )}
-                                      </div>
-                                    )}
-                                </div>
-                              ))}
-                          </div>
-                        </div>
-                      )}
-
-                      {/* Action Buttons */}
-                      <div className="flex gap-3 pt-4 border-t border-gray-200">
+                      <div className="flex items-center gap-3">
                         <Link
-                          href={`/dashboard/fundi/jobs/${job._id}/progress`}
-                          className="flex-1 bg-[#0A2647] text-white py-2 rounded-lg hover:bg-[#0d3157] transition-colors font-semibold text-center"
+                          href={`/dashboard/fundi/jobs/${job._id}`}
+                          className="text-[#0A2647] hover:text-[#0d3157] font-medium text-sm flex items-center gap-1"
                         >
-                          Update Progress
+                          <Eye size={14} />
+                          <span>View</span>
                         </Link>
                         <Link
                           href={`/dashboard/messages?user=${job.customerId._id}`}
-                          className="flex-1 border border-gray-300 text-gray-700 py-2 rounded-lg hover:bg-gray-50 transition-colors font-semibold flex items-center justify-center gap-2"
+                          className="text-gray-600 hover:text-gray-900 font-medium text-sm flex items-center gap-1"
                         >
-                          <MessageCircle size={16} />
+                          <MessageCircle size={14} />
                           <span>Message</span>
                         </Link>
-                        <button className="flex-1 border border-green-300 text-green-600 py-2 rounded-lg hover:bg-green-50 transition-colors font-semibold">
-                          Mark Complete
-                        </button>
                       </div>
                     </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* D. Pending Actions */}
-            {getPendingActions().length > 0 && (
-              <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-                <h2 className="text-xl font-bold text-gray-900 mb-6">
-                  Pending Actions
-                </h2>
-
-                <div className="space-y-4">
-                  {getPendingActions().map((action: any, index: any) => (
-                    <div
-                      key={index}
-                      className="flex items-center justify-between p-4 bg-yellow-50 border border-yellow-200 rounded-lg"
-                    >
-                      <div className="flex items-center gap-3">
-                        <div className="p-2 bg-yellow-100 rounded-lg">
-                          {action.type === "progress_update" && (
-                            <TrendingUp className="text-yellow-600" size={20} />
-                          )}
-                          {action.type === "customer_approval" && (
-                            <Clock className="text-yellow-600" size={20} />
-                          )}
-                          {action.type === "payment" && (
-                            <DollarSign className="text-yellow-600" size={20} />
-                          )}
-                        </div>
-                        <div>
-                          <p className="font-medium text-gray-900">
-                            {action.message}
-                          </p>
-                          {action.amount && (
-                            <p className="text-sm text-gray-600">
-                              Amount: KSh {action.amount.toLocaleString()}
-                            </p>
-                          )}
-                        </div>
-                      </div>
-                      <Link
-                        href={`/dashboard/fundi/jobs/${action.jobId}`}
-                        className="text-[#FF6B35] hover:text-[#ff5722] font-semibold flex items-center gap-1"
-                      >
-                        <span>Take Action</span>
-                        <ChevronRight size={16} />
-                      </Link>
-                    </div>
-                  ))}
-                </div>
+                  );
+                })}
               </div>
             )}
           </div>
 
-          {/* Right Column - Quick Actions & Sidebar */}
+          {/* Quick Actions & Performance */}
           <div className="space-y-8">
-            {/* E. Quick Actions Panel */}
-            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-              <h2 className="text-xl font-bold text-gray-900 mb-6">
-                Quick Actions
-              </h2>
-
+            {/* Quick Actions */}
+            <div className="bg-gradient-to-br from-[#0A2647] to-[#1e3a5f] rounded-2xl p-6 text-white">
+              <h3 className="font-bold text-lg mb-6">Quick Actions</h3>
               <div className="space-y-3">
                 <Link
                   href="/jobs"
-                  className="w-full bg-gradient-to-r from-[#FF6B35] to-[#ff8a65] text-white py-4 rounded-xl hover:shadow-lg transition-all font-bold text-center flex items-center justify-center gap-2"
+                  className="flex items-center justify-between p-4 bg-white/10 rounded-xl backdrop-blur-sm hover:bg-white/20 transition-all"
                 >
-                  <Search size={20} />
-                  <span>Find Jobs</span>
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 bg-white/20 rounded-lg">
+                      <Search size={20} />
+                    </div>
+                    <div>
+                      <p className="font-medium">Find Jobs</p>
+                      <p className="text-sm opacity-90">
+                        Browse available work
+                      </p>
+                    </div>
+                  </div>
+                  <ChevronRight size={16} />
                 </Link>
-
                 <Link
                   href="/dashboard/fundi/proposals"
-                  className="w-full border border-gray-300 text-gray-700 py-3 rounded-lg hover:bg-gray-50 transition-colors font-semibold text-center flex items-center justify-center gap-2"
+                  className="flex items-center justify-between p-4 bg-white/10 rounded-xl backdrop-blur-sm hover:bg-white/20 transition-all"
                 >
-                  <FileText size={16} />
-                  <span>My Proposals</span>
-                  <span className="bg-[#FF6B35] text-white text-xs px-2 py-1 rounded-full">
-                    {proposals.length}
-                  </span>
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 bg-white/20 rounded-lg">
+                      <FileText size={20} />
+                    </div>
+                    <div>
+                      <p className="font-medium">My Proposals</p>
+                      <p className="text-sm opacity-90">
+                        {proposals.length} total
+                      </p>
+                    </div>
+                  </div>
+                  <ChevronRight size={16} />
                 </Link>
-
-                <Link
-                  href="/dashboard/fundi/messages"
-                  className="w-full border border-gray-300 text-gray-700 py-3 rounded-lg hover:bg-gray-50 transition-colors font-semibold text-center flex items-center justify-center gap-2"
-                >
-                  <MessageSquare size={16} />
-                  <span>View Messages</span>
-                </Link>
-
                 <Link
                   href="/dashboard/fundi/profile"
-                  className="w-full border border-gray-300 text-gray-700 py-3 rounded-lg hover:bg-gray-50 transition-colors font-semibold text-center flex items-center justify-center gap-2"
+                  className="flex items-center justify-between p-4 bg-white/10 rounded-xl backdrop-blur-sm hover:bg-white/20 transition-all"
                 >
-                  <User size={16} />
-                  <span>Update Profile</span>
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 bg-white/20 rounded-lg">
+                      <User size={20} />
+                    </div>
+                    <div>
+                      <p className="font-medium">Update Profile</p>
+                      <p className="text-sm opacity-90">Enhance visibility</p>
+                    </div>
+                  </div>
+                  <ChevronRight size={16} />
+                </Link>
+                <Link
+                  href="/dashboard/fundi/messages"
+                  className="flex items-center justify-between p-4 bg-white/10 rounded-xl backdrop-blur-sm hover:bg-white/20 transition-all"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 bg-white/20 rounded-lg">
+                      <MessageSquare size={20} />
+                    </div>
+                    <div>
+                      <p className="font-medium">Messages</p>
+                      <p className="text-sm opacity-90">Chat with customers</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="bg-[#FF6B35] text-white text-xs px-2 py-1 rounded-full">
+                      3
+                    </span>
+                    <ChevronRight size={16} />
+                  </div>
                 </Link>
               </div>
             </div>
 
-            {/* F. Pending Proposals */}
-            {getPendingProposals().length > 0 && (
-              <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-                <h3 className="font-bold text-gray-900 mb-4">
-                  Pending Proposals
-                </h3>
-                <div className="space-y-3">
-                  {getPendingProposals()
-                    .slice(0, 3)
-                    .map((proposal, index) => {
-                      const StatusIcon =
-                        proposalStatusConfig[proposal.proposal.status]?.icon ||
-                        Clock;
-                      const statusInfo =
-                        proposalStatusConfig[proposal.proposal.status] ||
-                        proposalStatusConfig.pending;
-
-                      return (
-                        <div
-                          key={index}
-                          className="border border-gray-200 rounded-lg p-3"
-                        >
-                          <div className="flex items-start justify-between mb-2">
-                            <h4 className="font-medium text-gray-900 text-sm line-clamp-2">
-                              {proposal.jobTitle}
-                            </h4>
-                            <div
-                              className={`px-2 py-1 rounded-full text-xs ${statusInfo.color}`}
-                            >
-                              <span>{statusInfo.label}</span>
-                            </div>
-                          </div>
-                          <div className="flex items-center gap-2 mb-2">
-                            <User size={12} className="text-gray-500" />
-                            <span className="text-xs text-gray-600">
-                              {proposal.customer.profile.fullName}
-                            </span>
-                          </div>
-                          <div className="flex items-center justify-between">
-                            <span className="text-sm font-medium text-gray-900">
-                              KSh{" "}
-                              {proposal.proposal.proposedPrice.toLocaleString()}
-                            </span>
-                            <Link
-                              href={`/jobs/${proposal.jobId}`}
-                              className="text-xs text-[#FF6B35] hover:text-[#ff5722]"
-                            >
-                              View Job
-                            </Link>
-                          </div>
-                        </div>
-                      );
-                    })}
+            {/* Performance Insights */}
+            <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm">
+              <h3 className="font-bold text-gray-900 mb-6">
+                Performance Insights
+              </h3>
+              <div className="space-y-6">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 bg-green-100 rounded-lg">
+                      <Clock className="text-green-600" size={20} />
+                    </div>
+                    <div>
+                      <p className="text-sm text-gray-600">
+                        Avg. Response Time
+                      </p>
+                      <p className="font-semibold text-gray-900">
+                        {stats.responseTime}h
+                      </p>
+                    </div>
+                  </div>
+                  <TrendingDown className="text-green-500" size={16} />
                 </div>
-                {getPendingProposals().length > 3 && (
-                  <Link
-                    href="/dashboard/fundi/proposals"
-                    className="mt-4 text-center text-[#0A2647] hover:text-[#0d3157] font-semibold text-sm flex items-center justify-center gap-1"
-                  >
-                    View All Proposals
-                    <ChevronRight size={14} />
-                  </Link>
-                )}
-              </div>
-            )}
-
-            {/* Recent Customers */}
-            {jobs.filter((job) => job.customerId).length > 0 && (
-              <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-                <h3 className="font-bold text-gray-900 mb-4">
-                  Recent Customers
-                </h3>
-                <div className="space-y-3">
-                  {jobs
-                    .filter((job) => job.customerId)
-                    .slice(0, 3)
-                    .map((job, index) => (
-                      <div
-                        key={index}
-                        className="flex items-center gap-3 p-3 hover:bg-gray-50 rounded-lg"
-                      >
-                        <div className="w-10 h-10 bg-gradient-to-br from-[#0A2647] to-[#FF6B35] rounded-full flex items-center justify-center text-white font-semibold">
-                          {job.customerId.profile?.firstName?.[0]}
-                          {job.customerId.profile?.lastName?.[0]}
-                        </div>
-                        <div className="flex-1">
-                          <p className="font-medium text-gray-900">
-                            {job.customerId.profile?.firstName}{" "}
-                            {job.customerId.profile?.lastName}
-                          </p>
-                          <p className="text-sm text-gray-600">
-                            {job.serviceId.name}
-                          </p>
-                        </div>
-                        <Link
-                          href={`/dashboard/messages?user=${job.customerId._id}`}
-                          className="text-[#FF6B35] hover:text-[#ff5722]"
-                        >
-                          <MessageCircle size={16} />
-                        </Link>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 bg-blue-100 rounded-lg">
+                      <Star className="text-blue-600" size={20} />
+                    </div>
+                    <div>
+                      <p className="text-sm text-gray-600">Customer Rating</p>
+                      <div className="flex items-center gap-1">
+                        <Star
+                          className="text-yellow-400 fill-current"
+                          size={14}
+                        />
+                        <p className="font-semibold text-gray-900">4.8</p>
+                        <span className="text-sm text-gray-600">
+                          (42 reviews)
+                        </span>
                       </div>
-                    ))}
+                    </div>
+                  </div>
+                  <TrendingUp className="text-green-500" size={16} />
+                </div>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 bg-purple-100 rounded-lg">
+                      <AwardIcon className="text-purple-600" size={20} />
+                    </div>
+                    <div>
+                      <p className="text-sm text-gray-600">Completion Rate</p>
+                      <p className="font-semibold text-gray-900">
+                        {stats.successRate}%
+                      </p>
+                    </div>
+                  </div>
+                  <span className="text-sm font-medium text-green-600">
+                    +8%
+                  </span>
                 </div>
               </div>
-            )}
-
-            {/* Upcoming Deadlines */}
-            {jobs.some((job) => job.scheduling?.preferredDate) && (
-              <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-                <h3 className="font-bold text-gray-900 mb-4">
-                  Upcoming Deadlines
-                </h3>
-                <div className="space-y-3">
-                  {jobs
-                    .filter(
-                      (job) =>
-                        job.scheduling?.preferredDate &&
-                        job.status === "in_progress"
-                    )
-                    .slice(0, 3)
-                    .map((job, index) => (
-                      <div
-                        key={index}
-                        className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
-                      >
-                        <div>
-                          <p className="font-medium text-gray-900 text-sm line-clamp-1">
-                            {job.jobDetails.title}
-                          </p>
-                          <p className="text-xs text-gray-600">
-                            {job.customerId.profile.fullName}
-                          </p>
-                        </div>
-                        <div className="text-right">
-                          <p className="font-semibold text-gray-900">
-                            {formatDate(job.scheduling.preferredDate)}
-                          </p>
-                          <p className="text-xs text-gray-600">
-                            Preferred Date
-                          </p>
-                        </div>
-                      </div>
-                    ))}
-                </div>
-              </div>
-            )}
+            </div>
           </div>
         </div>
       </div>

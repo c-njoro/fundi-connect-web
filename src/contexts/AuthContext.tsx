@@ -174,11 +174,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
       // Redirect based on role
       if (user.role === "admin") {
-        router.push("/dashboard/admin");
+        router.push("/dashboard");
       } else if (user.isFundi) {
-        router.push("/dashboard/fundi");
+        router.push("/dashboard");
       } else {
-        router.push("/dashboard/customer");
+        router.push("/dashboard");
       }
     } catch (error: any) {
       throw new Error(error.response?.data?.message || "Login failed");
