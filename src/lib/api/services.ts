@@ -542,3 +542,32 @@ export const adminService = {
     }
   },
 };
+
+// lib/api/services.ts
+export const paymentService = {
+  initiateEscrow: async (jobId: string, phoneNumber: string) => {
+    const response = await apiClient.post(`/payments/escrow/${jobId}`, {
+      phoneNumber,
+    });
+    return response.data;
+  },
+
+  verifyPayment: async (jobId: string, transactionId: string) => {
+    const response = await apiClient.post(`/payments/verify/${jobId}`, {
+      transactionId,
+    });
+    return response.data;
+  },
+
+  releaseFunds: async (jobId: string) => {
+    const response = await apiClient.post(`/payments/release/${jobId}`);
+    return response.data;
+  },
+
+  refundPayment: async (jobId: string, reason: string) => {
+    const response = await apiClient.post(`/payments/refund/${jobId}`, {
+      reason,
+    });
+    return response.data;
+  },
+};

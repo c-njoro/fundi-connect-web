@@ -64,8 +64,7 @@ export default function Sidebar() {
       icon: Briefcase,
     },
     { href: "/dashboard/messages", label: "Messages", icon: MessageSquare },
-    { href: "/dashboard/fundi/earnings", label: "Earnings", icon: DollarSign },
-    { href: "/dashboard/fundi/reviews", label: "Reviews", icon: Star },
+
     {
       href: "/dashboard/fundi/availability",
       label: "Availability",
@@ -86,7 +85,7 @@ export default function Sidebar() {
     },
     { href: "/dashboard/admin/services", label: "Services", icon: Briefcase },
     { href: "/dashboard/admin/jobs", label: "All Jobs", icon: Briefcase },
-    { href: "/dashboard/admin/reports", label: "Reports", icon: FileText },
+
     { href: "/dashboard/settings", label: "Settings", icon: Settings },
   ];
 
