@@ -543,31 +543,123 @@ export const adminService = {
   },
 };
 
-// lib/api/services.ts
 export const paymentService = {
   initiateEscrow: async (jobId: string, phoneNumber: string) => {
-    const response = await apiClient.post(`/payments/escrow/${jobId}`, {
-      phoneNumber,
-    });
-    return response.data;
+    try {
+      const response = await apiClient.post(`/payments/escrow/${jobId}`, {
+        phoneNumber,
+      });
+      return response.data;
+    } catch (err: any) {
+      return {
+        success: false,
+        message: err?.response?.data?.message || "Payment initiation failed",
+        errors: err?.response?.data?.errors,
+      };
+    }
   },
 
-  verifyPayment: async (jobId: string, transactionId: string) => {
-    const response = await apiClient.post(`/payments/verify/${jobId}`, {
-      transactionId,
-    });
-    return response.data;
+  verifyPayment: async (jobId: string, reference: string) => {
+    try {
+      const response = await apiClient.post(`/payments/verify/${jobId}`, {
+        reference,
+      });
+      return response.data;
+    } catch (err: any) {
+      return {
+        success: false,
+        message: err?.response?.data?.message || "Payment verification failed",
+        errors: err?.response?.data?.errors,
+      };
+    }
   },
 
   releaseFunds: async (jobId: string) => {
-    const response = await apiClient.post(`/payments/release/${jobId}`);
-    return response.data;
+    try {
+      const response = await apiClient.post(`/payments/release/${jobId}`);
+      return response.data;
+    } catch (err: any) {
+      return {
+        success: false,
+        message: err?.response?.data?.message || "Fund release failed",
+        errors: err?.response?.data?.errors,
+      };
+    }
   },
 
   refundPayment: async (jobId: string, reason: string) => {
-    const response = await apiClient.post(`/payments/refund/${jobId}`, {
-      reason,
-    });
-    return response.data;
+    try {
+      const response = await apiClient.post(`/payments/refund/${jobId}`, {
+        reason,
+      });
+      return response.data;
+    } catch (err: any) {
+      return {
+        success: false,
+        message: err?.response?.data?.message || "Refund failed",
+        errors: err?.response?.data?.errors,
+      };
+    }
+  },
+};
+
+export const uploadService = {
+  // Upload single image
+  uploadSingle: async (file: File) => {
+    try {
+      const formData = new FormData();
+      formData.append("image", file);
+
+      const response = await apiClient.post("/upload/single", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      return response.data;
+    } catch (err: any) {
+      return {
+        success: false,
+        message: err?.response?.data?.message || "Image upload failed",
+        errors: err?.response?.data?.errors,
+      };
+    }
+  },
+
+  // Upload multiple images
+  uploadMultiple: async (files: File[]) => {
+    try {
+      const formData = new FormData();
+      files.forEach((file) => {
+        formData.append("images", file);
+      });
+
+      const response = await apiClient.post("/upload/multiple", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      return response.data;
+    } catch (err: any) {
+      return {
+        success: false,
+        message: err?.response?.data?.message || "Images upload failed",
+        errors: err?.response?.data?.errors,
+      };
+    }
+  },
+
+  // Delete image
+  deleteImage: async (publicIdOrUrl: string) => {
+    try {
+      const encodedId = encodeURIComponent(publicIdOrUrl);
+      const response = await apiClient.delete(`/upload/${encodedId}`);
+      return response.data;
+    } catch (err: any) {
+      return {
+        success: false,
+        message: err?.response?.data?.message || "Image deletion failed",
+        errors: err?.response?.data?.errors,
+      };
+    }
   },
 };
