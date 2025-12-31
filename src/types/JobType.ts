@@ -98,6 +98,7 @@ export interface IJob {
   status:
     | "posted"
     | "applied"
+    | "pending_payment_escrow"
     | "assigned"
     | "in_progress"
     | "completed"

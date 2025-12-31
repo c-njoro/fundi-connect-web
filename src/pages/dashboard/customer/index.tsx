@@ -82,7 +82,15 @@ import {
 
 interface IJob {
   _id: string;
-  status: "posted" | "completed" | "in_progress";
+  status:
+    | "posted"
+    | "applied"
+    | "pending_payment_escrow"
+    | "assigned"
+    | "in_progress"
+    | "completed"
+    | "cancelled"
+    | "disputed";
   subService: string;
   agreedPrice?: number;
 
@@ -212,6 +220,18 @@ const statusConfig = {
     icon: Users,
     iconColor: "text-purple-500",
   },
+  pending_payment_escrow: {
+    label: "Pending Payment",
+    color: "bg-yellow-100 text-yellow-800",
+    icon: Wallet,
+    iconColor: "text-yellow-500",
+  },
+  assigned: {
+    label: "Assigned",
+    color: "bg-indigo-100 text-indigo-800",
+    icon: CheckSquare,
+    iconColor: "text-indigo-500",
+  },
   in_progress: {
     label: "In Progress",
     color: "bg-orange-100 text-orange-800",
@@ -228,6 +248,12 @@ const statusConfig = {
     label: "Cancelled",
     color: "bg-red-100 text-red-800",
     icon: XCircle,
+    iconColor: "text-red-500",
+  },
+  disputed: {
+    label: "Disputed",
+    color: "bg-red-100 text-red-800",
+    icon: AlertTriangle,
     iconColor: "text-red-500",
   },
   rejected: {

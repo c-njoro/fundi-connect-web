@@ -1,6 +1,6 @@
 import { jobService, serviceService } from "@/lib/api/services";
 import { IService } from "@/types/ServiceTypes";
-import { useState, useEffect, FormEvent } from "react";
+import { useState, useEffect, FormEvent, ChangeEvent } from "react";
 import {
   Plus,
   AlertCircle,
@@ -14,6 +14,8 @@ import {
   Image as ImageIcon,
   Wrench,
   CreditCard,
+  Upload,
+  Trash2,
 } from "lucide-react";
 
 type CreateJobFormData = {
@@ -22,7 +24,7 @@ type CreateJobFormData = {
   jobDetails: {
     title: string;
     description: string;
-    images: string[];
+    images: File[];
     urgency: "low" | "medium" | "high" | "emergency";
     estimatedBudget: {
       min: number;
@@ -61,7 +63,8 @@ export default function CreateJob() {
   const [createSuccess, setCreateSuccess] = useState(false);
   const [selectedService, setSelectedService] = useState("");
   const [subServices, setSubServices] = useState<string[]>([]);
-  const [imageUrls, setImageUrls] = useState<string[]>([""]);
+  const [imagePreviews, setImagePreviews] = useState<string[]>([]);
+  const [uploadingImages, setUploadingImages] = useState(false);
 
   const [formData, setFormData] = useState<CreateJobFormData>({
     serviceId: "",
@@ -69,7 +72,7 @@ export default function CreateJob() {
     jobDetails: {
       title: "",
       description: "",
-      images: [""],
+      images: [],
       urgency: "medium",
       estimatedBudget: {
         min: 0,
@@ -185,35 +188,53 @@ export default function CreateJob() {
     }
   };
 
-  const handleImageUrlChange = (index: number, value: string) => {
-    const newImageUrls = [...imageUrls];
-    newImageUrls[index] = value;
-    setImageUrls(newImageUrls);
+  const handleImageUpload = (e: ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files) return;
+
+    setUploadingImages(true);
+
+    // Convert FileList to array
+    const newImages = Array.from(files);
+
+    // Check total images won't exceed limit (e.g., 5)
+    const totalImages = formData.jobDetails.images.length + newImages.length;
+    if (totalImages > 5) {
+      setCreateError("Maximum 5 images allowed");
+      setUploadingImages(false);
+      return;
+    }
+
+    // Add new images to form data
     setFormData((prev) => ({
       ...prev,
       jobDetails: {
         ...prev.jobDetails,
-        images: newImageUrls.filter((url) => url.trim() !== ""),
+        images: [...prev.jobDetails.images, ...newImages],
       },
     }));
+
+    // Create previews for new images
+    newImages.forEach((file) => {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreviews((prev) => [...prev, reader.result as string]);
+      };
+      reader.readAsDataURL(file);
+    });
+
+    setUploadingImages(false);
   };
 
-  const addImageUrlField = () => {
-    setImageUrls([...imageUrls, ""]);
-  };
-
-  const removeImageUrlField = (index: number) => {
-    if (imageUrls.length > 1) {
-      const newImageUrls = imageUrls.filter((_, i) => i !== index);
-      setImageUrls(newImageUrls);
-      setFormData((prev) => ({
-        ...prev,
-        jobDetails: {
-          ...prev.jobDetails,
-          images: newImageUrls.filter((url) => url.trim() !== ""),
-        },
-      }));
-    }
+  const removeImage = (index: number) => {
+    setFormData((prev) => ({
+      ...prev,
+      jobDetails: {
+        ...prev.jobDetails,
+        images: prev.jobDetails.images.filter((_, i) => i !== index),
+      },
+    }));
+    setImagePreviews((prev) => prev.filter((_, i) => i !== index));
   };
 
   const createJob = async (e: FormEvent) => {
@@ -222,34 +243,43 @@ export default function CreateJob() {
     setCreateSuccess(false);
     setCreating(true);
 
-    // Clean up data - remove empty image URLs
-    const cleanFormData = {
-      ...formData,
-      jobDetails: {
-        ...formData.jobDetails,
-        images: formData.jobDetails.images.filter((url) => url.trim() !== ""),
-      },
-    };
+    // Validate required fields
+    if (!formData.serviceId || !formData.subService) {
+      setCreateError("Please select a service and sub-service");
+      setCreating(false);
+      return;
+    }
 
     // Ensure min budget is less than max budget
     if (
-      cleanFormData.jobDetails.estimatedBudget.min >
-      cleanFormData.jobDetails.estimatedBudget.max
+      formData.jobDetails.estimatedBudget.min >
+      formData.jobDetails.estimatedBudget.max
     ) {
       setCreateError("Minimum budget cannot be greater than maximum budget");
       setCreating(false);
       return;
     }
 
-    // Validate required fields
-    if (!cleanFormData.serviceId || !cleanFormData.subService) {
-      setCreateError("Please select a service and sub-service");
-      setCreating(false);
-      return;
-    }
+    // Create FormData for file upload
+    const formDataToSend = new FormData();
+
+    // Append JSON data
+    const jsonData = {
+      ...formData,
+      jobDetails: {
+        ...formData.jobDetails,
+        images: [], // We'll send images separately
+      },
+    };
+    formDataToSend.append("data", JSON.stringify(jsonData));
+
+    // Append image files
+    formData.jobDetails.images.forEach((file, index) => {
+      formDataToSend.append(`images`, file);
+    });
 
     try {
-      const response = await jobService.createJob(cleanFormData);
+      const response = await jobService.createJob(formDataToSend);
       console.log("Create job response:", response);
       if (response.success) {
         console.log("Job created successfully");
@@ -262,7 +292,7 @@ export default function CreateJob() {
           jobDetails: {
             title: "",
             description: "",
-            images: [""],
+            images: [],
             urgency: "medium",
             estimatedBudget: {
               min: 0,
@@ -293,8 +323,9 @@ export default function CreateJob() {
         });
         setSelectedService("");
         setSubServices([]);
-        setImageUrls([""]);
-        //scroll to top
+        setImagePreviews([]);
+
+        // Scroll to top
         window.scrollTo({ top: 0, behavior: "smooth" });
       } else {
         setCreateError(response.message || "Failed to create job");
@@ -387,6 +418,7 @@ export default function CreateJob() {
         <form
           onSubmit={createJob}
           className="space-y-8 bg-white rounded-xl shadow-sm border border-gray-200 p-6"
+          encType="multipart/form-data"
         >
           {/* Service Selection Section */}
           <div className="space-y-6">
@@ -414,7 +446,7 @@ export default function CreateJob() {
                     name="serviceId"
                     value={selectedService}
                     onChange={handleServiceChange}
-                    className="w-full p-3 border border-gray-300 rounded-lg  focus:border-[#FF6B35] bg-white appearance-none"
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:border-[#FF6B35] bg-white appearance-none"
                     required
                   >
                     <option value="">Select a service</option>
@@ -448,7 +480,7 @@ export default function CreateJob() {
                     name="subService"
                     value={formData.subService}
                     onChange={handleInputChange}
-                    className="w-full p-3 border border-gray-300 rounded-lg  focus:border-[#FF6B35] bg-white appearance-none"
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:border-[#FF6B35] bg-white appearance-none"
                     required
                     disabled={!selectedService}
                   >
@@ -499,7 +531,7 @@ export default function CreateJob() {
                   name="jobDetails.title"
                   value={formData.jobDetails.title}
                   onChange={handleInputChange}
-                  className="w-full p-3 border border-gray-300 rounded-lg  focus:border-[#FF6B35]"
+                  className="w-full p-3 border border-gray-300 rounded-lg focus:border-[#FF6B35]"
                   placeholder="e.g., Add two new wall sockets"
                   required
                 />
@@ -513,12 +545,13 @@ export default function CreateJob() {
                   name="jobDetails.description"
                   value={formData.jobDetails.description}
                   onChange={handleInputChange}
-                  className="w-full p-3 border border-gray-300 rounded-lg  focus:border-[#FF6B35] h-40"
+                  className="w-full p-3 border border-gray-300 rounded-lg focus:border-[#FF6B35] h-40"
                   placeholder="Describe the job in detail..."
                   required
                 />
               </div>
 
+              {/* Image Upload Section */}
               <div>
                 <div className="flex items-center gap-3 mb-4">
                   <div className="bg-pink-100 p-2 rounded-lg">
@@ -526,44 +559,76 @@ export default function CreateJob() {
                   </div>
                   <div>
                     <h3 className="text-lg font-semibold text-gray-900">
-                      Images
+                      Upload Images
                     </h3>
                     <p className="text-gray-600 text-sm">
-                      Add image URLs to help fundis understand the job better
+                      Add photos to help fundis understand the job better (Max 5
+                      images)
                     </p>
                   </div>
                 </div>
 
-                <div className="space-y-4">
-                  {imageUrls.map((url, index) => (
-                    <div key={index} className="flex gap-3">
+                <div className="space-y-6">
+                  {/* Image Upload Button */}
+                  <div className="flex flex-col items-center justify-center p-8 border-2 border-dashed border-gray-300 rounded-xl hover:border-[#FF6B35] transition-colors">
+                    <Upload className="h-12 w-12 text-gray-400 mb-4" />
+                    <label htmlFor="image-upload" className="cursor-pointer">
+                      <div className="bg-[#FF6B35] text-white px-6 py-3 rounded-lg hover:bg-[#ff5722] transition-colors font-medium flex items-center gap-2">
+                        <Plus size={20} />
+                        <span>Choose Images</span>
+                      </div>
                       <input
-                        type="url"
-                        value={url}
-                        onChange={(e) =>
-                          handleImageUrlChange(index, e.target.value)
+                        id="image-upload"
+                        type="file"
+                        accept="image/*"
+                        multiple
+                        onChange={handleImageUpload}
+                        className="hidden"
+                        disabled={
+                          formData.jobDetails.images.length >= 5 ||
+                          uploadingImages
                         }
-                        className="flex-1 p-3 border border-gray-300 rounded-lg  focus:border-[#FF6B35]"
-                        placeholder="https://example.com/image.jpg"
                       />
-                      <button
-                        type="button"
-                        onClick={() => removeImageUrlField(index)}
-                        className="px-4 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 transition-colors disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed font-medium"
-                        disabled={imageUrls.length <= 1}
-                      >
-                        <XCircle size={20} />
-                      </button>
+                    </label>
+                    <p className="text-gray-500 text-sm mt-4">
+                      Upload up to 5 images (JPG, PNG, WebP)
+                    </p>
+                    {uploadingImages && (
+                      <div className="flex items-center gap-2 mt-2">
+                        <Loader className="animate-spin h-4 w-4 text-[#FF6B35]" />
+                        <span className="text-sm text-gray-600">
+                          Uploading...
+                        </span>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Image Previews */}
+                  {imagePreviews.length > 0 && (
+                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                      {imagePreviews.map((preview, index) => (
+                        <div key={index} className="relative group">
+                          <div className="aspect-square rounded-lg overflow-hidden border border-gray-200">
+                            <img
+                              src={preview}
+                              alt={`Preview ${index + 1}`}
+                              className="w-full h-full object-cover"
+                            />
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => removeImage(index)}
+                            className="absolute top-2 right-2 bg-red-500 text-white p-1.5 rounded-full opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-600"
+                          >
+                            <Trash2 size={16} />
+                          </button>
+                          <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 text-white text-xs p-1 text-center">
+                            Image {index + 1}
+                          </div>
+                        </div>
+                      ))}
                     </div>
-                  ))}
-                  <button
-                    type="button"
-                    onClick={addImageUrlField}
-                    className="flex items-center gap-2 px-4 py-2 bg-blue-100 text-blue-700 rounded-lg hover:bg-blue-200 transition-colors font-medium"
-                  >
-                    <Plus size={18} />
-                    <span>Add Another Image URL</span>
-                  </button>
+                  )}
                 </div>
               </div>
 
@@ -577,7 +642,7 @@ export default function CreateJob() {
                       name="jobDetails.urgency"
                       value={formData.jobDetails.urgency}
                       onChange={handleInputChange}
-                      className="w-full p-3 border border-gray-300 rounded-lg  focus:border-[#FF6B35] bg-white appearance-none"
+                      className="w-full p-3 border border-gray-300 rounded-lg focus:border-[#FF6B35] bg-white appearance-none"
                     >
                       <option value="low">Low</option>
                       <option value="medium">Medium</option>
@@ -614,7 +679,7 @@ export default function CreateJob() {
                           name="jobDetails.estimatedBudget.min"
                           value={formData.jobDetails.estimatedBudget.min}
                           onChange={handleInputChange}
-                          className="w-full pl-14 p-3 border border-gray-300 rounded-lg  focus:border-[#FF6B35]"
+                          className="w-full pl-14 p-3 border border-gray-300 rounded-lg focus:border-[#FF6B35]"
                           min="0"
                           required
                         />
@@ -633,7 +698,7 @@ export default function CreateJob() {
                           name="jobDetails.estimatedBudget.max"
                           value={formData.jobDetails.estimatedBudget.max}
                           onChange={handleInputChange}
-                          className="w-full pl-14 p-3 border border-gray-300 rounded-lg  focus:border-[#FF6B35]"
+                          className="w-full pl-14 p-3 border border-gray-300 rounded-lg focus:border-[#FF6B35]"
                           min="0"
                           required
                         />
@@ -671,7 +736,7 @@ export default function CreateJob() {
                   name="location.address"
                   value={formData.location.address}
                   onChange={handleInputChange}
-                  className="w-full p-3 border border-gray-300 rounded-lg  focus:border-[#FF6B35]"
+                  className="w-full p-3 border border-gray-300 rounded-lg focus:border-[#FF6B35]"
                   placeholder="e.g., 45 Kenyatta Avenue"
                   required
                 />
@@ -686,7 +751,7 @@ export default function CreateJob() {
                   name="location.county"
                   value={formData.location.county}
                   onChange={handleInputChange}
-                  className="w-full p-3 border border-gray-300 rounded-lg  focus:border-[#FF6B35]"
+                  className="w-full p-3 border border-gray-300 rounded-lg focus:border-[#FF6B35]"
                   placeholder="e.g., Nakuru"
                   required
                 />
@@ -701,7 +766,7 @@ export default function CreateJob() {
                   name="location.city"
                   value={formData.location.city}
                   onChange={handleInputChange}
-                  className="w-full p-3 border border-gray-300 rounded-lg  focus:border-[#FF6B35]"
+                  className="w-full p-3 border border-gray-300 rounded-lg focus:border-[#FF6B35]"
                   placeholder="e.g., Nakuru"
                   required
                 />
@@ -716,7 +781,7 @@ export default function CreateJob() {
                   name="location.area"
                   value={formData.location.area}
                   onChange={handleInputChange}
-                  className="w-full p-3 border border-gray-300 rounded-lg  focus:border-[#FF6B35]"
+                  className="w-full p-3 border border-gray-300 rounded-lg focus:border-[#FF6B35]"
                   placeholder="e.g., Milimani"
                   required
                 />
@@ -731,7 +796,7 @@ export default function CreateJob() {
                   name="location.landmark"
                   value={formData.location.landmark}
                   onChange={handleInputChange}
-                  className="w-full p-3 border border-gray-300 rounded-lg  focus:border-[#FF6B35]"
+                  className="w-full p-3 border border-gray-300 rounded-lg focus:border-[#FF6B35]"
                   placeholder="e.g., Next to Milimani Hospital"
                 />
               </div>
@@ -746,7 +811,7 @@ export default function CreateJob() {
                   name="location.coordinates.lat"
                   value={formData.location.coordinates.lat}
                   onChange={handleInputChange}
-                  className="w-full p-3 border border-gray-300 rounded-lg  focus:border-[#FF6B35]"
+                  className="w-full p-3 border border-gray-300 rounded-lg focus:border-[#FF6B35]"
                   placeholder="e.g., -0.3031"
                 />
               </div>
@@ -761,7 +826,7 @@ export default function CreateJob() {
                   name="location.coordinates.lng"
                   value={formData.location.coordinates.lng}
                   onChange={handleInputChange}
-                  className="w-full p-3 border border-gray-300 rounded-lg  focus:border-[#FF6B35]"
+                  className="w-full p-3 border border-gray-300 rounded-lg focus:border-[#FF6B35]"
                   placeholder="e.g., 36.0800"
                 />
               </div>
@@ -795,7 +860,7 @@ export default function CreateJob() {
                     name="scheduling.preferredDate"
                     value={formData.scheduling.preferredDate}
                     onChange={handleInputChange}
-                    className="w-full p-3 border border-gray-300 rounded-lg  focus:border-[#FF6B35]"
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:border-[#FF6B35]"
                     min={new Date().toISOString().split("T")[0]}
                     required
                   />
@@ -812,7 +877,7 @@ export default function CreateJob() {
                     name="scheduling.preferredTime"
                     value={formData.scheduling.preferredTime}
                     onChange={handleInputChange}
-                    className="w-full p-3 border border-gray-300 rounded-lg  focus:border-[#FF6B35]"
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:border-[#FF6B35]"
                     required
                   />
                 </div>
@@ -827,7 +892,7 @@ export default function CreateJob() {
                     name="scheduling.flexibility"
                     value={formData.scheduling.flexibility}
                     onChange={handleInputChange}
-                    className="w-full p-3 border border-gray-300 rounded-lg  focus:border-[#FF6B35] bg-white appearance-none"
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:border-[#FF6B35] bg-white appearance-none"
                   >
                     <option value="strict">Strict</option>
                     <option value="flexible">Flexible</option>
@@ -950,7 +1015,7 @@ export default function CreateJob() {
                     jobDetails: {
                       title: "",
                       description: "",
-                      images: [""],
+                      images: [],
                       urgency: "medium",
                       estimatedBudget: {
                         min: 0,
@@ -981,7 +1046,7 @@ export default function CreateJob() {
                   });
                   setSelectedService("");
                   setSubServices([]);
-                  setImageUrls([""]);
+                  setImagePreviews([]);
                 }}
                 className="px-6 py-4 border-2 border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium"
               >

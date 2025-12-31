@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import { jobService } from "@/lib/api/services";
+import { jobService, paymentService } from "@/lib/api/services";
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
@@ -42,6 +42,7 @@ import {
   MapPin as MapPinIcon,
 } from "lucide-react";
 import { set } from "mongoose";
+import Image from "next/image";
 
 // Simplified interface focused on the job details page
 export interface IJob {
@@ -128,17 +129,19 @@ export interface IJob {
 
   // Job status
   status:
+    | "posted"
     | "applied"
-    | "pending"
+    | "pending_payment_escrow"
+    | "assigned"
     | "in_progress"
     | "completed"
     | "cancelled"
-    | "rejected";
+    | "disputed";
 
   // Payment information
   payment: {
     method: "cash" | "mpesa" | "card" | "bank";
-    status: "pending" | "paid" | "released" | "refunded" | "failed";
+    status: "pending" | "escrow" | "released" | "refunded" | "failed";
     escrowAmount?: number;
     releaseDate?: string;
   };
@@ -227,17 +230,29 @@ export interface IJob {
 
 // Status configuration
 const statusConfig = {
+  posted: {
+    label: "Posted",
+    color: "bg-blue-100 text-blue-800",
+    icon: Briefcase,
+    iconColor: "text-blue-500",
+  },
   applied: {
     label: "Applied",
     color: "bg-blue-100 text-blue-800",
     icon: Hourglass,
     iconColor: "text-blue-500",
   },
-  pending: {
-    label: "Pending",
-    color: "bg-yellow-100 text-yellow-800",
-    icon: Clock,
-    iconColor: "text-yellow-500",
+  pending_payment_escrow: {
+    label: "Pending Payment Escrow",
+    color: "bg-orange-100 text-orange-800",
+    icon: DollarSign,
+    iconColor: "text-orange-500",
+  },
+  assigned: {
+    label: "Assigned",
+    color: "bg-green-100 text-green-800",
+    icon: UserCheck,
+    iconColor: "text-green-500",
   },
   in_progress: {
     label: "In Progress",
@@ -257,11 +272,11 @@ const statusConfig = {
     icon: XCircle,
     iconColor: "text-red-500",
   },
-  rejected: {
-    label: "Rejected",
-    color: "bg-gray-100 text-gray-800",
-    icon: XCircle,
-    iconColor: "text-gray-500",
+  disputed: {
+    label: "Disputed",
+    color: "bg-red-100 text-red-800",
+    icon: AlertTriangle,
+    iconColor: "text-red-500",
   },
 };
 
@@ -287,6 +302,11 @@ const paymentConfig = {
     label: "Pending",
     color: "bg-yellow-100 text-yellow-800",
     icon: Clock,
+  },
+  escrow: {
+    label: "Escrowed",
+    color: "bg-blue-100 text-blue-800",
+    icon: CreditCard,
   },
   paid: {
     label: "Paid",
@@ -315,6 +335,7 @@ const paymentMethodConfig = {
 };
 
 export default function CustomerJobDetail() {
+  const router = useRouter();
   const { query } = useRouter();
   const id = Array.isArray(query.id) ? query.id[0] : query.id;
   const [job, setJob] = useState<IJob | null>(null);
@@ -324,6 +345,15 @@ export default function CustomerJobDetail() {
   const [acceptingError, setAcceptingError] = useState<string | null>(null);
   const [approvingPayment, setApprovingPayment] = useState<boolean>(false);
   const [approvingPaymentError, setApprovingPaymentError] = useState<
+    string | null
+  >(null);
+  const [payingEscrow, setPayingEscrow] = useState<boolean>(false);
+  const [payingEscrowError, setPayingEscrowError] = useState<string | null>(
+    null
+  );
+  const [payingEscrowPhone, setPayingEscrowPhone] = useState<string>("");
+  const [verifyingPayment, setVerifyingPayment] = useState<boolean>(false);
+  const [verifyingPaymentError, setVerifyingPaymentError] = useState<
     string | null
   >(null);
 
@@ -400,6 +430,50 @@ export default function CustomerJobDetail() {
       setAcceptingError("An error occurred while accepting the proposal");
     } finally {
       setAccepting(false);
+    }
+  };
+
+  const payJobEscrow = async (jobId: string, phoneNumber: string) => {
+    setPayingEscrow(true);
+    setPayingEscrowError(null);
+    try {
+      const response = await paymentService.initiateEscrow(jobId, phoneNumber);
+      if (response.success) {
+        fetchJob(id!);
+        console.log("Escrow payment initiated successfully.");
+        //rdirect to a different tab to complete payment
+        window.open(response.data.paymentLink, "_blank", "noopener,noreferrer");
+      } else {
+        setPayingEscrowError(response.message || "Failed to initiate escrow");
+      }
+    } catch (error) {
+      console.error("Error paying escrow:", error);
+      setPayingEscrowError("An error occurred while paying the escrow");
+    } finally {
+      setPayingEscrow(false);
+    }
+  };
+
+  const verifyEscrowPayment = async (jobId: string) => {
+    setVerifyingPayment(true);
+    setVerifyingPaymentError(null);
+    try {
+      const response = await paymentService.verifyPayment(jobId);
+      if (response.success) {
+        fetchJob(id!);
+        console.log("Escrow payment verified successfully.");
+      } else {
+        setVerifyingPaymentError(response.message || "Failed to verify escrow");
+        alert(`${response.message || "Failed to verify escrow"}`);
+      }
+    } catch (error) {
+      console.error("Error verifying escrow payment:", error);
+
+      setVerifyingPaymentError(
+        "An error occurred while verifying the escrow payment"
+      );
+    } finally {
+      setVerifyingPayment(false);
     }
   };
 
@@ -537,6 +611,52 @@ export default function CustomerJobDetail() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Main Content */}
           <div className="lg:col-span-2 space-y-8">
+            {/* Escrow Payment Section */}
+            {job.status === "pending_payment_escrow" && (
+              <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-6">
+                <p className="text-yellow-700">
+                  You need to fund the escrow amount of {job.agreedPrice} to
+                  allow job start.
+                </p>
+
+                <form
+                  action="POST"
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    const cleanedPhone = "+254" + payingEscrowPhone.slice(1);
+                    payJobEscrow(job._id, cleanedPhone);
+                  }}
+                >
+                  <div className="mt-4 flex flex-col sm:flex-row sm:items-center gap-3 text-gray-900">
+                    <input
+                      type="tel"
+                      value={payingEscrowPhone}
+                      onChange={(e) => setPayingEscrowPhone(e.target.value)}
+                      placeholder="Enter phone number"
+                      required
+                      pattern="^07\d{8}$"
+                      title="Phone number must start with 07 and be exactly 10 digits"
+                      className="flex-1 px-4 py-2 border border-gray-300 rounded-lg"
+                    />
+                    <button
+                      disabled={payingEscrow || verifyingPayment}
+                      type="submit"
+                      className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                    >
+                      {payingEscrow ? "Processing..." : "Pay Escrow"}
+                    </button>
+                    <button
+                      onClick={() => verifyEscrowPayment(job._id)}
+                      disabled={verifyingPayment || payingEscrow}
+                      className="px-6 py-2 border border-blue-600 text-gray-900 rounded-lg hover:border-blue-700 transition-colors"
+                    >
+                      {verifyingPayment ? "Verifying..." : "Verify Payment"}
+                    </button>
+                  </div>
+                </form>
+              </div>
+            )}
+
             {/* Job Header */}
             <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-8">
               <div className="flex items-start justify-between mb-6">
@@ -592,7 +712,13 @@ export default function CustomerJobDetail() {
                         key={index}
                         className="aspect-square bg-gray-100 rounded-lg overflow-hidden flex items-center justify-center"
                       >
-                        <ImageIcon size={32} className="text-gray-400" />
+                        <Image
+                          src={image}
+                          alt={`Job Image ${index + 1}`}
+                          width={400}
+                          height={400}
+                          className="object-cover w-full h-full"
+                        />
                       </div>
                     ))}
                   </div>

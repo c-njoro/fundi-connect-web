@@ -95,6 +95,7 @@ interface Job {
   status:
     | "posted"
     | "applied"
+    | "pending_payment_escrow"
     | "assigned"
     | "in_progress"
     | "completed"
@@ -177,6 +178,12 @@ const statusConfig = {
     color: "bg-purple-100 text-purple-800",
     icon: Users,
     iconColor: "text-purple-500",
+  },
+  pending_payment_escrow: {
+    label: "Pending Payment",
+    color: "bg-yellow-100 text-yellow-800",
+    icon: CreditCard,
+    iconColor: "text-yellow-500",
   },
   assigned: {
     label: "Assigned",

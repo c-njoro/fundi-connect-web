@@ -83,7 +83,15 @@ import {
 
 interface IJob {
   _id: string;
-  status: "posted" | "completed" | "in_progress";
+  status:
+    | "posted"
+    | "applied"
+    | "pending_payment_escrow"
+    | "assigned"
+    | "in_progress"
+    | "completed"
+    | "cancelled"
+    | "disputed";
   subService: string;
   agreedPrice?: number;
 

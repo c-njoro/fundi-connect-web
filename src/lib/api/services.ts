@@ -559,11 +559,9 @@ export const paymentService = {
     }
   },
 
-  verifyPayment: async (jobId: string, reference: string) => {
+  verifyPayment: async (jobId: string) => {
     try {
-      const response = await apiClient.post(`/payments/verify/${jobId}`, {
-        reference,
-      });
+      const response = await apiClient.post(`/payments/verify/${jobId}`);
       return response.data;
     } catch (err: any) {
       return {

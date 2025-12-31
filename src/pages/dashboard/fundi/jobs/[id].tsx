@@ -1,7 +1,8 @@
 import { useRouter } from "next/router";
-import { jobService } from "@/lib/api/services";
+import { jobService, uploadService } from "@/lib/api/services";
 import { useState, useEffect } from "react";
 import Link from "next/link";
+
 import {
   ArrowLeft,
   Clock,
@@ -17,16 +18,10 @@ import {
   TrendingUp,
   Hourglass,
   Zap,
-  Home,
-  Briefcase,
-  FileText,
   Image as ImageIcon,
-  ThumbsUp,
   MessageCircle,
   Phone,
-  Mail,
   Star,
-  Award,
   Shield,
   Download,
   Send,
@@ -40,10 +35,11 @@ import {
   CalendarDays,
   MapPin as MapPinIcon,
   Plus,
-  Upload,
   X,
+  Briefcase,
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
+import ImageUpload from "@/components/ImageUpload";
 
 // Reuse the same IJob interface from your existing code
 export interface IJob {
@@ -119,12 +115,14 @@ export interface IJob {
     flexibility: "strict" | "flexible" | "negotiable";
   };
   status:
+    | "posted"
     | "applied"
-    | "pending"
+    | "pending_payment_escrow"
+    | "assigned"
     | "in_progress"
     | "completed"
     | "cancelled"
-    | "rejected";
+    | "disputed";
   payment: {
     method: "cash" | "mpesa" | "card" | "bank";
     status: "pending" | "paid" | "released" | "refunded" | "failed";
@@ -206,17 +204,29 @@ export interface IJob {
 
 // Status configuration (same as before)
 const statusConfig = {
+  posted: {
+    label: "Posted",
+    color: "bg-blue-100 text-blue-800",
+    icon: Briefcase,
+    iconColor: "text-blue-500",
+  },
   applied: {
     label: "Applied",
     color: "bg-blue-100 text-blue-800",
     icon: Hourglass,
     iconColor: "text-blue-500",
   },
-  pending: {
-    label: "Pending",
-    color: "bg-yellow-100 text-yellow-800",
-    icon: Clock,
-    iconColor: "text-yellow-500",
+  pending_payment_escrow: {
+    label: "Pending Payment Escrow",
+    color: "bg-orange-100 text-orange-800",
+    icon: DollarSign,
+    iconColor: "text-orange-500",
+  },
+  assigned: {
+    label: "Assigned",
+    color: "bg-green-100 text-green-800",
+    icon: UserCheck,
+    iconColor: "text-green-500",
   },
   in_progress: {
     label: "In Progress",
@@ -236,11 +246,11 @@ const statusConfig = {
     icon: XCircle,
     iconColor: "text-red-500",
   },
-  rejected: {
-    label: "Rejected",
-    color: "bg-gray-100 text-gray-800",
-    icon: XCircle,
-    iconColor: "text-gray-500",
+  disputed: {
+    label: "Disputed",
+    color: "bg-red-100 text-red-800",
+    icon: AlertTriangle,
+    iconColor: "text-red-500",
   },
 };
 
@@ -294,6 +304,12 @@ export default function FundiJobDetail() {
   const [completionImages, setCompletionImages] = useState<string[]>([]);
   const [showCompletionModal, setShowCompletionModal] =
     useState<boolean>(false);
+  const [clearingProgressImages, setClearingProgressImages] =
+    useState<boolean>(false);
+  const [clearingCompletionImages, setClearingCompletionImages] =
+    useState<boolean>(false);
+
+  const [expandedImage, setExpandedImage] = useState<string | null>(null);
 
   const fetchJob = async (jobId: string) => {
     setLoading(true);
@@ -386,7 +402,8 @@ export default function FundiJobDetail() {
       if (response.success) {
         fetchJob(id!);
         setUpdateMessage("");
-        setUpdateImages([]);
+        // Clear images from Cloudinary after successful update
+        await clearProgressImages();
         console.log("Progress updated successfully.");
       } else {
         console.error("Failed to update progress:", response.message);
@@ -415,7 +432,8 @@ export default function FundiJobDetail() {
         fetchJob(id!);
         setShowCompletionModal(false);
         setCompletionNotes("");
-        setCompletionImages([]);
+        // Clear images from Cloudinary after successful completion
+        await clearCompletionImages();
         console.log("Job completed successfully.");
       } else {
         console.error("Failed to complete job:", response.message);
@@ -429,25 +447,60 @@ export default function FundiJobDetail() {
     }
   };
 
-  const simulateImageUpload = (files: FileList) => {
-    // In a real app, you would upload to cloud storage and get URLs
-    // For now, we'll simulate with placeholder URLs
-    const newImages: string[] = [];
-    for (let i = 0; i < files.length; i++) {
-      newImages.push(`https://picsum.photos/seed/${Date.now() + i}/400/300`);
+  const clearProgressImages = async () => {
+    if (updateImages.length === 0) return;
+
+    setClearingProgressImages(true);
+    try {
+      // Delete all progress images from Cloudinary
+      const deletePromises = updateImages.map((url) =>
+        uploadService.deleteImage(url).catch((err) => {
+          console.error("Failed to delete progress image:", url, err);
+          return null;
+        })
+      );
+
+      await Promise.all(deletePromises);
+      setUpdateImages([]);
+    } catch (err) {
+      console.error("Error clearing progress images:", err);
+    } finally {
+      setClearingProgressImages(false);
     }
-    return newImages;
+  };
+
+  const clearCompletionImages = async () => {
+    if (completionImages.length === 0) return;
+
+    setClearingCompletionImages(true);
+    try {
+      // Delete all completion images from Cloudinary
+      const deletePromises = completionImages.map((url) =>
+        uploadService.deleteImage(url).catch((err) => {
+          console.error("Failed to delete completion image:", url, err);
+          return null;
+        })
+      );
+
+      await Promise.all(deletePromises);
+      setCompletionImages([]);
+    } catch (err) {
+      console.error("Error clearing completion images:", err);
+    } finally {
+      setClearingCompletionImages(false);
+    }
   };
 
   const isJobAssignedToFundi = () => {
-    return job?.fundiId?._id === user?._id; // You'll need to replace with actual fundi ID from auth
+    return job?.fundiId?._id === user?._id;
   };
 
   const canStartJob = () => {
     if (!job) return false;
     return (
       isJobAssignedToFundi() &&
-      (!job.workProgress || job.workProgress.length === 0)
+      (!job.workProgress || job.workProgress.length === 0) &&
+      job.status !== "pending_payment_escrow"
     );
   };
 
@@ -462,6 +515,31 @@ export default function FundiJobDetail() {
 
   const canCompleteJob = () => {
     return isJobAssignedToFundi() && job?.status === "in_progress";
+  };
+
+  const clearProgressForm = async () => {
+    if (
+      !window.confirm(
+        "Clear progress update? This will delete all uploaded images."
+      )
+    ) {
+      return;
+    }
+    await clearProgressImages();
+    setUpdateMessage("");
+  };
+
+  const clearCompletionForm = async () => {
+    if (
+      !window.confirm(
+        "Clear completion form? This will delete all uploaded images."
+      )
+    ) {
+      return;
+    }
+    await clearCompletionImages();
+    setCompletionNotes("");
+    setCompletionImages([]);
   };
 
   if (loading) {
@@ -546,6 +624,13 @@ export default function FundiJobDetail() {
                 <span>{statusInfo.label}</span>
               </div>
             </div>
+
+            {job.status === "pending_payment_escrow" && (
+              <p className="text-green-500">
+                Your proposal has been accepted! Please await payment release
+                from the customer. Then you can start the job.
+              </p>
+            )}
 
             {canStartJob() && (
               <button
@@ -652,18 +737,188 @@ export default function FundiJobDetail() {
                               </p>
                             )}
                             {progress.images && progress.images.length > 0 && (
-                              <div className="flex gap-2 mt-3">
-                                {progress.images.map((img, imgIndex) => (
-                                  <div
-                                    key={imgIndex}
-                                    className="w-16 h-16 bg-gray-200 rounded-lg flex items-center justify-center"
+                              <div className="space-y-2 mt-3">
+                                <p className="text-xs text-gray-500">
+                                  Uploaded images ({progress.images.length}):
+                                </p>
+                                <div className="flex gap-2 overflow-x-auto pb-2">
+                                  {progress.images.map((img, imgIndex) => {
+                                    // Get the image URL - handle both string and object formats
+                                    const imageUrl =
+                                      typeof img === "string" ? img : img;
+
+                                    return (
+                                      <div
+                                        key={imgIndex}
+                                        className="relative group flex-shrink-0"
+                                      >
+                                        {/* Thumbnail */}
+                                        <button
+                                          type="button"
+                                          onClick={() =>
+                                            setExpandedImage(imageUrl)
+                                          }
+                                          className="w-16 h-16 rounded-lg overflow-hidden border border-gray-200 hover:border-blue-400 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                                        >
+                                          {/* Image or fallback */}
+                                          <div className="w-full h-full relative">
+                                            <img
+                                              src={imageUrl}
+                                              alt={`Upload ${imgIndex + 1}`}
+                                              className="w-full h-full object-cover hover:scale-105 transition-transform"
+                                              onError={(e) => {
+                                                // Hide broken image
+                                                e.currentTarget.style.display =
+                                                  "none";
+                                                // Show fallback
+                                                const fallback =
+                                                  e.currentTarget.parentElement?.querySelector(
+                                                    ".image-fallback"
+                                                  );
+                                                if (fallback) {
+                                                  (
+                                                    fallback as HTMLElement
+                                                  ).style.display = "flex";
+                                                }
+                                              }}
+                                            />
+                                            {/* Fallback icon for broken images */}
+                                            <div
+                                              className="image-fallback absolute inset-0 bg-gray-100 hidden items-center justify-center"
+                                              style={{ display: "none" }}
+                                            >
+                                              <ImageIcon
+                                                size={20}
+                                                className="text-gray-400"
+                                              />
+                                            </div>
+                                          </div>
+
+                                          {/* Hover overlay */}
+                                          <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors" />
+                                        </button>
+
+                                        {/* Image index badge */}
+                                        <div className="absolute -top-1 -right-1 w-5 h-5 bg-blue-500 text-white text-xs rounded-full flex items-center justify-center shadow-sm">
+                                          {imgIndex + 1}
+                                        </div>
+                                      </div>
+                                    );
+                                  })}
+                                </div>
+                              </div>
+                            )}
+
+                            {/* Expanded Image Modal */}
+                            {expandedImage && (
+                              <div
+                                className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 p-4"
+                                onClick={() => setExpandedImage(null)}
+                              >
+                                <div
+                                  className="relative max-w-4xl max-h-[90vh] w-full"
+                                  onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside
+                                >
+                                  {/* Close button */}
+                                  <button
+                                    onClick={() => setExpandedImage(null)}
+                                    className="absolute top-4 right-4 z-10 p-3 bg-black/50 text-white rounded-full hover:bg-black/70 transition-colors focus:outline-none focus:ring-2 focus:ring-white"
+                                    aria-label="Close image viewer"
                                   >
-                                    <ImageIcon
-                                      size={20}
-                                      className="text-gray-500"
+                                    <X size={24} />
+                                  </button>
+
+                                  {/* Image container */}
+                                  <div className="relative w-full h-full flex items-center justify-center">
+                                    <img
+                                      src={expandedImage}
+                                      alt="Expanded view"
+                                      className="max-w-full max-h-[80vh] object-contain rounded-lg"
+                                      onError={(e) => {
+                                        // If the expanded image fails to load, show an error
+                                        e.currentTarget.style.display = "none";
+                                        const errorDiv =
+                                          document.createElement("div");
+                                        errorDiv.className =
+                                          "p-8 bg-gray-800 rounded-lg text-center text-white";
+                                        errorDiv.innerHTML = `
+              <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mx-auto mb-4 text-gray-400">
+                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                <polyline points="21 15 16 10 5 21"></polyline>
+              </svg>
+              <p class="font-medium">Image unavailable</p>
+              <p class="text-gray-400 text-sm mt-1">The image could not be loaded</p>
+            `;
+                                        e.currentTarget.parentElement?.appendChild(
+                                          errorDiv
+                                        );
+                                      }}
                                     />
                                   </div>
-                                ))}
+
+                                  {/* Image navigation dots (optional) */}
+                                  {progress.images &&
+                                    progress.images.length > 1 && (
+                                      <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex gap-2">
+                                        {progress.images.map((img, index) => {
+                                          const imgUrl =
+                                            typeof img === "string" ? img : img;
+                                          return (
+                                            <button
+                                              key={index}
+                                              onClick={() => {
+                                                setExpandedImage(imgUrl);
+                                              }}
+                                              className={`w-2 h-2 rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-white ${
+                                                imgUrl === expandedImage
+                                                  ? "bg-white"
+                                                  : "bg-gray-500 hover:bg-gray-300"
+                                              }`}
+                                              aria-label={`Go to image ${
+                                                index + 1
+                                              }`}
+                                            />
+                                          );
+                                        })}
+                                      </div>
+                                    )}
+
+                                  {/* Download button (optional) */}
+                                  <button
+                                    onClick={() => {
+                                      const link = document.createElement("a");
+                                      link.href = expandedImage;
+                                      link.download = `image-${Date.now()}.jpg`;
+                                      document.body.appendChild(link);
+                                      link.click();
+                                      document.body.removeChild(link);
+                                    }}
+                                    className="absolute bottom-4 right-4 z-10 px-4 py-2 bg-black/50 text-white rounded-lg hover:bg-black/70 transition-colors text-sm font-medium flex items-center gap-2"
+                                  >
+                                    <svg
+                                      xmlns="http://www.w3.org/2000/svg"
+                                      width="16"
+                                      height="16"
+                                      viewBox="0 0 24 24"
+                                      fill="none"
+                                      stroke="currentColor"
+                                      stroke-width="2"
+                                      stroke-linecap="round"
+                                      stroke-linejoin="round"
+                                    >
+                                      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                      <polyline points="7 10 12 15 17 10"></polyline>
+                                      <line
+                                        x1="12"
+                                        y1="15"
+                                        x2="12"
+                                        y2="3"
+                                      ></line>
+                                    </svg>
+                                    Download
+                                  </button>
+                                </div>
                               </div>
                             )}
                           </div>
@@ -674,7 +929,7 @@ export default function FundiJobDetail() {
 
                   {/* Update Progress Form (if job is in progress) */}
                   {canUpdateProgress() && (
-                    <div className="border border-gray-300 rounded-xl p-6 bg-gray-50">
+                    <div className="border text-gray-900 border-gray-300 rounded-xl p-6 bg-gray-50">
                       <h3 className="text-lg font-semibold text-gray-900 mb-4">
                         Update Progress
                       </h3>
@@ -687,80 +942,61 @@ export default function FundiJobDetail() {
                             value={updateMessage}
                             onChange={(e) => setUpdateMessage(e.target.value)}
                             placeholder="Describe what you've done (e.g., 'Cut the pipes to size', 'Installed new fixtures', etc.)"
-                            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FF6B35] focus:border-transparent"
+                            className="w-full px-4 py-3 border border-gray-300 rounded-lg "
                             rows={4}
                           />
                         </div>
 
                         <div>
                           <label className="block text-sm font-medium text-gray-700 mb-2">
-                            Add Progress Images (Optional)
+                            Progress Images (Optional)
                           </label>
-                          <div className="flex gap-3">
-                            {updateImages.map((image, index) => (
-                              <div key={index} className="relative">
-                                <div className="w-24 h-24 bg-gray-200 rounded-lg flex items-center justify-center">
-                                  <ImageIcon
-                                    size={24}
-                                    className="text-gray-400"
-                                  />
-                                </div>
-                                <button
-                                  onClick={() =>
-                                    setUpdateImages(
-                                      updateImages.filter((_, i) => i !== index)
-                                    )
-                                  }
-                                  className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1"
-                                >
-                                  <X size={12} />
-                                </button>
-                              </div>
-                            ))}
-                            <label className="w-24 h-24 border-2 border-dashed border-gray-300 rounded-lg flex flex-col items-center justify-center cursor-pointer hover:border-[#FF6B35] transition-colors">
-                              <Upload
-                                size={24}
-                                className="text-gray-400 mb-2"
-                              />
-                              <span className="text-sm text-gray-500">Add</span>
-                              <input
-                                type="file"
-                                className="hidden"
-                                multiple
-                                accept="image/*"
-                                onChange={(e) => {
-                                  if (e.target.files) {
-                                    const newImages = simulateImageUpload(
-                                      e.target.files
-                                    );
-                                    setUpdateImages([
-                                      ...updateImages,
-                                      ...newImages,
-                                    ]);
-                                  }
-                                }}
-                              />
-                            </label>
-                          </div>
+                          <ImageUpload
+                            multiple={true}
+                            maxFiles={10}
+                            onUploadComplete={(urls) => setUpdateImages(urls)}
+                            existingImages={updateImages}
+                          />
                         </div>
 
-                        <button
-                          onClick={handleUpdateProgress}
-                          disabled={updatingProgress || !updateMessage.trim()}
-                          className="w-full bg-[#FF6B35] text-white py-3 rounded-lg hover:bg-[#ff5722] transition-colors font-semibold disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-                        >
-                          {updatingProgress ? (
-                            <>
-                              <Loader className="animate-spin h-4 w-4" />
-                              <span>Updating...</span>
-                            </>
-                          ) : (
-                            <>
-                              <Send size={16} />
-                              <span>Update Progress</span>
-                            </>
-                          )}
-                        </button>
+                        <div className="flex gap-3">
+                          <button
+                            onClick={handleUpdateProgress}
+                            disabled={updatingProgress || !updateMessage.trim()}
+                            className="flex-1 bg-[#FF6B35] text-white py-3 rounded-lg hover:bg-[#ff5722] transition-colors font-semibold disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                          >
+                            {updatingProgress ? (
+                              <>
+                                <Loader className="animate-spin h-4 w-4" />
+                                <span>Updating...</span>
+                              </>
+                            ) : (
+                              <>
+                                <Send size={16} />
+                                <span>Update Progress</span>
+                              </>
+                            )}
+                          </button>
+
+                          <button
+                            type="button"
+                            onClick={clearProgressForm}
+                            disabled={
+                              clearingProgressImages ||
+                              (updateImages.length === 0 && !updateMessage)
+                            }
+                            className="px-4 py-3 border-2 border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+                          >
+                            {clearingProgressImages ? (
+                              <span className="flex items-center gap-2">
+                                <Loader className="animate-spin h-4 w-4" />
+                                Clearing...
+                              </span>
+                            ) : (
+                              "Clear"
+                            )}
+                          </button>
+                        </div>
                       </div>
                     </div>
                   )}
@@ -953,7 +1189,7 @@ export default function FundiJobDetail() {
       {/* Completion Modal */}
       {showCompletionModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-xl shadow-xl max-w-md w-full">
+          <div className="bg-white rounded-xl shadow-xl max-w-2xl w-full">
             <div className="p-6">
               <div className="flex items-center justify-between mb-6">
                 <h3 className="text-xl font-bold text-gray-900">
@@ -985,46 +1221,12 @@ export default function FundiJobDetail() {
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Completion Images
                   </label>
-                  <div className="flex gap-3">
-                    {completionImages.map((image, index) => (
-                      <div key={index} className="relative">
-                        <div className="w-20 h-20 bg-gray-200 rounded-lg flex items-center justify-center">
-                          <ImageIcon size={20} className="text-gray-400" />
-                        </div>
-                        <button
-                          onClick={() =>
-                            setCompletionImages(
-                              completionImages.filter((_, i) => i !== index)
-                            )
-                          }
-                          className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1"
-                        >
-                          <X size={12} />
-                        </button>
-                      </div>
-                    ))}
-                    <label className="w-20 h-20 border-2 border-dashed border-gray-300 rounded-lg flex flex-col items-center justify-center cursor-pointer hover:border-[#FF6B35] transition-colors">
-                      <Plus size={20} className="text-gray-400" />
-                      <span className="text-xs text-gray-500 mt-1">Add</span>
-                      <input
-                        type="file"
-                        className="hidden"
-                        multiple
-                        accept="image/*"
-                        onChange={(e) => {
-                          if (e.target.files) {
-                            const newImages = simulateImageUpload(
-                              e.target.files
-                            );
-                            setCompletionImages([
-                              ...completionImages,
-                              ...newImages,
-                            ]);
-                          }
-                        }}
-                      />
-                    </label>
-                  </div>
+                  <ImageUpload
+                    multiple={true}
+                    maxFiles={10}
+                    onUploadComplete={(urls) => setCompletionImages(urls)}
+                    existingImages={completionImages}
+                  />
                 </div>
 
                 <div className="flex gap-3 pt-4">
@@ -1034,6 +1236,22 @@ export default function FundiJobDetail() {
                   >
                     Cancel
                   </button>
+
+                  <button
+                    onClick={clearCompletionForm}
+                    disabled={clearingCompletionImages}
+                    className="px-4 py-3 border-2 border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {clearingCompletionImages ? (
+                      <span className="flex items-center gap-2">
+                        <Loader className="animate-spin h-4 w-4" />
+                        Clearing...
+                      </span>
+                    ) : (
+                      "Clear Form"
+                    )}
+                  </button>
+
                   <button
                     onClick={handleCompleteJob}
                     disabled={completingJob || !completionNotes.trim()}

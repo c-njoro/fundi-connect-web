@@ -1,4 +1,4 @@
-import { jobService, serviceService } from "@/lib/api/services";
+import { jobService, serviceService, uploadService } from "@/lib/api/services";
 import { IService } from "@/types/ServiceTypes";
 import { useState, useEffect, FormEvent } from "react";
 import {
@@ -15,6 +15,7 @@ import {
   Wrench,
   CreditCard,
 } from "lucide-react";
+import ImageUpload from "@/components/ImageUpload"; // Import the ImageUpload component
 
 type CreateJobFormData = {
   serviceId: string;
@@ -61,7 +62,8 @@ export default function CreateJob() {
   const [createSuccess, setCreateSuccess] = useState(false);
   const [selectedService, setSelectedService] = useState("");
   const [subServices, setSubServices] = useState<string[]>([]);
-  const [imageUrls, setImageUrls] = useState<string[]>([""]);
+  const [clearing, setClearing] = useState(false);
+  // Remove the imageUrls state as we'll use ImageUpload component
 
   const [formData, setFormData] = useState<CreateJobFormData>({
     serviceId: "",
@@ -69,7 +71,7 @@ export default function CreateJob() {
     jobDetails: {
       title: "",
       description: "",
-      images: [""],
+      images: [], // Start with empty array
       urgency: "medium",
       estimatedBudget: {
         min: 0,
@@ -185,35 +187,15 @@ export default function CreateJob() {
     }
   };
 
-  const handleImageUrlChange = (index: number, value: string) => {
-    const newImageUrls = [...imageUrls];
-    newImageUrls[index] = value;
-    setImageUrls(newImageUrls);
+  // Handle image upload completion from ImageUpload component
+  const handleImageUploadComplete = (urls: string[]) => {
     setFormData((prev) => ({
       ...prev,
       jobDetails: {
         ...prev.jobDetails,
-        images: newImageUrls.filter((url) => url.trim() !== ""),
+        images: urls,
       },
     }));
-  };
-
-  const addImageUrlField = () => {
-    setImageUrls([...imageUrls, ""]);
-  };
-
-  const removeImageUrlField = (index: number) => {
-    if (imageUrls.length > 1) {
-      const newImageUrls = imageUrls.filter((_, i) => i !== index);
-      setImageUrls(newImageUrls);
-      setFormData((prev) => ({
-        ...prev,
-        jobDetails: {
-          ...prev.jobDetails,
-          images: newImageUrls.filter((url) => url.trim() !== ""),
-        },
-      }));
-    }
   };
 
   const createJob = async (e: FormEvent) => {
@@ -222,19 +204,10 @@ export default function CreateJob() {
     setCreateSuccess(false);
     setCreating(true);
 
-    // Clean up data - remove empty image URLs
-    const cleanFormData = {
-      ...formData,
-      jobDetails: {
-        ...formData.jobDetails,
-        images: formData.jobDetails.images.filter((url) => url.trim() !== ""),
-      },
-    };
-
     // Ensure min budget is less than max budget
     if (
-      cleanFormData.jobDetails.estimatedBudget.min >
-      cleanFormData.jobDetails.estimatedBudget.max
+      formData.jobDetails.estimatedBudget.min >
+      formData.jobDetails.estimatedBudget.max
     ) {
       setCreateError("Minimum budget cannot be greater than maximum budget");
       setCreating(false);
@@ -242,14 +215,14 @@ export default function CreateJob() {
     }
 
     // Validate required fields
-    if (!cleanFormData.serviceId || !cleanFormData.subService) {
+    if (!formData.serviceId || !formData.subService) {
       setCreateError("Please select a service and sub-service");
       setCreating(false);
       return;
     }
 
     try {
-      const response = await jobService.createJob(cleanFormData);
+      const response = await jobService.createJob(formData);
       console.log("Create job response:", response);
       if (response.success) {
         console.log("Job created successfully");
@@ -262,7 +235,7 @@ export default function CreateJob() {
           jobDetails: {
             title: "",
             description: "",
-            images: [""],
+            images: [],
             urgency: "medium",
             estimatedBudget: {
               min: 0,
@@ -293,7 +266,7 @@ export default function CreateJob() {
         });
         setSelectedService("");
         setSubServices([]);
-        setImageUrls([""]);
+
         //scroll to top
         window.scrollTo({ top: 0, behavior: "smooth" });
       } else {
@@ -529,42 +502,18 @@ export default function CreateJob() {
                       Images
                     </h3>
                     <p className="text-gray-600 text-sm">
-                      Add image URLs to help fundis understand the job better
+                      Upload images to help fundis understand the job better
                     </p>
                   </div>
                 </div>
 
-                <div className="space-y-4">
-                  {imageUrls.map((url, index) => (
-                    <div key={index} className="flex gap-3">
-                      <input
-                        type="url"
-                        value={url}
-                        onChange={(e) =>
-                          handleImageUrlChange(index, e.target.value)
-                        }
-                        className="flex-1 p-3 border border-gray-300 rounded-lg  focus:border-[#FF6B35]"
-                        placeholder="https://example.com/image.jpg"
-                      />
-                      <button
-                        type="button"
-                        onClick={() => removeImageUrlField(index)}
-                        className="px-4 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 transition-colors disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed font-medium"
-                        disabled={imageUrls.length <= 1}
-                      >
-                        <XCircle size={20} />
-                      </button>
-                    </div>
-                  ))}
-                  <button
-                    type="button"
-                    onClick={addImageUrlField}
-                    className="flex items-center gap-2 px-4 py-2 bg-blue-100 text-blue-700 rounded-lg hover:bg-blue-200 transition-colors font-medium"
-                  >
-                    <Plus size={18} />
-                    <span>Add Another Image URL</span>
-                  </button>
-                </div>
+                {/* Replace manual image URL inputs with ImageUpload component */}
+                <ImageUpload
+                  multiple={true} // Allow multiple image uploads
+                  maxFiles={10} // Maximum 10 images
+                  onUploadComplete={handleImageUploadComplete}
+                  existingImages={formData.jobDetails.images}
+                />
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -941,51 +890,89 @@ export default function CreateJob() {
                 )}
               </button>
 
+              {/* clear form button */}
               <button
                 type="button"
-                onClick={() => {
-                  setFormData({
-                    serviceId: "",
-                    subService: "",
-                    jobDetails: {
-                      title: "",
-                      description: "",
-                      images: [""],
-                      urgency: "medium",
-                      estimatedBudget: {
-                        min: 0,
-                        max: 0,
-                        currency: "KES",
+                onClick={async () => {
+                  if (
+                    !window.confirm(
+                      "Are you sure you want to clear the form? This will delete all uploaded images."
+                    )
+                  ) {
+                    return;
+                  }
+
+                  setClearing(true);
+                  try {
+                    // Delete all images in parallel for better performance
+                    if (formData.jobDetails.images.length > 0) {
+                      const deletePromises = formData.jobDetails.images.map(
+                        (url) =>
+                          uploadService.deleteImage(url).catch((err) => {
+                            console.error("Failed to delete image:", url, err);
+                            return null; // Continue even if some fail
+                          })
+                      );
+
+                      await Promise.all(deletePromises);
+                    }
+
+                    // Reset form state
+                    setFormData({
+                      serviceId: "",
+                      subService: "",
+                      jobDetails: {
+                        title: "",
+                        description: "",
+                        images: [],
+                        urgency: "medium",
+                        estimatedBudget: {
+                          min: 0,
+                          max: 0,
+                          currency: "KES",
+                        },
                       },
-                    },
-                    location: {
-                      address: "",
-                      county: "",
-                      city: "",
-                      area: "",
-                      coordinates: {
-                        lat: 0,
-                        lng: 0,
+                      location: {
+                        address: "",
+                        county: "",
+                        city: "",
+                        area: "",
+                        coordinates: {
+                          lat: 0,
+                          lng: 0,
+                        },
+                        landmark: "",
                       },
-                      landmark: "",
-                    },
-                    scheduling: {
-                      preferredDate: new Date().toISOString().split("T")[0],
-                      preferredTime: "09:00",
-                      flexibility: "strict",
-                    },
-                    payment: {
-                      method: "mpesa",
-                      status: "pending",
-                    },
-                  });
-                  setSelectedService("");
-                  setSubServices([]);
-                  setImageUrls([""]);
+                      scheduling: {
+                        preferredDate: new Date().toISOString().split("T")[0],
+                        preferredTime: "09:00",
+                        flexibility: "strict",
+                      },
+                      payment: {
+                        method: "mpesa",
+                        status: "pending",
+                      },
+                    });
+                    setSelectedService("");
+                    setSubServices([]);
+                  } catch (err) {
+                    console.error("Error clearing form:", err);
+                    // You might want to show a toast or error message here
+                  } finally {
+                    setClearing(false);
+                  }
                 }}
-                className="px-6 py-4 border-2 border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium"
+                disabled={clearing}
+                className="px-6 py-4 border-2 border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                Clear Form
+                {clearing ? (
+                  <span className="flex items-center justify-center gap-2">
+                    <Loader className="animate-spin" size={16} />
+                    Clearing...
+                  </span>
+                ) : (
+                  "Clear Form"
+                )}
               </button>
             </div>
           </div>
