@@ -16,6 +16,8 @@ import {
   CreditCard,
 } from "lucide-react";
 import ImageUpload from "@/components/ImageUpload"; // Import the ImageUpload component
+import LocationMap from "@/components/LocationMap";
+import LocationMapModal from "@/components/LocationMapModal";
 
 type CreateJobFormData = {
   serviceId: string;
@@ -63,6 +65,7 @@ export default function CreateJob() {
   const [selectedService, setSelectedService] = useState("");
   const [subServices, setSubServices] = useState<string[]>([]);
   const [clearing, setClearing] = useState(false);
+  const [isLocationModalOpen, setIsLocationModalOpen] = useState(false);
   // Remove the imageUrls state as we'll use ImageUpload component
 
   const [formData, setFormData] = useState<CreateJobFormData>({
@@ -594,7 +597,7 @@ export default function CreateJob() {
             </div>
           </div>
 
-          {/* Location Section */}
+          {/* Location Section - Simplified */}
           <div className="space-y-6">
             <div className="flex items-center gap-3 mb-4">
               <div className="bg-green-100 p-2 rounded-lg">
@@ -611,16 +614,17 @@ export default function CreateJob() {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* Address fields remain the same */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Address
+                  Address *
                 </label>
                 <input
                   type="text"
                   name="location.address"
                   value={formData.location.address}
                   onChange={handleInputChange}
-                  className="w-full p-3 border border-gray-300 rounded-lg  focus:border-[#FF6B35]"
+                  className="w-full p-3 border border-gray-300 rounded-lg focus:border-[#FF6B35]"
                   placeholder="e.g., 45 Kenyatta Avenue"
                   required
                 />
@@ -628,14 +632,14 @@ export default function CreateJob() {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  County
+                  County *
                 </label>
                 <input
                   type="text"
                   name="location.county"
                   value={formData.location.county}
                   onChange={handleInputChange}
-                  className="w-full p-3 border border-gray-300 rounded-lg  focus:border-[#FF6B35]"
+                  className="w-full p-3 border border-gray-300 rounded-lg focus:border-[#FF6B35]"
                   placeholder="e.g., Nakuru"
                   required
                 />
@@ -643,14 +647,14 @@ export default function CreateJob() {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  City
+                  City *
                 </label>
                 <input
                   type="text"
                   name="location.city"
                   value={formData.location.city}
                   onChange={handleInputChange}
-                  className="w-full p-3 border border-gray-300 rounded-lg  focus:border-[#FF6B35]"
+                  className="w-full p-3 border border-gray-300 rounded-lg focus:border-[#FF6B35]"
                   placeholder="e.g., Nakuru"
                   required
                 />
@@ -658,14 +662,14 @@ export default function CreateJob() {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Area/Neighborhood
+                  Area/Neighborhood *
                 </label>
                 <input
                   type="text"
                   name="location.area"
                   value={formData.location.area}
                   onChange={handleInputChange}
-                  className="w-full p-3 border border-gray-300 rounded-lg  focus:border-[#FF6B35]"
+                  className="w-full p-3 border border-gray-300 rounded-lg focus:border-[#FF6B35]"
                   placeholder="e.g., Milimani"
                   required
                 />
@@ -680,39 +684,102 @@ export default function CreateJob() {
                   name="location.landmark"
                   value={formData.location.landmark}
                   onChange={handleInputChange}
-                  className="w-full p-3 border border-gray-300 rounded-lg  focus:border-[#FF6B35]"
+                  className="w-full p-3 border border-gray-300 rounded-lg focus:border-[#FF6B35]"
                   placeholder="e.g., Next to Milimani Hospital"
                 />
               </div>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Latitude (Optional)
+              {/* Location Selection Card (Replaces the map) */}
+              <div className="md:col-span-2">
+                <label className="block text-sm font-medium text-gray-700 mb-4">
+                  Select Exact Location on Map *
                 </label>
-                <input
-                  type="number"
-                  step="any"
-                  name="location.coordinates.lat"
-                  value={formData.location.coordinates.lat}
-                  onChange={handleInputChange}
-                  className="w-full p-3 border border-gray-300 rounded-lg  focus:border-[#FF6B35]"
-                  placeholder="e.g., -0.3031"
-                />
-              </div>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Longitude (Optional)
-                </label>
-                <input
-                  type="number"
-                  step="any"
-                  name="location.coordinates.lng"
-                  value={formData.location.coordinates.lng}
-                  onChange={handleInputChange}
-                  className="w-full p-3 border border-gray-300 rounded-lg  focus:border-[#FF6B35]"
-                  placeholder="e.g., 36.0800"
-                />
+                <div
+                  className="border-2 border-dashed border-gray-300 rounded-xl p-6 hover:border-[#FF6B35] hover:bg-blue-50 transition-all cursor-pointer"
+                  onClick={() => setIsLocationModalOpen(true)}
+                >
+                  <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+                    <div className="flex items-start gap-4">
+                      <div className="bg-gradient-to-br from-blue-500 to-purple-600 p-4 rounded-xl">
+                        <MapPin className="text-white" size={28} />
+                      </div>
+
+                      <div>
+                        <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                          {formData.location.coordinates.lat !== 0 &&
+                          formData.location.coordinates.lng !== 0
+                            ? "Location Selected ✓"
+                            : "Click to Select Location"}
+                        </h3>
+
+                        {formData.location.coordinates.lat !== 0 &&
+                        formData.location.coordinates.lng !== 0 ? (
+                          <div className="space-y-2">
+                            <div className="flex items-center gap-4">
+                              <div>
+                                <span className="text-sm text-gray-600">
+                                  Latitude:
+                                </span>
+                                <span className="ml-2 font-mono font-medium text-[#0A2647]">
+                                  {formData.location.coordinates.lat.toFixed(6)}
+                                </span>
+                              </div>
+                              <div>
+                                <span className="text-sm text-gray-600">
+                                  Longitude:
+                                </span>
+                                <span className="ml-2 font-mono font-medium text-[#0A2647]">
+                                  {formData.location.coordinates.lng.toFixed(6)}
+                                </span>
+                              </div>
+                            </div>
+                            <p className="text-sm text-green-600 flex items-center gap-2">
+                              <CheckCircle size={16} />
+                              <span>Location ready for fundis to find you</span>
+                            </p>
+                          </div>
+                        ) : (
+                          <p className="text-gray-600">
+                            Click here to open the map and select your exact
+                            location. This helps fundis find your home.
+                          </p>
+                        )}
+                      </div>
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setIsLocationModalOpen(true);
+                      }}
+                      className="px-6 py-3 bg-gradient-to-r from-[#FF6B35] to-[#ff5722] text-white rounded-lg hover:from-[#ff5722] hover:to-[#FF6B35] transition-all font-medium flex items-center gap-3 whitespace-nowrap"
+                    >
+                      <MapPin size={20} />
+                      {formData.location.coordinates.lat !== 0 &&
+                      formData.location.coordinates.lng !== 0
+                        ? "Change Location"
+                        : "Select Location"}
+                    </button>
+                  </div>
+
+                  {formData.location.coordinates.lat === 0 &&
+                    formData.location.coordinates.lng === 0 && (
+                      <div className="mt-4 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+                        <div className="flex items-center gap-3">
+                          <AlertCircle
+                            className="text-yellow-600 flex-shrink-0"
+                            size={20}
+                          />
+                          <p className="text-sm text-yellow-800">
+                            <strong>Required:</strong> You must select a
+                            location on the map for fundis to find your home.
+                          </p>
+                        </div>
+                      </div>
+                    )}
+                </div>
               </div>
             </div>
           </div>
@@ -998,6 +1065,28 @@ export default function CreateJob() {
           </div>
         </div>
       </div>
+      <LocationMapModal
+        isOpen={isLocationModalOpen}
+        onClose={() => setIsLocationModalOpen(false)}
+        onLocationSelect={(coords) => {
+          setFormData((prev) => ({
+            ...prev,
+            location: {
+              ...prev.location,
+              coordinates: {
+                lat: coords.lat,
+                lng: coords.lng,
+              },
+            },
+          }));
+        }}
+        initialCoords={
+          formData.location.coordinates.lat !== 0 &&
+          formData.location.coordinates.lng !== 0
+            ? formData.location.coordinates
+            : undefined
+        }
+      />
     </div>
   );
 }
