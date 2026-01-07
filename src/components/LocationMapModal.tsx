@@ -72,7 +72,9 @@ export default function LocationMapModal({
                   <MapPin size={28} />
                 </div>
                 <div>
-                  <h2 className="text-2xl font-bold">Select Job Location</h2>
+                  <h2 className="text-2xl font-semibold">
+                    Select Job Location
+                  </h2>
                   <p className="text-blue-100 mt-1">
                     Click on the map to set exact coordinates for fundis to find
                     you
@@ -95,7 +97,7 @@ export default function LocationMapModal({
                   <div className="flex items-center gap-4">
                     <CheckCircle className="text-green-400" size={24} />
                     <div>
-                      <p className="font-semibold">Location Selected</p>
+                      <p className=" ">Location Selected</p>
                       <p className="text-sm text-blue-200 font-mono">
                         Lat: {selectedCoords.lat.toFixed(6)}, Lng:{" "}
                         {selectedCoords.lng.toFixed(6)}
@@ -139,14 +141,12 @@ export default function LocationMapModal({
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div className="flex items-start gap-3">
                 <div className="bg-blue-100 p-2 rounded-lg">
-                  <div className="w-6 h-6 rounded-full bg-blue-500 flex items-center justify-center text-white text-xs font-bold">
+                  <div className="w-6 h-6 rounded-full bg-blue-500 flex items-center justify-center text-white text-xs font-semibold">
                     1
                   </div>
                 </div>
                 <div>
-                  <h4 className="font-semibold text-gray-900">
-                    Click to Select
-                  </h4>
+                  <h4 className="  text-gray-900">Click to Select</h4>
                   <p className="text-sm text-gray-600 mt-1">
                     Click anywhere on the map to drop a pin at your exact
                     location
@@ -156,14 +156,12 @@ export default function LocationMapModal({
 
               <div className="flex items-start gap-3">
                 <div className="bg-green-100 p-2 rounded-lg">
-                  <div className="w-6 h-6 rounded-full bg-green-500 flex items-center justify-center text-white text-xs font-bold">
+                  <div className="w-6 h-6 rounded-full bg-green-500 flex items-center justify-center text-white text-xs font-semibold">
                     2
                   </div>
                 </div>
                 <div>
-                  <h4 className="font-semibold text-gray-900">
-                    Use Current Location
-                  </h4>
+                  <h4 className="  text-gray-900">Use Current Location</h4>
                   <p className="text-sm text-gray-600 mt-1">
                     Let your device automatically detect your current location
                   </p>
@@ -172,14 +170,12 @@ export default function LocationMapModal({
 
               <div className="flex items-start gap-3">
                 <div className="bg-purple-100 p-2 rounded-lg">
-                  <div className="w-6 h-6 rounded-full bg-purple-500 flex items-center justify-center text-white text-xs font-bold">
+                  <div className="w-6 h-6 rounded-full bg-purple-500 flex items-center justify-center text-white text-xs font-semibold">
                     3
                   </div>
                 </div>
                 <div>
-                  <h4 className="font-semibold text-gray-900">
-                    Search Locations
-                  </h4>
+                  <h4 className="  text-gray-900">Search Locations</h4>
                   <p className="text-sm text-gray-600 mt-1">
                     Search for Kenyan towns and cities by name
                   </p>

@@ -463,7 +463,7 @@ export default function AdminJobs() {
                 <StatusIcon size={24} className={statusInfo.iconColor} />
               </div>
               <div>
-                <h3 className="text-2xl font-bold text-gray-900">
+                <h3 className="text-2xl font-semibold text-gray-900">
                   {job.jobDetails.title}
                 </h3>
                 <div className="flex items-center gap-2 mt-1">
@@ -500,7 +500,7 @@ export default function AdminJobs() {
               <div className="lg:col-span-2 space-y-6">
                 {/* Job Description */}
                 <div className="bg-gray-50 rounded-xl p-6">
-                  <h4 className="font-semibold text-gray-900 text-lg mb-4">
+                  <h4 className="  text-gray-900 text-lg mb-4">
                     Job Description
                   </h4>
                   <p className="text-gray-900">{job.jobDetails.description}</p>
@@ -508,17 +508,17 @@ export default function AdminJobs() {
 
                 {/* Customer Information */}
                 <div className="bg-gray-50 rounded-xl p-6">
-                  <h4 className="font-semibold text-gray-900 text-lg mb-4 flex items-center gap-2">
+                  <h4 className="  text-gray-900 text-lg mb-4 flex items-center gap-2">
                     <User size={18} />
                     Customer Information
                   </h4>
                   <div className="flex items-center gap-4 mb-4">
-                    <div className="w-16 h-16 bg-gradient-to-br from-[#0A2647] to-[#FF6B35] rounded-full flex items-center justify-center text-white font-semibold text-xl">
+                    <div className="w-16 h-16 bg-gradient-to-br from-[#0A2647] to-[#FF6B35] rounded-full flex items-center justify-center text-white   text-xl">
                       {job.customerId.profile.firstName?.[0]}
                       {job.customerId.profile.lastName?.[0]}
                     </div>
                     <div>
-                      <p className="font-bold text-gray-900">
+                      <p className="font-semibold text-gray-900">
                         {job.customerId.profile.fullName}
                       </p>
                       <div className="flex items-center gap-2 mt-1">
@@ -564,14 +564,14 @@ export default function AdminJobs() {
 
                 {/* Service Information */}
                 <div className="bg-gray-50 rounded-xl p-6">
-                  <h4 className="font-semibold text-gray-900 text-lg mb-4 flex items-center gap-2">
+                  <h4 className="  text-gray-900 text-lg mb-4 flex items-center gap-2">
                     <Wrench size={18} />
                     Service Information
                   </h4>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
                       <p className="text-sm text-gray-600">Service</p>
-                      <p className="font-bold text-gray-900">
+                      <p className="font-semibold text-gray-900">
                         {job.serviceId.name}
                       </p>
                     </div>
@@ -593,7 +593,7 @@ export default function AdminJobs() {
                 {/* Proposals */}
                 {job.proposals && job.proposals.length > 0 && (
                   <div className="bg-gray-50 rounded-xl p-6">
-                    <h4 className="font-semibold text-gray-900 text-lg mb-4">
+                    <h4 className="  text-gray-900 text-lg mb-4">
                       Proposals ({job.proposals.length})
                     </h4>
                     <div className="space-y-4">
@@ -603,7 +603,7 @@ export default function AdminJobs() {
                           className="bg-white p-4 rounded-lg border border-gray-200"
                         >
                           <div className="flex items-center justify-between mb-2">
-                            <span className="font-semibold text-gray-900">
+                            <span className="  text-gray-900">
                               Fundi ID: {proposal.fundiId}
                             </span>
                             <div
@@ -624,7 +624,7 @@ export default function AdminJobs() {
                               <p className="text-sm text-gray-600">
                                 Proposed Price
                               </p>
-                              <p className="font-bold text-gray-900">
+                              <p className="font-semibold text-gray-900">
                                 {formatCurrency(proposal.proposedPrice)}
                               </p>
                             </div>
@@ -664,7 +664,7 @@ export default function AdminJobs() {
                 {/* Work Progress */}
                 {job.workProgress && job.workProgress.length > 0 && (
                   <div className="bg-gray-50 rounded-xl p-6">
-                    <h4 className="font-semibold text-gray-900 text-lg mb-4">
+                    <h4 className="  text-gray-900 text-lg mb-4">
                       Work Progress ({job.workProgress.length} updates)
                     </h4>
                     <div className="space-y-4">
@@ -676,7 +676,7 @@ export default function AdminJobs() {
                           <div className="absolute -left-2 top-0 w-4 h-4 bg-blue-500 rounded-full" />
                           <div className="bg-white p-4 rounded-lg">
                             <div className="flex items-center justify-between mb-2">
-                              <span className="font-semibold text-gray-900 capitalize">
+                              <span className="  text-gray-900 capitalize">
                                 {progress.stage.replace("_", " ")}
                               </span>
                               <span className="text-sm text-gray-600">
@@ -718,14 +718,14 @@ export default function AdminJobs() {
               <div className="space-y-6">
                 {/* Budget & Payment */}
                 <div className="bg-white border border-gray-200 rounded-xl p-6">
-                  <h4 className="font-semibold text-gray-900 text-lg mb-4">
+                  <h4 className="  text-gray-900 text-lg mb-4">
                     Budget & Payment
                   </h4>
                   <div className="space-y-3">
                     <div className="flex justify-between items-center">
                       <span className="text-gray-600">Estimated Budget</span>
                       <div className="text-right">
-                        <div className="font-bold text-gray-900">
+                        <div className="font-semibold text-gray-900">
                           {formatCurrency(job.jobDetails.estimatedBudget.min)}
                           {job.jobDetails.estimatedBudget.max &&
                             ` - ${formatCurrency(
@@ -740,7 +740,7 @@ export default function AdminJobs() {
                     {job.agreedPrice && (
                       <div className="flex justify-between items-center">
                         <span className="text-gray-600">Agreed Price</span>
-                        <div className="font-bold text-green-600">
+                        <div className="font-semibold text-green-600">
                           {formatCurrency(job.agreedPrice)}
                         </div>
                       </div>
@@ -760,7 +760,7 @@ export default function AdminJobs() {
                     {job.payment.escrowAmount > 0 && (
                       <div className="flex justify-between items-center">
                         <span className="text-gray-600">Escrow Amount</span>
-                        <span className="font-bold text-gray-900">
+                        <span className="font-semibold text-gray-900">
                           {formatCurrency(job.payment.escrowAmount)}
                         </span>
                       </div>
@@ -770,7 +770,7 @@ export default function AdminJobs() {
 
                 {/* Location & Scheduling */}
                 <div className="bg-white border border-gray-200 rounded-xl p-6">
-                  <h4 className="font-semibold text-gray-900 text-lg mb-4 flex items-center gap-2">
+                  <h4 className="  text-gray-900 text-lg mb-4 flex items-center gap-2">
                     <MapPin size={18} />
                     Location & Scheduling
                   </h4>
@@ -810,9 +810,7 @@ export default function AdminJobs() {
 
                 {/* Job Metadata */}
                 <div className="bg-white border border-gray-200 rounded-xl p-6">
-                  <h4 className="font-semibold text-gray-900 text-lg mb-4">
-                    Job Metadata
-                  </h4>
+                  <h4 className="  text-gray-900 text-lg mb-4">Job Metadata</h4>
                   <div className="space-y-3">
                     <div className="flex justify-between items-center">
                       <span className="text-gray-600">Job ID</span>
@@ -844,7 +842,7 @@ export default function AdminJobs() {
                 {/* Completion Details */}
                 {job.completion && (
                   <div className="bg-green-50 border border-green-200 rounded-xl p-6">
-                    <h4 className="font-semibold text-gray-900 text-lg mb-4">
+                    <h4 className="  text-gray-900 text-lg mb-4">
                       Completion Details
                     </h4>
                     <div className="space-y-3">
@@ -882,7 +880,7 @@ export default function AdminJobs() {
 
                 {/* Admin Actions */}
                 <div className="bg-white border border-gray-200 rounded-xl p-6">
-                  <h4 className="font-semibold text-gray-900 text-lg mb-4">
+                  <h4 className="  text-gray-900 text-lg mb-4">
                     Admin Actions
                   </h4>
                   <div className="space-y-2">
@@ -924,13 +922,11 @@ export default function AdminJobs() {
       <div className="flex-1 flex items-center justify-center min-h-screen">
         <div className="text-center max-w-md">
           <AlertCircle className="h-12 w-12 text-red-500 mx-auto mb-4" />
-          <h3 className="text-lg font-semibold text-gray-900 mb-2">
-            Error Loading Jobs
-          </h3>
+          <h3 className="text-lg   text-gray-900 mb-2">Error Loading Jobs</h3>
           <p className="text-gray-900 mb-4">{error}</p>
           <button
             onClick={fetchJobs}
-            className="bg-[#0A2647] text-white px-6 py-2 rounded-lg hover:bg-[#0d3157] transition-colors font-semibold"
+            className="bg-[#0A2647] text-white px-6 py-2 rounded-lg hover:bg-[#0d3157] transition-colors  "
           >
             Try Again
           </button>
@@ -946,7 +942,7 @@ export default function AdminJobs() {
         <div className="max-w-7xl mx-auto px-6 py-6">
           <div className="flex items-center justify-between mb-6">
             <div>
-              <h1 className="text-2xl font-bold text-gray-900">
+              <h1 className="text-2xl font-semibold text-gray-900">
                 Job Management
               </h1>
               <p className="text-gray-600">View and manage all platform jobs</p>
@@ -967,7 +963,7 @@ export default function AdminJobs() {
               </div>
               <button
                 onClick={fetchJobs}
-                className="bg-[#0A2647] text-white px-4 py-2 rounded-lg hover:bg-[#0d3157] transition-colors font-semibold flex items-center gap-2"
+                className="bg-[#0A2647] text-white px-4 py-2 rounded-lg hover:bg-[#0d3157] transition-colors   flex items-center gap-2"
               >
                 <Clock size={16} />
                 <span>Refresh</span>
@@ -981,7 +977,7 @@ export default function AdminJobs() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-gray-600">Total Jobs</p>
-                  <p className="text-2xl font-bold text-gray-900">
+                  <p className="text-2xl font-semibold text-gray-900">
                     {stats.total}
                   </p>
                 </div>
@@ -994,7 +990,7 @@ export default function AdminJobs() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-gray-600">Completed</p>
-                  <p className="text-2xl font-bold text-gray-900">
+                  <p className="text-2xl font-semibold text-gray-900">
                     {stats.completed}
                   </p>
                 </div>
@@ -1007,7 +1003,7 @@ export default function AdminJobs() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-gray-600">In Progress</p>
-                  <p className="text-2xl font-bold text-gray-900">
+                  <p className="text-2xl font-semibold text-gray-900">
                     {stats.inProgress}
                   </p>
                 </div>
@@ -1020,7 +1016,7 @@ export default function AdminJobs() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-gray-600">Posted</p>
-                  <p className="text-2xl font-bold text-gray-900">
+                  <p className="text-2xl font-semibold text-gray-900">
                     {stats.posted}
                   </p>
                 </div>
@@ -1033,7 +1029,7 @@ export default function AdminJobs() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-gray-600">Total Proposals</p>
-                  <p className="text-2xl font-bold text-gray-900">
+                  <p className="text-2xl font-semibold text-gray-900">
                     {stats.totalProposals}
                   </p>
                 </div>
@@ -1046,7 +1042,7 @@ export default function AdminJobs() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-gray-600">Revenue</p>
-                  <p className="text-2xl font-bold text-gray-900">
+                  <p className="text-2xl font-semibold text-gray-900">
                     KSh {stats.totalRevenue.toLocaleString()}
                   </p>
                 </div>
@@ -1060,7 +1056,7 @@ export default function AdminJobs() {
           {/* Filters */}
           <div className="bg-white border border-gray-200 rounded-xl p-6 mb-6">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="font-semibold text-gray-900">Filters</h3>
+              <h3 className="  text-gray-900">Filters</h3>
               <button
                 onClick={clearFilters}
                 className="text-sm text-gray-600 hover:text-gray-900"
@@ -1137,7 +1133,7 @@ export default function AdminJobs() {
             <div className="w-24 h-24 bg-gradient-to-br from-[#0A2647] to-[#FF6B35] rounded-full flex items-center justify-center mx-auto mb-6">
               <Package size={48} className="text-white" />
             </div>
-            <h3 className="text-2xl font-bold text-gray-900 mb-2">
+            <h3 className="text-2xl font-semibold text-gray-900 mb-2">
               No Jobs Found
             </h3>
             <p className="text-gray-700 max-w-md mx-auto mb-6">
@@ -1156,7 +1152,7 @@ export default function AdminJobs() {
               dateTo) && (
               <button
                 onClick={clearFilters}
-                className="bg-[#0A2647] text-white px-6 py-3 rounded-lg hover:bg-[#0d3157] transition-colors font-semibold"
+                className="bg-[#0A2647] text-white px-6 py-3 rounded-lg hover:bg-[#0d3157] transition-colors  "
               >
                 Clear Filters
               </button>
@@ -1169,25 +1165,25 @@ export default function AdminJobs() {
               <table className="w-full">
                 <thead className="bg-gray-50">
                   <tr>
-                    <th className="py-4 px-6 text-left text-sm font-semibold text-gray-900">
+                    <th className="py-4 px-6 text-left text-sm   text-gray-900">
                       Job Details
                     </th>
-                    <th className="py-4 px-6 text-left text-sm font-semibold text-gray-900">
+                    <th className="py-4 px-6 text-left text-sm   text-gray-900">
                       Customer
                     </th>
-                    <th className="py-4 px-6 text-left text-sm font-semibold text-gray-900">
+                    <th className="py-4 px-6 text-left text-sm   text-gray-900">
                       Budget & Proposals
                     </th>
-                    <th className="py-4 px-6 text-left text-sm font-semibold text-gray-900">
+                    <th className="py-4 px-6 text-left text-sm   text-gray-900">
                       Status
                     </th>
-                    <th className="py-4 px-6 text-left text-sm font-semibold text-gray-900">
+                    <th className="py-4 px-6 text-left text-sm   text-gray-900">
                       Created
                     </th>
-                    <th className="py-4 px-6 text-left text-sm font-semibold text-gray-900">
+                    <th className="py-4 px-6 text-left text-sm   text-gray-900">
                       Actions
                     </th>
-                    <th className="py-4 px-6 text-left text-sm font-semibold text-gray-900 w-12">
+                    <th className="py-4 px-6 text-left text-sm   text-gray-900 w-12">
                       {/* Expand column */}
                     </th>
                   </tr>
@@ -1208,7 +1204,7 @@ export default function AdminJobs() {
                         <tr key={job._id} className="hover:bg-gray-50">
                           <td className="py-4 px-6">
                             <div>
-                              <p className="font-semibold text-gray-900">
+                              <p className="  text-gray-900">
                                 {job.jobDetails.title}
                               </p>
                               <div className="flex items-center gap-2 mt-1">
@@ -1227,7 +1223,7 @@ export default function AdminJobs() {
                           </td>
                           <td className="py-4 px-6">
                             <div className="flex items-center gap-2">
-                              <div className="w-8 h-8 bg-gradient-to-br from-[#0A2647] to-[#FF6B35] rounded-full flex items-center justify-center text-white text-sm font-semibold">
+                              <div className="w-8 h-8 bg-gradient-to-br from-[#0A2647] to-[#FF6B35] rounded-full flex items-center justify-center text-white text-sm  ">
                                 {job.customerId.profile.firstName?.[0]}
                                 {job.customerId.profile.lastName?.[0]}
                               </div>
@@ -1318,7 +1314,7 @@ export default function AdminJobs() {
                                 setSelectedJob(job);
                                 setShowJobModal(true);
                               }}
-                              className="border border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-50 transition-colors font-semibold flex items-center gap-2 text-sm"
+                              className="border border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-50 transition-colors   flex items-center gap-2 text-sm"
                             >
                               <Eye size={14} />
                               <span>View Details</span>
@@ -1344,7 +1340,7 @@ export default function AdminJobs() {
                             <td colSpan={7} className="bg-gray-50 px-6 py-4">
                               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                                 <div>
-                                  <h4 className="font-semibold text-gray-900 mb-2">
+                                  <h4 className="  text-gray-900 mb-2">
                                     Quick Info
                                   </h4>
                                   <div className="space-y-2">
@@ -1376,7 +1372,7 @@ export default function AdminJobs() {
                                 </div>
 
                                 <div>
-                                  <h4 className="font-semibold text-gray-900 mb-2">
+                                  <h4 className="  text-gray-900 mb-2">
                                     Scheduling
                                   </h4>
                                   <div className="space-y-2">
@@ -1402,7 +1398,7 @@ export default function AdminJobs() {
                                 </div>
 
                                 <div>
-                                  <h4 className="font-semibold text-gray-900 mb-2">
+                                  <h4 className="  text-gray-900 mb-2">
                                     Quick Actions
                                   </h4>
                                   <div className="space-y-2">
@@ -1436,21 +1432,15 @@ export default function AdminJobs() {
               <div className="flex items-center justify-between">
                 <p className="text-gray-700">
                   Showing{" "}
-                  <span className="font-semibold text-gray-900">
-                    {filteredJobs.length}
-                  </span>{" "}
-                  of{" "}
-                  <span className="font-semibold text-gray-900">
-                    {jobs.length}
-                  </span>{" "}
-                  jobs
+                  <span className="  text-gray-900">{filteredJobs.length}</span>{" "}
+                  of <span className="  text-gray-900">{jobs.length}</span> jobs
                 </p>
                 <div className="flex items-center gap-4">
-                  <button className="border border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-50 transition-colors font-semibold flex items-center gap-2">
+                  <button className="border border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-50 transition-colors   flex items-center gap-2">
                     <Download size={16} />
                     <span>Export Jobs</span>
                   </button>
-                  <button className="bg-[#0A2647] text-white px-4 py-2 rounded-lg hover:bg-[#0d3157] transition-colors font-semibold">
+                  <button className="bg-[#0A2647] text-white px-4 py-2 rounded-lg hover:bg-[#0d3157] transition-colors  ">
                     Generate Report
                   </button>
                 </div>

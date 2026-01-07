@@ -95,7 +95,7 @@ export default function Services() {
       <div className="flex-1 flex items-center justify-center min-h-screen">
         <div className="text-center max-w-md">
           <AlertCircle className="h-12 w-12 text-red-500 mx-auto mb-4" />
-          <h3 className="text-lg font-semibold text-gray-900 mb-2">
+          <h3 className="text-lg   text-gray-900 mb-2">
             Error Loading Services
           </h3>
           <p className="text-gray-600 mb-4">{error}</p>
@@ -115,7 +115,7 @@ export default function Services() {
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-8 text-center">
-          <h1 className="text-4xl font-bold text-[#0A2647] flex items-center justify-center gap-3 mb-4">
+          <h1 className="text-4xl font-semibold text-[#0A2647] flex items-center justify-center gap-3 mb-4">
             <Wrench size={40} />
             <span>Our Services</span>
           </h1>
@@ -211,9 +211,7 @@ export default function Services() {
         <div className="mb-6">
           <p className="text-gray-600">
             Showing{" "}
-            <span className="font-semibold text-[#0A2647]">
-              {filteredServices.length}
-            </span>
+            <span className="  text-[#0A2647]">{filteredServices.length}</span>
             {filteredServices.length !== services.length ? " filtered " : " "}
             services
           </p>
@@ -223,9 +221,7 @@ export default function Services() {
         {filteredServices.length === 0 ? (
           <div className="text-center py-16 bg-white rounded-xl shadow-sm border border-gray-200">
             <Wrench size={64} className="mx-auto text-gray-400 mb-4" />
-            <h3 className="text-xl font-semibold text-gray-900 mb-2">
-              No Services Found
-            </h3>
+            <h3 className="text-xl   text-gray-900 mb-2">No Services Found</h3>
             <p className="text-gray-600 max-w-md mx-auto mb-6">
               No services match your current search criteria. Try adjusting your
               filters or search terms.
@@ -268,7 +264,7 @@ export default function Services() {
                           )}
                         </div>
                         <div>
-                          <h3 className="font-bold text-gray-900 text-xl group-hover:text-[#FF6B35] transition-colors">
+                          <h3 className="font-semibold text-gray-900 text-xl group-hover:text-[#FF6B35] transition-colors">
                             {service.name}
                           </h3>
                           <span className="inline-block bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium mt-2">
@@ -290,7 +286,7 @@ export default function Services() {
                   <div className="p-6">
                     {service.subServices && service.subServices.length > 0 ? (
                       <div className="space-y-4">
-                        <h4 className="font-semibold text-gray-900 text-sm uppercase tracking-wide">
+                        <h4 className="  text-gray-900 text-sm uppercase tracking-wide">
                           Popular Services
                         </h4>
                         {service.subServices
@@ -311,7 +307,7 @@ export default function Services() {
                                 )}
                               </div>
                               <div className="text-right flex-shrink-0 ml-4">
-                                <div className="font-bold text-[#FF6B35]">
+                                <div className="font-semibold text-[#FF6B35]">
                                   KSh {subService.suggestedPrice.min} -{" "}
                                   {subService.suggestedPrice.max}
                                 </div>
@@ -355,7 +351,7 @@ export default function Services() {
                         <span className="text-sm text-gray-500">
                           {service.subServices?.length || 0} services
                         </span>
-                        <span className="text-[#FF6B35] font-semibold group-hover:text-[#ff5722] transition-colors">
+                        <span className="text-[#FF6B35]   group-hover:text-[#ff5722] transition-colors">
                           View Details →
                         </span>
                       </div>
@@ -370,7 +366,7 @@ export default function Services() {
         {/* Additional Info Section */}
         <div className="mt-12 bg-gradient-to-r from-[#0A2647] to-[#1e3a5f] rounded-2xl p-8 text-white">
           <div className="max-w-4xl mx-auto text-center">
-            <h2 className="text-2xl font-bold mb-4">
+            <h2 className="text-2xl font-semibold mb-4">
               Need a Specific Service?
             </h2>
             <p className="text-blue-100 text-lg mb-6">
@@ -378,10 +374,10 @@ export default function Services() {
               various areas and can handle custom requests.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <button className="bg-[#FF6B35] text-white px-6 py-3 rounded-lg hover:bg-[#ff5722] transition-colors font-semibold">
+              <button className="bg-[#FF6B35] text-white px-6 py-3 rounded-lg hover:bg-[#ff5722] transition-colors  ">
                 Request Custom Service
               </button>
-              <button className="border-2 border-white text-white px-6 py-3 rounded-lg hover:bg-white hover:text-[#0A2647] transition-colors font-semibold">
+              <button className="border-2 border-white text-white px-6 py-3 rounded-lg hover:bg-white hover:text-[#0A2647] transition-colors  ">
                 Contact Support
               </button>
             </div>

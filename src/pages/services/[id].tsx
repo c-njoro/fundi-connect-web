@@ -129,7 +129,7 @@ export default function ServiceDetails() {
       <div className="flex-1 flex items-center justify-center min-h-screen">
         <div className="text-center max-w-md">
           <AlertCircle className="h-12 w-12 text-red-500 mx-auto mb-4" />
-          <h3 className="text-lg font-semibold text-gray-900 mb-2">
+          <h3 className="text-lg   text-gray-900 mb-2">
             Error Loading Service
           </h3>
           <p className="text-gray-600 mb-4">{error}</p>
@@ -224,11 +224,11 @@ export default function ServiceDetails() {
                 <div className="flex-1">
                   <div className="flex items-start justify-between mb-4">
                     <div>
-                      <h1 className="text-3xl font-bold text-gray-900 mb-2">
+                      <h1 className="text-3xl font-semibold text-gray-900 mb-2">
                         {service.name}
                       </h1>
                       <div className="flex items-center gap-3">
-                        <span className="bg-blue-100 text-blue-800 px-4 py-2 rounded-full text-sm font-semibold">
+                        <span className="bg-blue-100 text-blue-800 px-4 py-2 rounded-full text-sm  ">
                           {service.category}
                         </span>
                         {service.isActive && (
@@ -253,7 +253,7 @@ export default function ServiceDetails() {
             {/* Sub-Services Section */}
             {service.subServices && service.subServices.length > 0 && (
               <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-8">
-                <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-2">
+                <h2 className="text-2xl font-semibold text-gray-900 mb-6 flex items-center gap-2">
                   <Wrench size={24} />
                   <span>Available Sub-Services</span>
                   <span className="bg-gray-100 text-gray-600 px-3 py-1 rounded-full text-sm font-medium">
@@ -274,7 +274,7 @@ export default function ServiceDetails() {
                               <Wrench size={20} className="text-blue-600" />
                             </div>
                             <div>
-                              <h3 className="font-bold text-gray-900 text-xl mb-2">
+                              <h3 className="font-semibold text-gray-900 text-xl mb-2">
                                 {subService.name}
                               </h3>
                               {subService.description && (
@@ -288,7 +288,7 @@ export default function ServiceDetails() {
 
                         <div className="lg:text-right">
                           <div className="mb-3">
-                            <div className="font-bold text-[#FF6B35] text-2xl">
+                            <div className="font-semibold text-[#FF6B35] text-2xl">
                               KSh {subService.suggestedPrice.min} -{" "}
                               {subService.suggestedPrice.max}
                             </div>
@@ -315,10 +315,10 @@ export default function ServiceDetails() {
 
                       {/* Action Buttons */}
                       <div className="flex flex-col sm:flex-row gap-3 mt-6 pt-6 border-t border-gray-100">
-                        <button className="flex-1 bg-[#FF6B35] text-white py-3 rounded-lg hover:bg-[#ff5722] transition-colors font-semibold text-center">
+                        <button className="flex-1 bg-[#FF6B35] text-white py-3 rounded-lg hover:bg-[#ff5722] transition-colors   text-center">
                           Request This Service
                         </button>
-                        <button className="flex-1 border border-[#0A2647] text-[#0A2647] py-3 rounded-lg hover:bg-[#0A2647] hover:text-white transition-colors font-semibold text-center">
+                        <button className="flex-1 border border-[#0A2647] text-[#0A2647] py-3 rounded-lg hover:bg-[#0A2647] hover:text-white transition-colors   text-center">
                           Find Fundis
                         </button>
                       </div>
@@ -331,7 +331,7 @@ export default function ServiceDetails() {
             {/* Available Fundis Section */}
             <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-8">
               <div className="flex items-center justify-between mb-6">
-                <h2 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
+                <h2 className="text-2xl font-semibold text-gray-900 flex items-center gap-2">
                   <Users size={24} />
                   <span>Available Fundis</span>
                   <span className="bg-gray-100 text-gray-600 px-3 py-1 rounded-full text-sm font-medium">
@@ -340,7 +340,7 @@ export default function ServiceDetails() {
                 </h2>
                 <Link
                   href={`/fundis?service=${id}`}
-                  className="text-[#0A2647] hover:text-[#0d3157] font-semibold flex items-center gap-2"
+                  className="text-[#0A2647] hover:text-[#0d3157]   flex items-center gap-2"
                 >
                   View All Fundis
                   <ArrowLeft size={16} className="rotate-180" />
@@ -365,7 +365,7 @@ export default function ServiceDetails() {
               ) : fundis.length === 0 ? (
                 <div className="text-center py-12">
                   <Users size={64} className="mx-auto text-gray-400 mb-4" />
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                  <h3 className="text-lg   text-gray-900 mb-2">
                     No Fundis Available
                   </h3>
                   <p className="text-gray-600 max-w-md mx-auto">
@@ -384,7 +384,7 @@ export default function ServiceDetails() {
                       <div className="flex items-start gap-4">
                         {/* Fundi Avatar */}
                         <div className="flex-shrink-0">
-                          <div className="w-16 h-16 bg-gradient-to-br from-[#0A2647] to-[#FF6B35] rounded-full flex items-center justify-center text-white font-semibold text-lg">
+                          <div className="w-16 h-16 bg-gradient-to-br from-[#0A2647] to-[#FF6B35] rounded-full flex items-center justify-center text-white   text-lg">
                             {fundi.profile?.firstName?.[0]}
                             {fundi.profile?.lastName?.[0]}
                           </div>
@@ -393,7 +393,7 @@ export default function ServiceDetails() {
                         {/* Fundi Info */}
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2 mb-2">
-                            <h3 className="font-semibold text-gray-900 truncate">
+                            <h3 className="  text-gray-900 truncate">
                               {fundi.profile?.firstName}{" "}
                               {fundi.profile?.lastName}
                             </h3>
@@ -413,7 +413,7 @@ export default function ServiceDetails() {
                                   size={16}
                                   className="text-yellow-400 fill-current"
                                 />
-                                <span className="font-semibold text-gray-900">
+                                <span className="  text-gray-900">
                                   {fundi.fundiProfile.ratings.average.toFixed(
                                     1
                                   )}
@@ -534,7 +534,7 @@ export default function ServiceDetails() {
 
             {/* Service Benefits */}
             <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-8">
-              <h2 className="text-2xl font-bold text-gray-900 mb-6">
+              <h2 className="text-2xl font-semibold text-gray-900 mb-6">
                 Why Choose This Service?
               </h2>
 
@@ -544,9 +544,7 @@ export default function ServiceDetails() {
                     <Shield size={24} className="text-green-600" />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-gray-900 mb-2">
-                      Quality Guaranteed
-                    </h3>
+                    <h3 className="  text-gray-900 mb-2">Quality Guaranteed</h3>
                     <p className="text-gray-600">
                       All our fundis are verified and provide quality
                       workmanship with satisfaction guarantee.
@@ -559,7 +557,7 @@ export default function ServiceDetails() {
                     <DollarSign size={24} className="text-blue-600" />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-gray-900 mb-2">
+                    <h3 className="  text-gray-900 mb-2">
                       Transparent Pricing
                     </h3>
                     <p className="text-gray-600">
@@ -574,9 +572,7 @@ export default function ServiceDetails() {
                     <Clock size={24} className="text-purple-600" />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-gray-900 mb-2">
-                      On-Time Service
-                    </h3>
+                    <h3 className="  text-gray-900 mb-2">On-Time Service</h3>
                     <p className="text-gray-600">
                       Professional fundis who respect your time and complete
                       work within agreed timelines.
@@ -589,7 +585,7 @@ export default function ServiceDetails() {
                     <TrendingUp size={24} className="text-orange-600" />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-gray-900 mb-2">
+                    <h3 className="  text-gray-900 mb-2">
                       Expert Professionals
                     </h3>
                     <p className="text-gray-600">
@@ -604,7 +600,7 @@ export default function ServiceDetails() {
             {/* Related Services */}
             {relatedServices.length > 0 && (
               <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-8">
-                <h2 className="text-2xl font-bold text-gray-900 mb-6">
+                <h2 className="text-2xl font-semibold text-gray-900 mb-6">
                   Related Services
                 </h2>
 
@@ -633,7 +629,7 @@ export default function ServiceDetails() {
                             )}
                           </div>
                           <div>
-                            <h3 className="font-semibold text-gray-900 group-hover:text-[#FF6B35] transition-colors">
+                            <h3 className="  text-gray-900 group-hover:text-[#FF6B35] transition-colors">
                               {relatedService.name}
                             </h3>
                             <span className="text-sm text-gray-500">
@@ -652,7 +648,7 @@ export default function ServiceDetails() {
                           <span>
                             {relatedService.subServices?.length || 0} services
                           </span>
-                          <span className="text-[#FF6B35] font-semibold group-hover:text-[#ff5722] transition-colors">
+                          <span className="text-[#FF6B35]   group-hover:text-[#ff5722] transition-colors">
                             View Details →
                           </span>
                         </div>
@@ -668,23 +664,21 @@ export default function ServiceDetails() {
           <div className="space-y-6">
             {/* Quick Actions */}
             <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-              <h3 className="font-semibold text-gray-900 mb-4">
-                Quick Actions
-              </h3>
+              <h3 className="  text-gray-900 mb-4">Quick Actions</h3>
 
               <div className="space-y-3">
-                <button className="w-full bg-[#FF6B35] text-white py-3 rounded-lg hover:bg-[#ff5722] transition-colors font-semibold text-center">
+                <button className="w-full bg-[#FF6B35] text-white py-3 rounded-lg hover:bg-[#ff5722] transition-colors   text-center">
                   Request Service
                 </button>
 
                 <Link
                   href={`/fundis?service=${service._id}`}
-                  className="w-full border border-[#0A2647] text-[#0A2647] py-3 rounded-lg hover:bg-[#0A2647] hover:text-white transition-colors font-semibold text-center block"
+                  className="w-full border border-[#0A2647] text-[#0A2647] py-3 rounded-lg hover:bg-[#0A2647] hover:text-white transition-colors   text-center block"
                 >
                   Find Fundis
                 </Link>
 
-                <button className="w-full border border-gray-300 text-gray-700 py-3 rounded-lg hover:bg-gray-50 transition-colors font-semibold text-center">
+                <button className="w-full border border-gray-300 text-gray-700 py-3 rounded-lg hover:bg-gray-50 transition-colors   text-center">
                   Get Price Estimate
                 </button>
               </div>
@@ -692,22 +686,18 @@ export default function ServiceDetails() {
 
             {/* Service Stats */}
             <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-              <h3 className="font-semibold text-gray-900 mb-4">
-                Service Overview
-              </h3>
+              <h3 className="  text-gray-900 mb-4">Service Overview</h3>
 
               <div className="space-y-4">
                 <div className="flex justify-between items-center">
                   <span className="text-gray-600">Category</span>
-                  <span className="font-semibold text-gray-900">
-                    {service.category}
-                  </span>
+                  <span className="  text-gray-900">{service.category}</span>
                 </div>
 
                 <div className="flex justify-between items-center">
                   <span className="text-gray-600">Status</span>
                   <span
-                    className={`font-semibold ${
+                    className={`  ${
                       service.isActive ? "text-green-600" : "text-red-600"
                     }`}
                   >
@@ -717,22 +707,20 @@ export default function ServiceDetails() {
 
                 <div className="flex justify-between items-center">
                   <span className="text-gray-600">Sub-services</span>
-                  <span className="font-semibold text-gray-900">
+                  <span className="  text-gray-900">
                     {service.subServices?.length || 0}
                   </span>
                 </div>
 
                 <div className="flex justify-between items-center">
                   <span className="text-gray-600">Available Fundis</span>
-                  <span className="font-semibold text-gray-900">
-                    {fundis.length}
-                  </span>
+                  <span className="  text-gray-900">{fundis.length}</span>
                 </div>
 
                 {service.createdAt && (
                   <div className="flex justify-between items-center">
                     <span className="text-gray-600">Added</span>
-                    <span className="font-semibold text-gray-900 text-sm">
+                    <span className="  text-gray-900 text-sm">
                       {new Date(service.createdAt).toLocaleDateString()}
                     </span>
                   </div>
@@ -742,7 +730,7 @@ export default function ServiceDetails() {
 
             {/* Support Card */}
             <div className="bg-gradient-to-br from-[#0A2647] to-[#1e3a5f] rounded-xl p-6 text-white">
-              <h3 className="font-semibold mb-3">Need Help?</h3>
+              <h3 className="  mb-3">Need Help?</h3>
               <p className="text-blue-100 text-sm mb-4">
                 Our support team is here to help you find the right service and
                 connect with qualified fundis.
@@ -759,7 +747,7 @@ export default function ServiceDetails() {
                 </div>
               </div>
 
-              <button className="w-full bg-white text-[#0A2647] py-2 rounded-lg font-semibold mt-4 hover:bg-gray-100 transition-colors">
+              <button className="w-full bg-white text-[#0A2647] py-2 rounded-lg   mt-4 hover:bg-gray-100 transition-colors">
                 Contact Support
               </button>
             </div>

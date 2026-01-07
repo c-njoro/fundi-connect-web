@@ -373,7 +373,7 @@ export default function ImageUpload({
                 </div>
               </div>
 
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">
+              <h3 className="text-lg   text-gray-900 mb-2">
                 Drag & drop or click to upload
               </h3>
               <p className="text-sm text-gray-500 mb-4">
@@ -449,7 +449,7 @@ export default function ImageUpload({
                   <Grid3x3 className="text-blue-600" size={20} />
                 </div>
                 <div>
-                  <h4 className="font-semibold text-gray-900">
+                  <h4 className="  text-gray-900">
                     {images.length} image{images.length !== 1 ? "s" : ""}{" "}
                     uploaded
                   </h4>

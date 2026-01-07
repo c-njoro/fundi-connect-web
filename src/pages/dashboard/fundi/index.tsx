@@ -731,19 +731,17 @@ export default function FundiDashboard() {
               </div>
             </div>
           </div>
-          <h3 className="text-xl font-semibold text-gray-900 mb-2">
-            Dashboard Error
-          </h3>
+          <h3 className="text-xl   text-gray-900 mb-2">Dashboard Error</h3>
           <p className="text-gray-700 mb-6">{error}</p>
           <div className="flex gap-3 justify-center">
             <button
               onClick={fetchAssignedJobs}
-              className="bg-gradient-to-r from-[#0A2647] to-[#1e3a5f] text-white px-6 py-3 rounded-lg hover:shadow-lg transition-all font-semibold flex items-center gap-2"
+              className="bg-gradient-to-r from-[#0A2647] to-[#1e3a5f] text-white px-6 py-3 rounded-lg hover:shadow-lg transition-all   flex items-center gap-2"
             >
               <RefreshCw size={16} />
               Try Again
             </button>
-            <button className="border border-gray-300 text-gray-700 px-6 py-3 rounded-lg hover:bg-gray-50 transition-colors font-semibold">
+            <button className="border border-gray-300 text-gray-700 px-6 py-3 rounded-lg hover:bg-gray-50 transition-colors  ">
               Contact Support
             </button>
           </div>
@@ -764,7 +762,7 @@ export default function FundiDashboard() {
                   <Briefcase className="text-white" size={24} />
                 </div>
                 <div>
-                  <h1 className="text-2xl font-bold text-gray-900">
+                  <h1 className="text-2xl font-semibold text-gray-900">
                     Fundi Analytics Dashboard
                   </h1>
                   <p className="text-gray-600 text-sm">
@@ -773,7 +771,7 @@ export default function FundiDashboard() {
                 </div>
               </div>
             </div>
-            <div className="flex flex-wrap items-center gap-3">
+            <div className="flex flex-col sm:flex-row sm:items-center gap-4">
               <div className="flex bg-gray-100 rounded-lg p-1">
                 {["week", "month", "quarter", "year"].map((range) => (
                   <button
@@ -796,12 +794,12 @@ export default function FundiDashboard() {
                     fetchProposals();
                     fetchProposalsStats();
                   }}
-                  className="flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-[#0A2647] to-[#1e3a5f] text-white rounded-lg hover:shadow-lg transition-all font-semibold"
+                  className="flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-[#0A2647] to-[#1e3a5f] text-white rounded-lg hover:shadow-lg transition-all  "
                 >
                   <RefreshCw size={16} />
                   Refresh
                 </button>
-                <button className="flex items-center gap-2 px-4 py-2.5 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-semibold">
+                <button className="flex items-center gap-2 px-4 py-2.5 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors  ">
                   <Download size={16} />
                   Export
                 </button>
@@ -825,7 +823,7 @@ export default function FundiDashboard() {
                 </div>
               </div>
               <p className="text-sm text-gray-600">Active Jobs</p>
-              <p className="text-3xl font-bold text-gray-900 mt-2">
+              <p className="text-3xl font-semibold text-gray-900 mt-2">
                 {stats.active}
               </p>
               <div className="flex items-center gap-2 mt-4 pt-4 border-t border-gray-100">
@@ -842,13 +840,13 @@ export default function FundiDashboard() {
                 </div>
                 <div className="text-right">
                   <p className="text-xs text-gray-500">Avg. Job</p>
-                  <p className="font-semibold text-gray-900">
+                  <p className="  text-gray-900">
                     {formatCurrency(stats.avgJobValue)}
                   </p>
                 </div>
               </div>
               <p className="text-sm text-gray-600">Total Earnings</p>
-              <p className="text-3xl font-bold text-gray-900 mt-2">
+              <p className="text-3xl font-semibold text-gray-900 mt-2">
                 {formatCurrency(stats.totalEarned)}
               </p>
               <div className="flex items-center gap-2 mt-4 pt-4 border-t border-gray-100">
@@ -876,7 +874,7 @@ export default function FundiDashboard() {
                 </div>
               </div>
               <p className="text-sm text-gray-600">Success Rate</p>
-              <p className="text-3xl font-bold text-gray-900 mt-2">
+              <p className="text-3xl font-semibold text-gray-900 mt-2">
                 {stats.successRate}%
               </p>
               <div className="w-full bg-gray-200 rounded-full h-2 mt-4">
@@ -895,13 +893,13 @@ export default function FundiDashboard() {
                 </div>
                 <div className="text-right">
                   <p className="text-xs text-gray-500">Awaiting</p>
-                  <p className="font-semibold text-gray-900">
+                  <p className="  text-gray-900">
                     {formatCurrency(stats.pendingPayments)}
                   </p>
                 </div>
               </div>
               <p className="text-sm text-gray-600">Pending Payments</p>
-              <p className="text-3xl font-bold text-gray-900 mt-2">
+              <p className="text-3xl font-semibold text-gray-900 mt-2">
                 {formatCurrency(stats.pendingPayments)}
               </p>
               <div className="flex items-center gap-2 mt-4 pt-4 border-t border-gray-100">
@@ -914,7 +912,7 @@ export default function FundiDashboard() {
           {/* Proposal Stats */}
           {!proposalStatsLoading && (
             <div className="mb-8">
-              <h2 className="text-lg font-semibold text-gray-900 mb-4">
+              <h2 className="text-lg   text-gray-900 mb-4">
                 Proposal Performance
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -925,7 +923,7 @@ export default function FundiDashboard() {
                     </div>
                     <div>
                       <p className="text-sm text-gray-600">Total Proposals</p>
-                      <p className="text-2xl font-bold text-gray-900">
+                      <p className="text-2xl font-semibold text-gray-900">
                         {proposalStats.totalProposals}
                       </p>
                     </div>
@@ -938,7 +936,7 @@ export default function FundiDashboard() {
                     </div>
                     <div>
                       <p className="text-sm text-gray-600">Pending</p>
-                      <p className="text-2xl font-bold text-gray-900">
+                      <p className="text-2xl font-semibold text-gray-900">
                         {proposalStats.pending}
                       </p>
                     </div>
@@ -951,7 +949,7 @@ export default function FundiDashboard() {
                     </div>
                     <div>
                       <p className="text-sm text-gray-600">Accepted</p>
-                      <p className="text-2xl font-bold text-gray-900">
+                      <p className="text-2xl font-semibold text-gray-900">
                         {proposalStats.accepted}
                       </p>
                     </div>
@@ -964,7 +962,7 @@ export default function FundiDashboard() {
                     </div>
                     <div>
                       <p className="text-sm text-gray-600">Success Rate</p>
-                      <p className="text-2xl font-bold text-gray-900">
+                      <p className="text-2xl font-semibold text-gray-900">
                         {proposalStats.successRate}%
                       </p>
                     </div>
@@ -983,7 +981,7 @@ export default function FundiDashboard() {
           <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm">
             <div className="flex items-center justify-between mb-6">
               <div>
-                <h2 className="text-xl font-bold text-gray-900">
+                <h2 className="text-xl font-semibold text-gray-900">
                   Earnings Trend
                 </h2>
                 <p className="text-sm text-gray-600">
@@ -1062,7 +1060,7 @@ export default function FundiDashboard() {
           <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm">
             <div className="flex items-center justify-between mb-6">
               <div>
-                <h2 className="text-xl font-bold text-gray-900">
+                <h2 className="text-xl font-semibold text-gray-900">
                   Job Status Distribution
                 </h2>
                 <p className="text-sm text-gray-600">Current job breakdown</p>
@@ -1120,7 +1118,7 @@ export default function FundiDashboard() {
           <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm">
             <div className="flex items-center justify-between mb-6">
               <div>
-                <h2 className="text-xl font-bold text-gray-900">
+                <h2 className="text-xl font-semibold text-gray-900">
                   Service Performance
                 </h2>
                 <p className="text-sm text-gray-600">
@@ -1172,7 +1170,7 @@ export default function FundiDashboard() {
           <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm">
             <div className="flex items-center justify-between mb-6">
               <div>
-                <h2 className="text-xl font-bold text-gray-900">
+                <h2 className="text-xl font-semibold text-gray-900">
                   Proposal Status
                 </h2>
                 <p className="text-sm text-gray-600">
@@ -1226,12 +1224,12 @@ export default function FundiDashboard() {
           {/* Recent Jobs */}
           <div className="lg:col-span-2 bg-white rounded-2xl border border-gray-200 p-6 shadow-sm">
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-xl font-bold text-gray-900">
+              <h2 className="text-xl font-semibold text-gray-900">
                 Recent Assigned Jobs
               </h2>
               <Link
                 href="/dashboard/fundi/jobs"
-                className="text-[#0A2647] hover:text-[#0d3157] font-semibold text-sm flex items-center gap-1"
+                className="text-[#0A2647] hover:text-[#0d3157]   text-sm flex items-center gap-1"
               >
                 View All <ChevronRight size={14} />
               </Link>
@@ -1242,7 +1240,7 @@ export default function FundiDashboard() {
                 <div className="w-20 h-20 bg-gradient-to-br from-gray-100 to-gray-200 rounded-2xl flex items-center justify-center mx-auto mb-6">
                   <Briefcase className="text-gray-400" size={32} />
                 </div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                <h3 className="text-lg   text-gray-900 mb-2">
                   No Assigned Jobs Yet
                 </h3>
                 <p className="text-gray-600 mb-6 max-w-md mx-auto">
@@ -1251,7 +1249,7 @@ export default function FundiDashboard() {
                 </p>
                 <Link
                   href="/jobs"
-                  className="inline-flex items-center gap-2 bg-gradient-to-r from-[#FF6B35] to-[#ff8a65] text-white px-8 py-3.5 rounded-xl hover:shadow-lg transition-all font-bold"
+                  className="inline-flex items-center gap-2 bg-gradient-to-r from-[#FF6B35] to-[#ff8a65] text-white px-8 py-3.5 rounded-xl hover:shadow-lg transition-all font-semibold"
                 >
                   <Search size={20} />
                   <span>Browse Available Jobs</span>
@@ -1289,7 +1287,7 @@ export default function FundiDashboard() {
                               {formatDate(job.createdAt)}
                             </span>
                           </div>
-                          <h4 className="font-semibold text-gray-900">
+                          <h4 className="  text-gray-900">
                             {job.jobDetails.title}
                           </h4>
                           <div className="flex items-center gap-4 text-sm text-gray-600 mt-2">
@@ -1337,7 +1335,7 @@ export default function FundiDashboard() {
           <div className="space-y-8">
             {/* Quick Actions */}
             <div className="bg-gradient-to-br from-[#0A2647] to-[#1e3a5f] rounded-2xl p-6 text-white">
-              <h3 className="font-bold text-lg mb-6">Quick Actions</h3>
+              <h3 className="font-semibold text-lg mb-6">Quick Actions</h3>
               <div className="space-y-3">
                 <Link
                   href="/jobs"
@@ -1413,7 +1411,7 @@ export default function FundiDashboard() {
 
             {/* Performance Insights */}
             <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm">
-              <h3 className="font-bold text-gray-900 mb-6">
+              <h3 className="font-semibold text-gray-900 mb-6">
                 Performance Insights
               </h3>
               <div className="space-y-6">
@@ -1426,9 +1424,7 @@ export default function FundiDashboard() {
                       <p className="text-sm text-gray-600">
                         Avg. Response Time
                       </p>
-                      <p className="font-semibold text-gray-900">
-                        {stats.responseTime}h
-                      </p>
+                      <p className="  text-gray-900">{stats.responseTime}h</p>
                     </div>
                   </div>
                   <TrendingDown className="text-green-500" size={16} />
@@ -1445,7 +1441,7 @@ export default function FundiDashboard() {
                           className="text-yellow-400 fill-current"
                           size={14}
                         />
-                        <p className="font-semibold text-gray-900">4.8</p>
+                        <p className="  text-gray-900">4.8</p>
                         <span className="text-sm text-gray-600">
                           (42 reviews)
                         </span>
@@ -1461,9 +1457,7 @@ export default function FundiDashboard() {
                     </div>
                     <div>
                       <p className="text-sm text-gray-600">Completion Rate</p>
-                      <p className="font-semibold text-gray-900">
-                        {stats.successRate}%
-                      </p>
+                      <p className="  text-gray-900">{stats.successRate}%</p>
                     </div>
                   </div>
                   <span className="text-sm font-medium text-green-600">

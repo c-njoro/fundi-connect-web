@@ -1,10 +1,10 @@
 // src/components/layout/Navbar.tsx
-import { useAuth } from '@/contexts/AuthContext';
-import Link from 'next/link';
-import { useRouter } from 'next/router';
-import { useState } from 'react';
-import { Bell, Menu, X } from 'lucide-react';
-import Image from 'next/image';
+import { useAuth } from "@/contexts/AuthContext";
+import Link from "next/link";
+import { useRouter } from "next/router";
+import { useState } from "react";
+import { Bell, Menu, X } from "lucide-react";
+import Image from "next/image";
 
 export default function Navbar() {
   const { user, isAuthenticated, logout } = useAuth();
@@ -13,7 +13,7 @@ export default function Navbar() {
 
   const handleLogout = () => {
     logout();
-    router.push('/');
+    router.push("/");
   };
 
   return (
@@ -23,8 +23,14 @@ export default function Navbar() {
           {/* Logo */}
           <div className="flex items-center">
             <Link href="/" className="flex items-center">
-              <Image src="/company-logo.png" width={48} height={100} alt="FundiConnect logo" className="rounded-full mr-2" />
-              <span className="text-2xl font-bold text-[#0A2647]">
+              <Image
+                src="/company-logo.png"
+                width={48}
+                height={100}
+                alt="FundiConnect logo"
+                className="rounded-full mr-2"
+              />
+              <span className="text-2xl font-semibold text-[#0A2647]">
                 Fundi<span className="text-orange-500">Connect</span>
               </span>
             </Link>
@@ -32,20 +38,20 @@ export default function Navbar() {
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-8">
-            <Link 
-              href="/services" 
+            <Link
+              href="/services"
               className="text-gray-700 hover:text-[#0A2647] transition-colors duration-200"
             >
               Services
             </Link>
-            <Link 
-              href="/fundis" 
+            <Link
+              href="/fundis"
               className="text-gray-700 hover:text-[#0A2647] transition-colors duration-200"
             >
               Find Fundis
             </Link>
-            <Link 
-              href="/how-it-works" 
+            <Link
+              href="/how-it-works"
               className="text-gray-700 hover:text-[#0A2647] transition-colors duration-200"
             >
               How it Works
@@ -53,24 +59,24 @@ export default function Navbar() {
 
             {isAuthenticated ? (
               <>
-                <Link 
-                  href="/dashboard/notifications" 
+                <Link
+                  href="/dashboard/notifications"
                   className="relative text-gray-700 hover:text-[#0A2647] transition-colors duration-200"
                 >
                   <Bell size={20} />
                   {/* Add notification badge */}
                 </Link>
-                
+
                 <div className="relative group ">
                   <button className="flex items-center space-x-2 text-gray-700 hover:text-[#0A2647] transition-colors duration-200">
-                    <div className="h-8 w-8 rounded-full bg-gradient-to-br from-[#0A2647] to-[#003366] flex items-center justify-center text-white text-sm font-semibold">
-                      {user?.profile?.firstName?.[0] || 'U'}
+                    <div className="h-8 w-8 rounded-full bg-gradient-to-br from-[#0A2647] to-[#003366] flex items-center justify-center text-white text-sm  ">
+                      {user?.profile?.firstName?.[0] || "U"}
                     </div>
                     <span className="text-gray-700">
-                      {user?.profile?.firstName || 'User'}
+                      {user?.profile?.firstName || "User"}
                     </span>
                   </button>
-                  
+
                   {/* Dropdown */}
                   <div className="absolute right-0 w-48 bg-white rounded-lg shadow-lg py-1 hidden group-hover:block border border-gray-200 ">
                     <Link
@@ -149,7 +155,7 @@ export default function Navbar() {
             >
               How it Works
             </Link>
-            
+
             {isAuthenticated ? (
               <>
                 <Link

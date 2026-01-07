@@ -312,7 +312,7 @@ export default function AdminServices() {
         <div className="mb-6">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <h1 className="text-2xl font-bold text-[#0A2647]">
+              <h1 className="text-2xl font-semibold text-[#0A2647]">
                 Services Management
               </h1>
               <p className="text-gray-600 mt-2">
@@ -321,7 +321,7 @@ export default function AdminServices() {
             </div>
             <button
               onClick={handleAddService}
-              className="mt-4 sm:mt-0 bg-orange-500 text-white px-4 py-2 rounded-md hover:bg-orange-600 transition-colors duration-200 font-semibold flex items-center space-x-2"
+              className="mt-4 sm:mt-0 bg-orange-500 text-white px-4 py-2 rounded-md hover:bg-orange-600 transition-colors duration-200   flex items-center space-x-2"
             >
               <Plus size={20} />
               <span>Add New Service</span>
@@ -391,7 +391,7 @@ export default function AdminServices() {
                       )}
                       <div>
                         <div className="flex items-center space-x-3">
-                          <h3 className="text-xl font-semibold text-[#0A2647]">
+                          <h3 className="text-xl   text-[#0A2647]">
                             {service.name}
                           </h3>
                           <span
@@ -456,7 +456,7 @@ export default function AdminServices() {
                 {/* Sub-services (Collapsible) */}
                 {expandedService === service._id.toString() && (
                   <div className="p-6 bg-gray-50">
-                    <h4 className="text-lg font-semibold text-[#0A2647] mb-4">
+                    <h4 className="text-lg   text-[#0A2647] mb-4">
                       Sub-services
                     </h4>
                     <div className="grid gap-4">
@@ -467,7 +467,7 @@ export default function AdminServices() {
                         >
                           <div className="flex items-start justify-between">
                             <div className="flex-1">
-                              <h5 className="font-semibold text-gray-900">
+                              <h5 className="  text-gray-900">
                                 {subService.name}
                               </h5>
                               <p className="text-gray-600 text-sm mt-1">
@@ -558,7 +558,7 @@ function ServiceModal({
       <div className="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto">
         <div className="p-6 border-b border-gray-200">
           <div className="flex items-center justify-between">
-            <h2 className="text-xl font-bold text-[#0A2647]">{title}</h2>
+            <h2 className="text-xl font-semibold text-[#0A2647]">{title}</h2>
             <button
               onClick={onCancel}
               className="text-gray-400 hover:text-gray-600 transition-colors duration-200"
@@ -572,7 +572,7 @@ function ServiceModal({
           <div className="space-y-6">
             {/* Basic Information */}
             <div>
-              <h3 className="text-lg font-semibold text-[#0A2647] mb-4">
+              <h3 className="text-lg   text-[#0A2647] mb-4">
                 Basic Information
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -660,9 +660,7 @@ function ServiceModal({
             {/* Sub-services */}
             <div>
               <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-semibold text-[#0A2647]">
-                  Sub-services
-                </h3>
+                <h3 className="text-lg   text-[#0A2647]">Sub-services</h3>
                 <button
                   type="button"
                   onClick={addSubService}

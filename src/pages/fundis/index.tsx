@@ -73,9 +73,7 @@ export default function Fundis() {
       <div className="flex-1 flex items-center justify-center min-h-96">
         <div className="text-center max-w-md">
           <AlertCircle className="h-12 w-12 text-red-500 mx-auto mb-4" />
-          <h3 className="text-lg font-semibold text-gray-900 mb-2">
-            Error Loading Fundis
-          </h3>
+          <h3 className="text-lg   text-gray-900 mb-2">Error Loading Fundis</h3>
           <p className="text-gray-600 mb-4">{error}</p>
           <button
             onClick={fetchFundis}
@@ -93,7 +91,7 @@ export default function Fundis() {
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-[#0A2647] flex items-center gap-3">
+          <h1 className="text-3xl font-semibold text-[#0A2647] flex items-center gap-3">
             <Briefcase size={32} />
             <span>Find Fundis</span>
           </h1>
@@ -104,9 +102,7 @@ export default function Fundis() {
 
         {/* Search Filters - You can expand this later */}
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-8">
-          <h2 className="text-lg font-semibold text-gray-900 mb-4">
-            Search Filters
-          </h2>
+          <h2 className="text-lg   text-gray-900 mb-4">Search Filters</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -151,9 +147,7 @@ export default function Fundis() {
         {fundis.length === 0 ? (
           <div className="text-center py-12 bg-white rounded-xl shadow-sm border border-gray-200">
             <Briefcase size={64} className="mx-auto text-gray-400 mb-4" />
-            <h3 className="text-xl font-semibold text-gray-900 mb-2">
-              No Fundis Found
-            </h3>
+            <h3 className="text-xl   text-gray-900 mb-2">No Fundis Found</h3>
             <p className="text-gray-600 max-w-md mx-auto">
               No fundis match your current search criteria. Try adjusting your
               filters or search in a different area.
@@ -163,10 +157,7 @@ export default function Fundis() {
           <>
             <div className="mb-4 flex justify-between items-center">
               <p className="text-gray-600">
-                Found{" "}
-                <span className="font-semibold text-[#0A2647]">
-                  {fundis.length}
-                </span>{" "}
+                Found <span className="  text-[#0A2647]">{fundis.length}</span>{" "}
                 fundis
               </p>
             </div>
@@ -182,14 +173,14 @@ export default function Fundis() {
                   <div className="p-6 border-b border-gray-100">
                     <div className="flex items-start gap-4">
                       <div className="flex-shrink-0">
-                        <div className="w-16 h-16 bg-gradient-to-br from-[#0A2647] to-[#FF6B35] rounded-full flex items-center justify-center text-white font-semibold text-lg">
+                        <div className="w-16 h-16 bg-gradient-to-br from-[#0A2647] to-[#FF6B35] rounded-full flex items-center justify-center text-white   text-lg">
                           {fundi.profile?.firstName?.[0]}
                           {fundi.profile?.lastName?.[0]}
                         </div>
                       </div>
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 mb-1">
-                          <h3 className="font-semibold text-gray-900 text-lg truncate">
+                          <h3 className="  text-gray-900 text-lg truncate">
                             {fundi.profile?.firstName} {fundi.profile?.lastName}
                           </h3>
                           {fundi.profile?.isVerified && (
@@ -208,7 +199,7 @@ export default function Fundis() {
                                 size={16}
                                 className="text-yellow-400 fill-current"
                               />
-                              <span className="font-semibold text-gray-900">
+                              <span className="  text-gray-900">
                                 {fundi.fundiProfile.ratings.average.toFixed(1)}
                               </span>
                             </div>
@@ -303,7 +294,7 @@ export default function Fundis() {
                     <div className="flex items-center justify-between pt-4 border-t border-gray-100">
                       {fundi.fundiProfile?.completedJobs !== undefined && (
                         <div className="text-center">
-                          <div className="font-semibold text-gray-900">
+                          <div className="  text-gray-900">
                             {fundi.fundiProfile.completedJobs}
                           </div>
                           <div className="text-xs text-gray-500">Jobs done</div>
@@ -311,14 +302,14 @@ export default function Fundis() {
                       )}
                       {fundi.fundiProfile?.cancelledJobs !== undefined && (
                         <div className="text-center">
-                          <div className="font-semibold text-gray-900">
+                          <div className="  text-gray-900">
                             {fundi.fundiProfile.cancelledJobs}
                           </div>
                           <div className="text-xs text-gray-500">Cancelled</div>
                         </div>
                       )}
                       <div className="text-center">
-                        <div className="font-semibold text-[#FF6B35] group-hover:text-[#ff5722]">
+                        <div className="  text-[#FF6B35] group-hover:text-[#ff5722]">
                           View Profile
                         </div>
                       </div>

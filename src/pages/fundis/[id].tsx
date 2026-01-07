@@ -70,7 +70,7 @@ export default function FundiProfile() {
       <div className="flex-1 flex items-center justify-center min-h-screen">
         <div className="text-center max-w-md">
           <AlertCircle className="h-12 w-12 text-red-500 mx-auto mb-4" />
-          <h3 className="text-lg font-semibold text-gray-900 mb-2">
+          <h3 className="text-lg   text-gray-900 mb-2">
             Error Loading Profile
           </h3>
           <p className="text-gray-600 mb-4">{error}</p>
@@ -122,7 +122,7 @@ export default function FundiProfile() {
             {/* Avatar and Basic Info */}
             <div className="flex items-start gap-6">
               <div className="flex-shrink-0">
-                <div className="w-24 h-24 bg-gradient-to-br from-[#0A2647] to-[#FF6B35] rounded-full flex items-center justify-center text-white font-bold text-2xl">
+                <div className="w-24 h-24 bg-gradient-to-br from-[#0A2647] to-[#FF6B35] rounded-full flex items-center justify-center text-white font-semibold text-2xl">
                   {profile?.firstName?.[0]}
                   {profile?.lastName?.[0]}
                 </div>
@@ -130,7 +130,7 @@ export default function FundiProfile() {
 
               <div className="flex-1">
                 <div className="flex items-center gap-3 mb-2">
-                  <h1 className="text-3xl font-bold text-gray-900">
+                  <h1 className="text-3xl font-semibold text-gray-900">
                     {profile?.firstName} {profile?.lastName}
                   </h1>
                   {profile?.isVerified && (
@@ -147,7 +147,7 @@ export default function FundiProfile() {
                           size={20}
                           className="text-yellow-400 fill-current"
                         />
-                        <span className="font-bold text-gray-900 text-lg">
+                        <span className="font-semibold text-gray-900 text-lg">
                           {fundiData.ratings.average.toFixed(1)}
                         </span>
                       </div>
@@ -224,7 +224,7 @@ export default function FundiProfile() {
             {/* Availability Status */}
             <div className="md:ml-auto">
               <div
-                className={`inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold ${
+                className={`inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm   ${
                   fundiData?.availability?.currentStatus === "available"
                     ? "bg-green-100 text-green-800"
                     : fundiData?.availability?.currentStatus === "busy"
@@ -259,7 +259,7 @@ export default function FundiProfile() {
             {/* Bio Section */}
             {fundiData?.bio && (
               <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-                <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                <h2 className="text-xl   text-gray-900 mb-4 flex items-center gap-2">
                   <FileText size={20} />
                   About Me
                 </h2>
@@ -269,7 +269,7 @@ export default function FundiProfile() {
 
             {/* Services & Pricing Section */}
             <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-              <h2 className="text-xl font-semibold text-gray-900 mb-6 flex items-center gap-2">
+              <h2 className="text-xl   text-gray-900 mb-6 flex items-center gap-2">
                 <Briefcase size={20} />
                 Services & Pricing
               </h2>
@@ -298,7 +298,7 @@ export default function FundiProfile() {
                     >
                       <div className="flex items-start justify-between mb-3">
                         <div>
-                          <h3 className="font-semibold text-gray-900 text-lg">
+                          <h3 className="  text-gray-900 text-lg">
                             {serviceData.name}
                           </h3>
                           <p className="text-gray-600 text-sm">
@@ -307,7 +307,7 @@ export default function FundiProfile() {
                         </div>
                         {servicePricing && (
                           <div className="text-right">
-                            <div className="font-bold text-[#FF6B35] text-lg">
+                            <div className="font-semibold text-[#FF6B35] text-lg">
                               KSh {servicePricing.minRate}
                               {servicePricing.maxRate &&
                                 ` - KSh ${servicePricing.maxRate}`}
@@ -364,7 +364,7 @@ export default function FundiProfile() {
             {fundiData?.certifications &&
               fundiData.certifications.length > 0 && (
                 <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-                  <h2 className="text-xl font-semibold text-gray-900 mb-6 flex items-center gap-2">
+                  <h2 className="text-xl   text-gray-900 mb-6 flex items-center gap-2">
                     <Award size={20} />
                     Certifications & Qualifications
                   </h2>
@@ -393,9 +393,7 @@ export default function FundiProfile() {
                         </div>
                         <div className="flex-1">
                           <div className="flex items-center gap-2 mb-1">
-                            <h3 className="font-semibold text-gray-900">
-                              {cert.name}
-                            </h3>
+                            <h3 className="  text-gray-900">{cert.name}</h3>
                             {cert.verified && (
                               <span className="bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs font-medium flex items-center gap-1">
                                 <CheckCircle size={12} />
@@ -428,7 +426,7 @@ export default function FundiProfile() {
             {/* Portfolio Section */}
             {fundiData?.portfolio && fundiData.portfolio.length > 0 && (
               <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-                <h2 className="text-xl font-semibold text-gray-900 mb-6 flex items-center gap-2">
+                <h2 className="text-xl   text-gray-900 mb-6 flex items-center gap-2">
                   <TrendingUp size={20} />
                   Portfolio
                 </h2>
@@ -439,9 +437,7 @@ export default function FundiProfile() {
                       key={index}
                       className="border border-gray-200 rounded-lg p-4"
                     >
-                      <h3 className="font-semibold text-gray-900 mb-2">
-                        {item.title}
-                      </h3>
+                      <h3 className="  text-gray-900 mb-2">{item.title}</h3>
                       {item.description && (
                         <p className="text-gray-600 text-sm mb-3">
                           {item.description}
@@ -464,9 +460,7 @@ export default function FundiProfile() {
           <div className="space-y-6">
             {/* Contact & Action Card */}
             <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-              <h3 className="font-semibold text-gray-900 mb-4">
-                Contact & Hire
-              </h3>
+              <h3 className="  text-gray-900 mb-4">Contact & Hire</h3>
 
               <div className="space-y-3 mb-6">
                 {fundiProfile.phone && (
@@ -484,11 +478,11 @@ export default function FundiProfile() {
                 )}
               </div>
 
-              <button className="w-full bg-[#FF6B35] text-white py-3 rounded-lg hover:bg-[#ff5722] transition-colors font-semibold mb-3">
+              <button className="w-full bg-[#FF6B35] text-white py-3 rounded-lg hover:bg-[#ff5722] transition-colors   mb-3">
                 Send Message
               </button>
 
-              <button className="w-full bg-[#0A2647] text-white py-3 rounded-lg hover:bg-[#0d3157] transition-colors font-semibold">
+              <button className="w-full bg-[#0A2647] text-white py-3 rounded-lg hover:bg-[#0d3157] transition-colors  ">
                 Request Quote
               </button>
             </div>
@@ -496,9 +490,7 @@ export default function FundiProfile() {
             {/* Availability Schedule */}
             {fundiData?.availability?.schedule && (
               <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-                <h3 className="font-semibold text-gray-900 mb-4">
-                  Availability
-                </h3>
+                <h3 className="  text-gray-900 mb-4">Availability</h3>
 
                 <div className="space-y-2">
                   {Object.entries(fundiData.availability.schedule).map(
@@ -531,15 +523,13 @@ export default function FundiProfile() {
 
             {/* Profile Status */}
             <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-              <h3 className="font-semibold text-gray-900 mb-4">
-                Profile Status
-              </h3>
+              <h3 className="  text-gray-900 mb-4">Profile Status</h3>
 
               <div className="space-y-3">
                 <div className="flex justify-between">
                   <span className="text-gray-600">Status</span>
                   <span
-                    className={`font-semibold ${
+                    className={`  ${
                       fundiData?.profileStatus === "approved"
                         ? "text-green-600"
                         : fundiData?.profileStatus === "pending_review"

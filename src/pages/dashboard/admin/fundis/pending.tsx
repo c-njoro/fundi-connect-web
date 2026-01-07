@@ -284,12 +284,12 @@ export default function PendingFundis() {
           {/* Modal Header */}
           <div className="flex items-center justify-between p-6 border-b border-gray-200">
             <div className="flex items-center gap-4">
-              <div className="w-16 h-16 bg-gradient-to-br from-[#0A2647] to-[#FF6B35] rounded-full flex items-center justify-center text-white font-semibold text-xl">
+              <div className="w-16 h-16 bg-gradient-to-br from-[#0A2647] to-[#FF6B35] rounded-full flex items-center justify-center text-white   text-xl">
                 {fundi.profile?.firstName?.[0]}
                 {fundi.profile?.lastName?.[0]}
               </div>
               <div>
-                <h3 className="text-2xl font-bold text-gray-900">
+                <h3 className="text-2xl font-semibold text-gray-900">
                   {fundi.profile?.fullName}
                 </h3>
                 <div className="flex items-center gap-2 mt-1">
@@ -322,7 +322,7 @@ export default function PendingFundis() {
               <div className="lg:col-span-2 space-y-6">
                 {/* Personal Information */}
                 <div className="bg-gray-50 rounded-xl p-6">
-                  <h4 className="font-semibold text-gray-900 text-lg mb-4 flex items-center gap-2">
+                  <h4 className="  text-gray-900 text-lg mb-4 flex items-center gap-2">
                     <User size={18} />
                     Personal Information
                   </h4>
@@ -351,7 +351,7 @@ export default function PendingFundis() {
 
                 {/* Contact Information */}
                 <div className="bg-gray-50 rounded-xl p-6">
-                  <h4 className="font-semibold text-gray-900 text-lg mb-4 flex items-center gap-2">
+                  <h4 className="  text-gray-900 text-lg mb-4 flex items-center gap-2">
                     <Phone size={18} />
                     Contact Information
                   </h4>
@@ -393,26 +393,26 @@ export default function PendingFundis() {
 
                 {/* Professional Information */}
                 <div className="bg-gray-50 rounded-xl p-6">
-                  <h4 className="font-semibold text-gray-900 text-lg mb-4 flex items-center gap-2">
+                  <h4 className="  text-gray-900 text-lg mb-4 flex items-center gap-2">
                     <BriefcaseIcon size={18} />
                     Professional Information
                   </h4>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
                     <div>
                       <p className="text-sm text-gray-600">Experience</p>
-                      <p className="font-bold text-gray-900 text-lg">
+                      <p className="font-semibold text-gray-900 text-lg">
                         {getExperienceText(fundi)}
                       </p>
                     </div>
                     <div>
                       <p className="text-sm text-gray-600">Services Offered</p>
-                      <p className="font-bold text-gray-900 text-lg">
+                      <p className="font-semibold text-gray-900 text-lg">
                         {getServiceCountText(fundi)}
                       </p>
                     </div>
                     <div>
                       <p className="text-sm text-gray-600">Application Date</p>
-                      <p className="font-bold text-gray-900 text-lg">
+                      <p className="font-semibold text-gray-900 text-lg">
                         {formatDate(fundi.fundiProfile?.applicationDate)}
                       </p>
                     </div>
@@ -434,7 +434,7 @@ export default function PendingFundis() {
                 {fundi.fundiProfile?.portfolio &&
                   fundi.fundiProfile.portfolio.length > 0 && (
                     <div className="bg-gray-50 rounded-xl p-6">
-                      <h4 className="font-semibold text-gray-900 text-lg mb-4 flex items-center gap-2">
+                      <h4 className="  text-gray-900 text-lg mb-4 flex items-center gap-2">
                         <ImageIcon size={18} />
                         Portfolio ({fundi.fundiProfile.portfolio.length}{" "}
                         projects)
@@ -446,7 +446,7 @@ export default function PendingFundis() {
                             className="bg-white p-4 rounded-lg border border-gray-200"
                           >
                             <div className="flex items-center justify-between mb-2">
-                              <h5 className="font-semibold text-gray-900">
+                              <h5 className="  text-gray-900">
                                 {project.title}
                               </h5>
                               <span className="text-sm text-gray-600">
@@ -481,7 +481,7 @@ export default function PendingFundis() {
                 {fundi.fundiProfile?.certifications &&
                   fundi.fundiProfile.certifications.length > 0 && (
                     <div className="bg-gray-50 rounded-xl p-6">
-                      <h4 className="font-semibold text-gray-900 text-lg mb-4 flex items-center gap-2">
+                      <h4 className="  text-gray-900 text-lg mb-4 flex items-center gap-2">
                         <Award size={18} />
                         Certifications (
                         {fundi.fundiProfile.certifications.length})
@@ -494,9 +494,7 @@ export default function PendingFundis() {
                               className="bg-white p-4 rounded-lg border border-gray-200"
                             >
                               <div className="flex items-center justify-between mb-2">
-                                <h5 className="font-semibold text-gray-900">
-                                  {cert.name}
-                                </h5>
+                                <h5 className="  text-gray-900">{cert.name}</h5>
                                 <div className="flex items-center gap-1">
                                   {cert.verified ? (
                                     <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
@@ -543,20 +541,20 @@ export default function PendingFundis() {
               <div className="space-y-6">
                 {/* Actions */}
                 <div className="bg-white rounded-xl border border-gray-200 p-6">
-                  <h4 className="font-semibold text-gray-900 text-lg mb-4">
+                  <h4 className="  text-gray-900 text-lg mb-4">
                     Review Actions
                   </h4>
                   <div className="space-y-3">
                     <button
                       onClick={() => handleApprove(fundi)}
-                      className="w-full bg-green-600 text-white py-3 rounded-lg hover:bg-green-700 transition-colors font-semibold flex items-center justify-center gap-2"
+                      className="w-full bg-green-600 text-white py-3 rounded-lg hover:bg-green-700 transition-colors   flex items-center justify-center gap-2"
                     >
                       <ThumbsUp size={18} />
                       <span>Approve Application</span>
                     </button>
                     <button
                       onClick={() => handleReject(fundi)}
-                      className="w-full bg-red-600 text-white py-3 rounded-lg hover:bg-red-700 transition-colors font-semibold flex items-center justify-center gap-2"
+                      className="w-full bg-red-600 text-white py-3 rounded-lg hover:bg-red-700 transition-colors   flex items-center justify-center gap-2"
                     >
                       <ThumbsDown size={18} />
                       <span>Reject Application</span>
@@ -566,7 +564,7 @@ export default function PendingFundis() {
 
                 {/* Account Summary */}
                 <div className="bg-white rounded-xl border border-gray-200 p-6">
-                  <h4 className="font-semibold text-gray-900 text-lg mb-4">
+                  <h4 className="  text-gray-900 text-lg mb-4">
                     Account Summary
                   </h4>
                   <div className="space-y-3">
@@ -597,7 +595,7 @@ export default function PendingFundis() {
 
                 {/* Verification Status */}
                 <div className="bg-white rounded-xl border border-gray-200 p-6">
-                  <h4 className="font-semibold text-gray-900 text-lg mb-4">
+                  <h4 className="  text-gray-900 text-lg mb-4">
                     Verification Status
                   </h4>
                   <div className="space-y-3">
@@ -630,7 +628,7 @@ export default function PendingFundis() {
 
                 {/* Quick Actions */}
                 <div className="bg-white rounded-xl border border-gray-200 p-6">
-                  <h4 className="font-semibold text-gray-900 text-lg mb-4">
+                  <h4 className="  text-gray-900 text-lg mb-4">
                     Quick Actions
                   </h4>
                   <div className="space-y-2">
@@ -666,7 +664,7 @@ export default function PendingFundis() {
         <div className="bg-white rounded-xl shadow-xl max-w-md w-full">
           <div className="p-6">
             <div className="flex items-center justify-between mb-6">
-              <h3 className="text-xl font-bold text-gray-900">
+              <h3 className="text-xl font-semibold text-gray-900">
                 {isReject ? "Reject Application" : "Approve Application"}
               </h3>
               <button
@@ -683,12 +681,12 @@ export default function PendingFundis() {
 
             <div className="mb-6">
               <div className="flex items-center gap-3 mb-4 p-4 bg-gray-50 rounded-lg">
-                <div className="w-12 h-12 bg-gradient-to-br from-[#0A2647] to-[#FF6B35] rounded-full flex items-center justify-center text-white font-semibold">
+                <div className="w-12 h-12 bg-gradient-to-br from-[#0A2647] to-[#FF6B35] rounded-full flex items-center justify-center text-white  ">
                   {selectedFundi.profile?.firstName?.[0]}
                   {selectedFundi.profile?.lastName?.[0]}
                 </div>
                 <div>
-                  <p className="font-bold text-gray-900">
+                  <p className="font-semibold text-gray-900">
                     {selectedFundi.profile?.fullName}
                   </p>
                   <p className="text-sm text-gray-600">{selectedFundi.email}</p>
@@ -727,7 +725,7 @@ export default function PendingFundis() {
                 <div className="bg-green-50 border border-green-200 rounded-lg p-4">
                   <div className="flex items-center gap-2 text-green-700 mb-2">
                     <CheckCircle size={16} />
-                    <span className="font-semibold">
+                    <span className=" ">
                       Are you sure you want to approve this application?
                     </span>
                   </div>
@@ -746,7 +744,7 @@ export default function PendingFundis() {
                     setUpdatingError(null);
                     if (isReject) setSuspendReason("");
                   }}
-                  className="flex-1 border border-gray-300 text-gray-700 py-3 rounded-lg hover:bg-gray-50 transition-colors font-semibold"
+                  className="flex-1 border border-gray-300 text-gray-700 py-3 rounded-lg hover:bg-gray-50 transition-colors  "
                 >
                   Cancel
                 </button>
@@ -755,7 +753,7 @@ export default function PendingFundis() {
                   disabled={
                     updatingStatus || (isReject && !suspendReason.trim())
                   }
-                  className={`flex-1 py-3 rounded-lg transition-colors font-semibold flex items-center justify-center gap-2 ${
+                  className={`flex-1 py-3 rounded-lg transition-colors   flex items-center justify-center gap-2 ${
                     isReject
                       ? "bg-red-600 text-white hover:bg-red-700"
                       : "bg-green-600 text-white hover:bg-green-700"
@@ -805,13 +803,13 @@ export default function PendingFundis() {
       <div className="flex-1 flex items-center justify-center min-h-screen">
         <div className="text-center max-w-md">
           <AlertCircle className="h-12 w-12 text-red-500 mx-auto mb-4" />
-          <h3 className="text-lg font-semibold text-gray-900 mb-2">
+          <h3 className="text-lg   text-gray-900 mb-2">
             Error Loading Applications
           </h3>
           <p className="text-gray-900 mb-4">{error}</p>
           <button
             onClick={fetchPendingFundis}
-            className="bg-[#0A2647] text-white px-6 py-2 rounded-lg hover:bg-[#0d3157] transition-colors font-semibold"
+            className="bg-[#0A2647] text-white px-6 py-2 rounded-lg hover:bg-[#0d3157] transition-colors  "
           >
             Try Again
           </button>
@@ -827,7 +825,7 @@ export default function PendingFundis() {
         <div className="max-w-7xl mx-auto px-6 py-6">
           <div className="flex items-center justify-between mb-6">
             <div>
-              <h1 className="text-2xl font-bold text-gray-900">
+              <h1 className="text-2xl font-semibold text-gray-900">
                 Pending Fundi Applications
               </h1>
               <p className="text-gray-600">
@@ -848,13 +846,13 @@ export default function PendingFundis() {
                   className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FF6B35] focus:border-transparent text-gray-900"
                 />
               </div>
-              <button className="border border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-50 transition-colors font-semibold flex items-center gap-2">
+              <button className="border border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-50 transition-colors   flex items-center gap-2">
                 <Filter size={16} />
                 <span>Filter</span>
               </button>
               <button
                 onClick={fetchPendingFundis}
-                className="bg-[#0A2647] text-white px-4 py-2 rounded-lg hover:bg-[#0d3157] transition-colors font-semibold flex items-center gap-2"
+                className="bg-[#0A2647] text-white px-4 py-2 rounded-lg hover:bg-[#0d3157] transition-colors   flex items-center gap-2"
               >
                 <Clock4 size={16} />
                 <span>Refresh</span>
@@ -868,7 +866,7 @@ export default function PendingFundis() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-gray-600">Total Applications</p>
-                  <p className="text-2xl font-bold text-gray-900">
+                  <p className="text-2xl font-semibold text-gray-900">
                     {pendingFundis.length}
                   </p>
                 </div>
@@ -881,7 +879,7 @@ export default function PendingFundis() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-gray-600">This Month</p>
-                  <p className="text-2xl font-bold text-gray-900">
+                  <p className="text-2xl font-semibold text-gray-900">
                     {
                       pendingFundis.filter((f) => {
                         const appDate = new Date(
@@ -905,7 +903,7 @@ export default function PendingFundis() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-gray-600">Avg. Experience</p>
-                  <p className="text-2xl font-bold text-gray-900">
+                  <p className="text-2xl font-semibold text-gray-900">
                     {pendingFundis.length > 0
                       ? Math.round(
                           pendingFundis.reduce(
@@ -926,7 +924,7 @@ export default function PendingFundis() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-gray-600">With Portfolio</p>
-                  <p className="text-2xl font-bold text-gray-900">
+                  <p className="text-2xl font-semibold text-gray-900">
                     {
                       pendingFundis.filter(
                         (f) => f.fundiProfile?.portfolio?.length > 0
@@ -950,7 +948,7 @@ export default function PendingFundis() {
             <div className="w-24 h-24 bg-gradient-to-br from-[#0A2647] to-[#FF6B35] rounded-full flex items-center justify-center mx-auto mb-6">
               <CheckCircle size={48} className="text-white" />
             </div>
-            <h3 className="text-2xl font-bold text-gray-900 mb-2">
+            <h3 className="text-2xl font-semibold text-gray-900 mb-2">
               All Applications Processed
             </h3>
             <p className="text-gray-700 max-w-md mx-auto mb-6">
@@ -959,7 +957,7 @@ export default function PendingFundis() {
             </p>
             <button
               onClick={fetchPendingFundis}
-              className="bg-[#0A2647] text-white px-6 py-3 rounded-lg hover:bg-[#0d3157] transition-colors font-semibold flex items-center gap-2 mx-auto"
+              className="bg-[#0A2647] text-white px-6 py-3 rounded-lg hover:bg-[#0d3157] transition-colors   flex items-center gap-2 mx-auto"
             >
               <Clock4 size={16} />
               <span>Check for New Applications</span>
@@ -972,22 +970,22 @@ export default function PendingFundis() {
               <table className="w-full">
                 <thead className="bg-gray-50">
                   <tr>
-                    <th className="py-4 px-6 text-left text-sm font-semibold text-gray-900">
+                    <th className="py-4 px-6 text-left text-sm   text-gray-900">
                       Applicant
                     </th>
-                    <th className="py-4 px-6 text-left text-sm font-semibold text-gray-900">
+                    <th className="py-4 px-6 text-left text-sm   text-gray-900">
                       Contact
                     </th>
-                    <th className="py-4 px-6 text-left text-sm font-semibold text-gray-900">
+                    <th className="py-4 px-6 text-left text-sm   text-gray-900">
                       Experience & Services
                     </th>
-                    <th className="py-4 px-6 text-left text-sm font-semibold text-gray-900">
+                    <th className="py-4 px-6 text-left text-sm   text-gray-900">
                       Applied On
                     </th>
-                    <th className="py-4 px-6 text-left text-sm font-semibold text-gray-900">
+                    <th className="py-4 px-6 text-left text-sm   text-gray-900">
                       Actions
                     </th>
-                    <th className="py-4 px-6 text-left text-sm font-semibold text-gray-900 w-12">
+                    <th className="py-4 px-6 text-left text-sm   text-gray-900 w-12">
                       {/* Expand column */}
                     </th>
                   </tr>
@@ -1001,12 +999,12 @@ export default function PendingFundis() {
                         <tr key={fundi._id} className="hover:bg-gray-50">
                           <td className="py-4 px-6">
                             <div className="flex items-center gap-3">
-                              <div className="w-12 h-12 bg-gradient-to-br from-[#0A2647] to-[#FF6B35] rounded-full flex items-center justify-center text-white font-semibold">
+                              <div className="w-12 h-12 bg-gradient-to-br from-[#0A2647] to-[#FF6B35] rounded-full flex items-center justify-center text-white  ">
                                 {fundi.profile?.firstName?.[0]}
                                 {fundi.profile?.lastName?.[0]}
                               </div>
                               <div>
-                                <p className="font-semibold text-gray-900">
+                                <p className="  text-gray-900">
                                   {fundi.profile?.fullName}
                                 </p>
                                 <div className="flex items-center gap-2 mt-1">
@@ -1103,7 +1101,7 @@ export default function PendingFundis() {
                                   setSelectedFundi(fundi);
                                   setShowDetailModal(true);
                                 }}
-                                className="border border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-50 transition-colors font-semibold flex items-center gap-2 text-sm"
+                                className="border border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-50 transition-colors   flex items-center gap-2 text-sm"
                               >
                                 <Eye size={14} />
                                 <span>Review</span>
@@ -1111,14 +1109,14 @@ export default function PendingFundis() {
                               <div className="flex flex-col gap-1">
                                 <button
                                   onClick={() => handleApprove(fundi)}
-                                  className="bg-green-100 text-green-700 px-3 py-1 rounded hover:bg-green-200 transition-colors text-sm font-semibold flex items-center gap-1"
+                                  className="bg-green-100 text-green-700 px-3 py-1 rounded hover:bg-green-200 transition-colors text-sm   flex items-center gap-1"
                                 >
                                   <ThumbsUp size={12} />
                                   <span>Approve</span>
                                 </button>
                                 <button
                                   onClick={() => handleReject(fundi)}
-                                  className="bg-red-100 text-red-700 px-3 py-1 rounded hover:bg-red-200 transition-colors text-sm font-semibold flex items-center gap-1"
+                                  className="bg-red-100 text-red-700 px-3 py-1 rounded hover:bg-red-200 transition-colors text-sm   flex items-center gap-1"
                                 >
                                   <ThumbsDown size={12} />
                                   <span>Reject</span>
@@ -1146,7 +1144,7 @@ export default function PendingFundis() {
                             <td colSpan={6} className="bg-gray-50 px-6 py-4">
                               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                                 <div>
-                                  <h4 className="font-semibold text-gray-900 mb-2">
+                                  <h4 className="  text-gray-900 mb-2">
                                     Verification Status
                                   </h4>
                                   <div className="space-y-2">
@@ -1182,7 +1180,7 @@ export default function PendingFundis() {
                                 </div>
 
                                 <div>
-                                  <h4 className="font-semibold text-gray-900 mb-2">
+                                  <h4 className="  text-gray-900 mb-2">
                                     Certifications
                                   </h4>
                                   <div className="space-y-1">
@@ -1210,7 +1208,7 @@ export default function PendingFundis() {
                                 </div>
 
                                 <div>
-                                  <h4 className="font-semibold text-gray-900 mb-2">
+                                  <h4 className="  text-gray-900 mb-2">
                                     Quick Actions
                                   </h4>
                                   <div className="space-y-2">
@@ -1255,21 +1253,21 @@ export default function PendingFundis() {
               <div className="flex items-center justify-between">
                 <p className="text-gray-700">
                   Showing{" "}
-                  <span className="font-semibold text-gray-900">
+                  <span className="  text-gray-900">
                     {filteredFundis.length}
                   </span>{" "}
                   of{" "}
-                  <span className="font-semibold text-gray-900">
+                  <span className="  text-gray-900">
                     {pendingFundis.length}
                   </span>{" "}
                   pending applications
                 </p>
                 <div className="flex items-center gap-4">
-                  <button className="border border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-50 transition-colors font-semibold flex items-center gap-2">
+                  <button className="border border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-50 transition-colors   flex items-center gap-2">
                     <Download size={16} />
                     <span>Export List</span>
                   </button>
-                  <button className="bg-[#0A2647] text-white px-4 py-2 rounded-lg hover:bg-[#0d3157] transition-colors font-semibold">
+                  <button className="bg-[#0A2647] text-white px-4 py-2 rounded-lg hover:bg-[#0d3157] transition-colors  ">
                     Batch Review
                   </button>
                 </div>

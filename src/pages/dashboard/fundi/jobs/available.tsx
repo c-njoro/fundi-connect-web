@@ -350,7 +350,7 @@ export default function AvailableJobs() {
         <div className="max-w-7xl mx-auto px-6 py-8">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900 mb-2">
+              <h1 className="text-3xl font-semibold text-gray-900 mb-2">
                 Available Jobs
               </h1>
               <p className="text-gray-600">
@@ -401,9 +401,7 @@ export default function AvailableJobs() {
         {error ? (
           <div className="text-center py-12">
             <AlertCircle className="h-12 w-12 text-red-500 mx-auto mb-4" />
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">
-              Error Loading Jobs
-            </h3>
+            <h3 className="text-lg   text-gray-900 mb-2">Error Loading Jobs</h3>
             <p className="text-gray-600 mb-4">{error}</p>
             <button
               onClick={fetchJobs}
@@ -415,9 +413,7 @@ export default function AvailableJobs() {
         ) : filteredJobs.length === 0 ? (
           <div className="text-center py-12">
             <Briefcase className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">
-              No Jobs Available
-            </h3>
+            <h3 className="text-lg   text-gray-900 mb-2">No Jobs Available</h3>
             <p className="text-gray-600">
               {searchQuery || selectedService !== "all"
                 ? "No jobs match your filters. Try adjusting your search."
@@ -429,10 +425,8 @@ export default function AvailableJobs() {
             {/* Stats */}
             <div className="mb-6">
               <p className="text-gray-600">
-                Showing{" "}
-                <span className="font-semibold">{filteredJobs.length}</span> of{" "}
-                <span className="font-semibold">{jobs.length}</span> available
-                jobs
+                Showing <span className=" ">{filteredJobs.length}</span> of{" "}
+                <span className=" ">{jobs.length}</span> available jobs
               </p>
             </div>
 
@@ -458,7 +452,7 @@ export default function AvailableJobs() {
                               <Wrench size={20} className="text-blue-600" />
                             </div>
                             <div>
-                              <h3 className="font-semibold text-gray-900">
+                              <h3 className="  text-gray-900">
                                 {job.serviceId.name}
                               </h3>
                               <p className="text-sm text-gray-500">
@@ -467,13 +461,13 @@ export default function AvailableJobs() {
                             </div>
                           </div>
 
-                          <h2 className="text-xl font-bold text-gray-900 mb-2">
+                          <h2 className="text-xl font-semibold text-gray-900 mb-2">
                             {job.jobDetails.title}
                           </h2>
                         </div>
 
                         <div
-                          className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold ${urgencyInfo.color}`}
+                          className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs   ${urgencyInfo.color}`}
                         >
                           <UrgencyIcon size={12} />
                           <span>{urgencyInfo.label}</span>
@@ -490,7 +484,7 @@ export default function AvailableJobs() {
                         {/* Budget */}
                         <div className="flex items-center justify-between">
                           <span className="text-gray-600">Budget</span>
-                          <span className="font-bold text-green-600">
+                          <span className="font-semibold text-green-600">
                             {formatCurrency(job.jobDetails.estimatedBudget.min)}
                             {job.jobDetails.estimatedBudget.max &&
                               ` - ${formatCurrency(
@@ -532,7 +526,7 @@ export default function AvailableJobs() {
                       <div className="flex gap-3">
                         <button
                           onClick={() => handleViewJobDetails(job)}
-                          className="flex-1 border border-gray-300 text-gray-700 py-2 rounded-lg hover:bg-gray-50 transition-colors font-semibold flex items-center justify-center gap-2"
+                          className="flex-1 border border-gray-300 text-gray-700 py-2 rounded-lg hover:bg-gray-50 transition-colors   flex items-center justify-center gap-2"
                         >
                           <Eye size={16} />
                           <span>View Details</span>
@@ -541,7 +535,7 @@ export default function AvailableJobs() {
                         <button
                           onClick={() => handleApplyToJob(job)}
                           disabled={!canApply}
-                          className={`flex-1 py-2 rounded-lg font-semibold flex items-center justify-center gap-2 ${
+                          className={`flex-1 py-2 rounded-lg   flex items-center justify-center gap-2 ${
                             canApply
                               ? "bg-[#FF6B35] text-white hover:bg-[#ff5722] transition-colors"
                               : "bg-gray-100 text-gray-400 cursor-not-allowed"
@@ -579,7 +573,7 @@ export default function AvailableJobs() {
           <div className="bg-white rounded-xl shadow-xl max-w-3xl w-full max-h-[90vh] overflow-y-auto">
             <div className="p-6">
               <div className="flex items-center justify-between mb-6">
-                <h2 className="text-2xl font-bold text-gray-900">
+                <h2 className="text-2xl font-semibold text-gray-900">
                   Job Details
                 </h2>
                 <button
@@ -594,23 +588,21 @@ export default function AvailableJobs() {
               <div className="space-y-6">
                 {/* Job Header */}
                 <div>
-                  <h1 className="text-3xl font-bold text-gray-900 mb-3">
+                  <h1 className="text-3xl font-semibold text-gray-900 mb-3">
                     {selectedJob.jobDetails.title}
                   </h1>
 
                   <div className="flex items-center gap-4 mb-6">
                     <div className="inline-flex items-center gap-2 bg-blue-50 text-blue-800 px-4 py-2 rounded-lg">
                       <Wrench size={18} />
-                      <span className="font-semibold">
-                        {selectedJob.serviceId.name}
-                      </span>
+                      <span className=" ">{selectedJob.serviceId.name}</span>
                       <span className="text-blue-600">
                         • {selectedJob.subService}
                       </span>
                     </div>
 
                     <div
-                      className={`inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold ${
+                      className={`inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm   ${
                         urgencyConfig[selectedJob.jobDetails.urgency]?.color ||
                         urgencyConfig.low.color
                       }`}
@@ -631,9 +623,7 @@ export default function AvailableJobs() {
 
                 {/* Description */}
                 <div>
-                  <h3 className="text-lg font-semibold text-gray-900 mb-3">
-                    Description
-                  </h3>
+                  <h3 className="text-lg   text-gray-900 mb-3">Description</h3>
                   <p className="text-gray-700 leading-relaxed">
                     {selectedJob.jobDetails.description}
                   </p>
@@ -643,9 +633,7 @@ export default function AvailableJobs() {
                 {selectedJob.jobDetails.images &&
                   selectedJob.jobDetails.images.length > 0 && (
                     <div>
-                      <h3 className="text-lg font-semibold text-gray-900 mb-3">
-                        Images
-                      </h3>
+                      <h3 className="text-lg   text-gray-900 mb-3">Images</h3>
                       <div className="grid grid-cols-2 gap-3">
                         {selectedJob.jobDetails.images.map((image, index) => (
                           <div
@@ -667,8 +655,8 @@ export default function AvailableJobs() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {/* Budget */}
                   <div className="bg-gray-50 rounded-lg p-4">
-                    <h4 className="font-semibold text-gray-900 mb-2">Budget</h4>
-                    <p className="text-2xl font-bold text-green-600">
+                    <h4 className="  text-gray-900 mb-2">Budget</h4>
+                    <p className="text-2xl font-semibold text-green-600">
                       {formatCurrency(
                         selectedJob.jobDetails.estimatedBudget.min
                       )}
@@ -681,7 +669,7 @@ export default function AvailableJobs() {
 
                   {/* Location */}
                   <div className="bg-gray-50 rounded-lg p-4">
-                    <h4 className="font-semibold text-gray-900 mb-2 flex items-center gap-2">
+                    <h4 className="  text-gray-900 mb-2 flex items-center gap-2">
                       <MapPin size={16} />
                       <span>Location</span>
                     </h4>
@@ -713,14 +701,14 @@ export default function AvailableJobs() {
 
                   {/* Scheduling */}
                   <div className="bg-gray-50 rounded-lg p-4">
-                    <h4 className="font-semibold text-gray-900 mb-2 flex items-center gap-2">
+                    <h4 className="  text-gray-900 mb-2 flex items-center gap-2">
                       <Calendar size={16} />
                       <span>Scheduling</span>
                     </h4>
                     <div className="space-y-2">
                       <div>
                         <p className="text-sm text-gray-500">Preferred Date</p>
-                        <p className="font-semibold text-gray-900">
+                        <p className="  text-gray-900">
                           {formatDate(selectedJob.scheduling.preferredDate)}
                         </p>
                       </div>
@@ -729,14 +717,14 @@ export default function AvailableJobs() {
                           <p className="text-sm text-gray-500">
                             Preferred Time
                           </p>
-                          <p className="font-semibold text-gray-900">
+                          <p className="  text-gray-900">
                             {formatTime(selectedJob.scheduling.preferredTime)}
                           </p>
                         </div>
                       )}
                       <div>
                         <p className="text-sm text-gray-500">Flexibility</p>
-                        <p className="font-semibold text-gray-900 capitalize">
+                        <p className="  text-gray-900 capitalize">
                           {selectedJob.scheduling.flexibility}
                         </p>
                       </div>
@@ -745,17 +733,17 @@ export default function AvailableJobs() {
 
                   {/* Customer */}
                   <div className="bg-gray-50 rounded-lg p-4">
-                    <h4 className="font-semibold text-gray-900 mb-2 flex items-center gap-2">
+                    <h4 className="  text-gray-900 mb-2 flex items-center gap-2">
                       <User size={16} />
                       <span>Customer</span>
                     </h4>
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 bg-gradient-to-br from-[#0A2647] to-[#FF6B35] rounded-full flex items-center justify-center text-white font-semibold">
+                      <div className="w-10 h-10 bg-gradient-to-br from-[#0A2647] to-[#FF6B35] rounded-full flex items-center justify-center text-white  ">
                         {selectedJob.customerId.profile.firstName?.[0]}
                         {selectedJob.customerId.profile.lastName?.[0]}
                       </div>
                       <div>
-                        <p className="font-bold text-gray-900">
+                        <p className="font-semibold text-gray-900">
                           {selectedJob.customerId.profile.firstName}{" "}
                           {selectedJob.customerId.profile.lastName}
                         </p>
@@ -774,7 +762,7 @@ export default function AvailableJobs() {
                 <div className="flex gap-3 pt-6 border-t border-gray-200">
                   <button
                     onClick={() => setShowJobDetails(false)}
-                    className="flex-1 border border-gray-300 text-gray-700 py-3 rounded-lg hover:bg-gray-50 transition-colors font-semibold"
+                    className="flex-1 border border-gray-300 text-gray-700 py-3 rounded-lg hover:bg-gray-50 transition-colors  "
                   >
                     Close
                   </button>
@@ -784,7 +772,7 @@ export default function AvailableJobs() {
                       handleApplyToJob(selectedJob);
                     }}
                     disabled={!canApplyToJob(selectedJob)}
-                    className={`flex-1 py-3 rounded-lg font-semibold ${
+                    className={`flex-1 py-3 rounded-lg   ${
                       canApplyToJob(selectedJob)
                         ? "bg-[#FF6B35] text-white hover:bg-[#ff5722] transition-colors"
                         : "bg-gray-100 text-gray-400 cursor-not-allowed"
@@ -805,7 +793,7 @@ export default function AvailableJobs() {
           <div className="bg-white rounded-xl shadow-xl max-w-lg w-full">
             <div className="p-6">
               <div className="flex items-center justify-between mb-6">
-                <h2 className="text-2xl font-bold text-gray-900">
+                <h2 className="text-2xl font-semibold text-gray-900">
                   Submit Proposal
                 </h2>
                 <button
@@ -823,7 +811,7 @@ export default function AvailableJobs() {
               <div className="space-y-4">
                 {/* Job Info */}
                 <div className="bg-blue-50 rounded-lg p-4 mb-4">
-                  <h3 className="font-semibold text-gray-900 mb-2">
+                  <h3 className="  text-gray-900 mb-2">
                     {selectedJob.jobDetails.title}
                   </h3>
                   <p className="text-sm text-gray-600">
@@ -831,7 +819,7 @@ export default function AvailableJobs() {
                   </p>
                   <p className="text-sm text-gray-600 mt-1">
                     Customer Budget:{" "}
-                    <span className="font-semibold">
+                    <span className=" ">
                       {formatCurrency(
                         selectedJob.jobDetails.estimatedBudget.min
                       )}
@@ -915,14 +903,14 @@ export default function AvailableJobs() {
                       setApplyJobId(null);
                       setProposalError(null);
                     }}
-                    className="flex-1 border border-gray-300 text-gray-700 py-3 rounded-lg hover:bg-gray-50 transition-colors font-semibold"
+                    className="flex-1 border border-gray-300 text-gray-700 py-3 rounded-lg hover:bg-gray-50 transition-colors  "
                   >
                     Cancel
                   </button>
                   <button
                     onClick={() => submitProposal(selectedJob._id)}
                     disabled={applying}
-                    className="flex-1 bg-[#FF6B35] text-white py-3 rounded-lg hover:bg-[#ff5722] transition-colors font-semibold disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                    className="flex-1 bg-[#FF6B35] text-white py-3 rounded-lg hover:bg-[#ff5722] transition-colors   disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                   >
                     {applying ? (
                       <>

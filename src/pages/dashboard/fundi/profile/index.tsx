@@ -132,7 +132,7 @@ export default function FundiProfile() {
           <div className="bg-gradient-to-r from-[#0A2647] to-[#003366] px-6 py-8">
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between">
               <div className="flex items-center space-x-4">
-                <div className="h-20 w-20 rounded-full bg-white flex items-center justify-center text-[#0A2647] text-2xl font-bold">
+                <div className="h-20 w-20 rounded-full bg-white flex items-center justify-center text-[#0A2647] text-2xl font-semibold">
                   {profile.profile.avatar ? (
                     <img
                       src={profile.profile.avatar}
@@ -144,7 +144,7 @@ export default function FundiProfile() {
                   )}
                 </div>
                 <div>
-                  <h1 className="text-2xl font-bold text-white">
+                  <h1 className="text-2xl font-semibold text-white">
                     {profile.profile.firstName} {profile.profile.lastName}
                   </h1>
                   <p className="text-gray-200">Professional Fundi</p>
@@ -170,13 +170,13 @@ export default function FundiProfile() {
 
               <div className="mt-4 sm:mt-0 flex items-center space-x-4">
                 <div className="text-center text-white">
-                  <div className="text-2xl font-bold">
+                  <div className="text-2xl font-semibold">
                     {profile.fundiProfile?.completedJobs || 0}
                   </div>
                   <div className="text-sm text-gray-200">Jobs Completed</div>
                 </div>
                 <div className="text-center text-white">
-                  <div className="text-2xl font-bold flex items-center justify-center">
+                  <div className="text-2xl font-semibold flex items-center justify-center">
                     <Star size={20} className="text-yellow-400 mr-1" />
                     {profile.fundiProfile?.ratings?.average?.toFixed(1) ||
                       "0.0"}
@@ -195,7 +195,7 @@ export default function FundiProfile() {
                 {/* Personal Information */}
                 <div className="bg-gray-50 rounded-lg p-6 border border-gray-200">
                   <div className="flex items-center justify-between mb-4">
-                    <h2 className="text-lg font-semibold text-[#0A2647] flex items-center space-x-2">
+                    <h2 className="text-lg   text-[#0A2647] flex items-center space-x-2">
                       <User size={20} />
                       <span>Personal Information</span>
                     </h2>
@@ -240,7 +240,7 @@ export default function FundiProfile() {
                 {/* Contact Information */}
                 <div className="bg-gray-50 rounded-lg p-6 border border-gray-200">
                   <div className="flex items-center justify-between mb-4">
-                    <h2 className="text-lg font-semibold text-[#0A2647] flex items-center space-x-2">
+                    <h2 className="text-lg   text-[#0A2647] flex items-center space-x-2">
                       <Mail size={20} />
                       <span>Contact Information</span>
                     </h2>
@@ -287,7 +287,7 @@ export default function FundiProfile() {
                 {profile.location && (
                   <div className="bg-gray-50 rounded-lg p-6 border border-gray-200">
                     <div className="flex items-center justify-between mb-4">
-                      <h2 className="text-lg font-semibold text-[#0A2647] flex items-center space-x-2">
+                      <h2 className="text-lg   text-[#0A2647] flex items-center space-x-2">
                         <MapPin size={20} />
                         <span>Location Information</span>
                       </h2>
@@ -330,7 +330,7 @@ export default function FundiProfile() {
                 {/* Fundi Professional Information */}
                 <div className="bg-gray-50 rounded-lg p-6 border border-gray-200">
                   <div className="flex items-center justify-between mb-4">
-                    <h2 className="text-lg font-semibold text-[#0A2647] flex items-center space-x-2">
+                    <h2 className="text-lg   text-[#0A2647] flex items-center space-x-2">
                       <Briefcase size={20} />
                       <span>Professional Information</span>
                     </h2>
@@ -398,7 +398,7 @@ export default function FundiProfile() {
                 {/* Services & Pricing */}
                 <div className="bg-gray-50 rounded-lg p-6 border border-gray-200">
                   <div className="flex items-center justify-between mb-4">
-                    <h2 className="text-lg font-semibold text-[#0A2647] flex items-center space-x-2">
+                    <h2 className="text-lg   text-[#0A2647] flex items-center space-x-2">
                       <DollarSign size={20} />
                       <span>Services & Pricing</span>
                     </h2>
@@ -452,7 +452,7 @@ export default function FundiProfile() {
                                     )[0]?.name || "Service"}
                                   </span>
                                   <div className="text-right">
-                                    <span className="text-gray-900 font-bold">
+                                    <span className="text-gray-900 font-semibold">
                                       KSh {price.minRate}
                                       {price.maxRate &&
                                         ` - KSh ${price.maxRate}`}
@@ -480,7 +480,7 @@ export default function FundiProfile() {
                   {/* Certifications */}
                   <div className="bg-gray-50 rounded-lg p-6 border border-gray-200">
                     <div className="flex items-center justify-between mb-4">
-                      <h2 className="text-lg font-semibold text-[#0A2647] flex items-center space-x-2">
+                      <h2 className="text-lg   text-[#0A2647] flex items-center space-x-2">
                         <Award size={20} />
                         <span>Certifications</span>
                       </h2>
@@ -522,7 +522,7 @@ export default function FundiProfile() {
                   {/* Portfolio */}
                   <div className="bg-gray-50 rounded-lg p-6 border border-gray-200">
                     <div className="flex items-center justify-between mb-4">
-                      <h2 className="text-lg font-semibold text-[#0A2647] flex items-center space-x-2">
+                      <h2 className="text-lg   text-[#0A2647] flex items-center space-x-2">
                         <FileText size={20} />
                         <span>Portfolio</span>
                       </h2>
@@ -566,7 +566,7 @@ export default function FundiProfile() {
                 {/* Account Status */}
                 <div className="bg-gray-50 rounded-lg p-6 border border-gray-200">
                   <div className="flex items-center justify-between mb-4">
-                    <h2 className="text-lg font-semibold text-[#0A2647] flex items-center space-x-2">
+                    <h2 className="text-lg   text-[#0A2647] flex items-center space-x-2">
                       <Shield size={20} />
                       <span>Account Status</span>
                     </h2>

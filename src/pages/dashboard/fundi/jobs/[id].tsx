@@ -558,9 +558,7 @@ export default function FundiJobDetail() {
       <div className="flex-1 flex items-center justify-center min-h-screen">
         <div className="text-center max-w-md">
           <AlertCircle className="h-12 w-12 text-red-500 mx-auto mb-4" />
-          <h3 className="text-lg font-semibold text-gray-900 mb-2">
-            Error Loading Job
-          </h3>
+          <h3 className="text-lg   text-gray-900 mb-2">Error Loading Job</h3>
           <p className="text-gray-600 mb-4">{error}</p>
           <div className="flex gap-3 justify-center">
             <button
@@ -618,7 +616,7 @@ export default function FundiJobDetail() {
 
               {/* Status Badge */}
               <div
-                className={`inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold ${statusInfo.color}`}
+                className={`inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm   ${statusInfo.color}`}
               >
                 <StatusIcon size={16} className={statusInfo.iconColor} />
                 <span>{statusInfo.label}</span>
@@ -636,7 +634,7 @@ export default function FundiJobDetail() {
               <button
                 onClick={handleStartJob}
                 disabled={startingJob}
-                className="bg-[#FF6B35] text-white px-6 py-2 rounded-lg hover:bg-[#ff5722] transition-colors font-semibold flex items-center gap-2"
+                className="bg-[#FF6B35] text-white px-6 py-2 rounded-lg hover:bg-[#ff5722] transition-colors   flex items-center gap-2"
               >
                 {startingJob ? (
                   <Loader className="animate-spin h-4 w-4" />
@@ -657,14 +655,14 @@ export default function FundiJobDetail() {
             {/* Job Header */}
             <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-8">
               <div className="mb-6">
-                <h1 className="text-3xl font-bold text-gray-900 mb-3">
+                <h1 className="text-3xl font-semibold text-gray-900 mb-3">
                   {job.jobDetails?.title}
                 </h1>
 
                 {/* Service Link */}
                 <div className="inline-flex items-center gap-2 bg-blue-50 text-blue-800 px-4 py-2 rounded-lg">
                   <Wrench size={18} />
-                  <span className="font-semibold">{job.serviceId?.name}</span>
+                  <span className=" ">{job.serviceId?.name}</span>
                   {job.subService && (
                     <span className="text-blue-600">• {job.subService}</span>
                   )}
@@ -674,9 +672,7 @@ export default function FundiJobDetail() {
               {/* Job Description */}
               {job.jobDetails?.description && (
                 <div className="mb-6">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-3">
-                    Description
-                  </h3>
+                  <h3 className="text-lg   text-gray-900 mb-3">Description</h3>
                   <p className="text-gray-700 leading-relaxed">
                     {job.jobDetails.description}
                   </p>
@@ -687,7 +683,7 @@ export default function FundiJobDetail() {
             {/* Work Progress Section */}
             <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-8">
               <div className="flex items-center justify-between mb-6">
-                <h2 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
+                <h2 className="text-2xl font-semibold text-gray-900 flex items-center gap-2">
                   <TrendingUp size={24} />
                   <span>Work Progress</span>
                   {job.workProgress && job.workProgress.length > 0 && (
@@ -724,7 +720,7 @@ export default function FundiJobDetail() {
                           </div>
                           <div className="flex-1">
                             <div className="flex items-center justify-between mb-2">
-                              <span className="font-semibold text-gray-900 capitalize">
+                              <span className="  text-gray-900 capitalize">
                                 {progress.stage?.replace("_", " ")}
                               </span>
                               <span className="text-gray-500 text-sm">
@@ -930,7 +926,7 @@ export default function FundiJobDetail() {
                   {/* Update Progress Form (if job is in progress) */}
                   {canUpdateProgress() && (
                     <div className="border text-gray-900 border-gray-300 rounded-xl p-6 bg-gray-50">
-                      <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                      <h3 className="text-lg   text-gray-900 mb-4">
                         Update Progress
                       </h3>
                       <div className="space-y-4">
@@ -963,7 +959,7 @@ export default function FundiJobDetail() {
                           <button
                             onClick={handleUpdateProgress}
                             disabled={updatingProgress || !updateMessage.trim()}
-                            className="flex-1 bg-[#FF6B35] text-white py-3 rounded-lg hover:bg-[#ff5722] transition-colors font-semibold disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                            className="flex-1 bg-[#FF6B35] text-white py-3 rounded-lg hover:bg-[#ff5722] transition-colors   disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                           >
                             {updatingProgress ? (
                               <>
@@ -1004,7 +1000,7 @@ export default function FundiJobDetail() {
               ) : (
                 <div className="text-center py-12">
                   <Hourglass size={64} className="mx-auto text-gray-400 mb-4" />
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                  <h3 className="text-lg   text-gray-900 mb-2">
                     {canStartJob() ? "Ready to Start" : "No Progress Yet"}
                   </h3>
                   <p className="text-gray-600 max-w-md mx-auto mb-6">
@@ -1020,7 +1016,7 @@ export default function FundiJobDetail() {
             {canCompleteJob() && (
               <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-8">
                 <div className="text-center">
-                  <h3 className="text-xl font-semibold text-gray-900 mb-4">
+                  <h3 className="text-xl   text-gray-900 mb-4">
                     Ready to Complete the Job?
                   </h3>
                   <p className="text-gray-600 mb-6 max-w-md mx-auto">
@@ -1029,7 +1025,7 @@ export default function FundiJobDetail() {
                   </p>
                   <button
                     onClick={() => setShowCompletionModal(true)}
-                    className="bg-green-600 text-white px-8 py-3 rounded-lg hover:bg-green-700 transition-colors font-semibold flex items-center gap-2 mx-auto"
+                    className="bg-green-600 text-white px-8 py-3 rounded-lg hover:bg-green-700 transition-colors   flex items-center gap-2 mx-auto"
                   >
                     <CheckCircle size={20} />
                     <span>Complete Job</span>
@@ -1043,18 +1039,18 @@ export default function FundiJobDetail() {
           <div className="space-y-6">
             {/* Customer Info */}
             <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-              <h3 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
+              <h3 className="  text-gray-900 mb-4 flex items-center gap-2">
                 <User size={18} />
                 <span>Customer</span>
               </h3>
 
               <div className="flex items-center gap-3 mb-4">
-                <div className="w-12 h-12 bg-gradient-to-br from-[#0A2647] to-[#FF6B35] rounded-full flex items-center justify-center text-white font-semibold text-lg">
+                <div className="w-12 h-12 bg-gradient-to-br from-[#0A2647] to-[#FF6B35] rounded-full flex items-center justify-center text-white   text-lg">
                   {job.customerId?.profile?.firstName?.[0]}
                   {job.customerId?.profile?.lastName?.[0]}
                 </div>
                 <div>
-                  <p className="font-bold text-gray-900">
+                  <p className="font-semibold text-gray-900">
                     {job.customerId?.profile?.firstName}{" "}
                     {job.customerId?.profile?.lastName}
                   </p>
@@ -1068,11 +1064,11 @@ export default function FundiJobDetail() {
               </div>
 
               <div className="space-y-2">
-                <button className="w-full bg-[#0A2647] text-white py-2 rounded-lg font-semibold hover:bg-[#0d3157] transition-colors flex items-center justify-center gap-2">
+                <button className="w-full bg-[#0A2647] text-white py-2 rounded-lg   hover:bg-[#0d3157] transition-colors flex items-center justify-center gap-2">
                   <Phone size={16} />
                   <span>Call Customer</span>
                 </button>
-                <button className="w-full border border-gray-300 text-gray-700 py-2 rounded-lg font-semibold hover:bg-gray-50 transition-colors flex items-center justify-center gap-2">
+                <button className="w-full border border-gray-300 text-gray-700 py-2 rounded-lg   hover:bg-gray-50 transition-colors flex items-center justify-center gap-2">
                   <MessageCircle size={16} />
                   <span>Message</span>
                 </button>
@@ -1081,14 +1077,14 @@ export default function FundiJobDetail() {
 
             {/* Job Details */}
             <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-              <h3 className="font-semibold text-gray-900 mb-4">Job Details</h3>
+              <h3 className="  text-gray-900 mb-4">Job Details</h3>
 
               <div className="space-y-4">
                 {/* Budget */}
                 <div className="flex justify-between items-center">
                   <span className="text-gray-600">Budget</span>
                   <div className="text-right">
-                    <div className="font-bold text-gray-900">
+                    <div className="font-semibold text-gray-900">
                       KSh {job.jobDetails?.estimatedBudget?.min}
                       {job.jobDetails?.estimatedBudget?.max &&
                         ` - KSh ${job.jobDetails.estimatedBudget.max}`}
@@ -1100,7 +1096,7 @@ export default function FundiJobDetail() {
                 {job.agreedPrice && (
                   <div className="flex justify-between items-center">
                     <span className="text-gray-600">Agreed Price</span>
-                    <div className="font-bold text-green-600">
+                    <div className="font-semibold text-green-600">
                       KSh {job.agreedPrice}
                     </div>
                   </div>
@@ -1109,7 +1105,7 @@ export default function FundiJobDetail() {
                 {/* Created Date */}
                 <div className="flex justify-between items-center">
                   <span className="text-gray-600">Created</span>
-                  <span className="font-semibold text-gray-900">
+                  <span className="  text-gray-900">
                     {job.createdAt ? formatDate(job.createdAt) : "N/A"}
                   </span>
                 </div>
@@ -1118,7 +1114,7 @@ export default function FundiJobDetail() {
 
             {/* Location Details */}
             <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-              <h3 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
+              <h3 className="  text-gray-900 mb-4 flex items-center gap-2">
                 <MapPinIcon size={18} />
                 <span>Location</span>
               </h3>
@@ -1157,7 +1153,7 @@ export default function FundiJobDetail() {
 
             {/* Scheduling */}
             <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-              <h3 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
+              <h3 className="  text-gray-900 mb-4 flex items-center gap-2">
                 <CalendarDays size={18} />
                 <span>Scheduling</span>
               </h3>
@@ -1165,7 +1161,7 @@ export default function FundiJobDetail() {
               <div className="space-y-3">
                 <div>
                   <p className="text-sm text-gray-500">Preferred Date</p>
-                  <p className="font-semibold text-gray-900">
+                  <p className="  text-gray-900">
                     {job.scheduling?.preferredDate
                       ? formatDate(job.scheduling.preferredDate)
                       : "Flexible"}
@@ -1175,7 +1171,7 @@ export default function FundiJobDetail() {
                 {job.scheduling?.preferredTime && (
                   <div>
                     <p className="text-sm text-gray-500">Preferred Time</p>
-                    <p className="font-semibold text-gray-900">
+                    <p className="  text-gray-900">
                       {formatTime(job.scheduling.preferredTime)}
                     </p>
                   </div>
@@ -1192,7 +1188,7 @@ export default function FundiJobDetail() {
           <div className="bg-white rounded-xl shadow-xl max-w-2xl w-full">
             <div className="p-6">
               <div className="flex items-center justify-between mb-6">
-                <h3 className="text-xl font-bold text-gray-900">
+                <h3 className="text-xl font-semibold text-gray-900">
                   Complete Job
                 </h3>
                 <button
@@ -1232,7 +1228,7 @@ export default function FundiJobDetail() {
                 <div className="flex gap-3 pt-4">
                   <button
                     onClick={() => setShowCompletionModal(false)}
-                    className="flex-1 border border-gray-300 text-gray-700 py-3 rounded-lg hover:bg-gray-50 transition-colors font-semibold"
+                    className="flex-1 border border-gray-300 text-gray-700 py-3 rounded-lg hover:bg-gray-50 transition-colors  "
                   >
                     Cancel
                   </button>
@@ -1255,7 +1251,7 @@ export default function FundiJobDetail() {
                   <button
                     onClick={handleCompleteJob}
                     disabled={completingJob || !completionNotes.trim()}
-                    className="flex-1 bg-green-600 text-white py-3 rounded-lg hover:bg-green-700 transition-colors font-semibold disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                    className="flex-1 bg-green-600 text-white py-3 rounded-lg hover:bg-green-700 transition-colors   disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                   >
                     {completingJob ? (
                       <>

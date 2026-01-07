@@ -128,7 +128,7 @@ export default function CustomerProfile() {
           <div className="bg-gradient-to-r from-[#0A2647] to-[#003366] px-6 py-8">
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between">
               <div className="flex items-center space-x-4">
-                <div className="h-20 w-20 rounded-full bg-white flex items-center justify-center text-[#0A2647] text-2xl font-bold">
+                <div className="h-20 w-20 rounded-full bg-white flex items-center justify-center text-[#0A2647] text-2xl font-semibold">
                   {profile.profile.avatar ? (
                     <img
                       src={profile.profile.avatar}
@@ -140,7 +140,7 @@ export default function CustomerProfile() {
                   )}
                 </div>
                 <div>
-                  <h1 className="text-2xl font-bold text-white">
+                  <h1 className="text-2xl font-semibold text-white">
                     {profile.profile.firstName} {profile.profile.lastName}
                   </h1>
                   <p className="text-gray-200">Customer Account</p>
@@ -153,7 +153,7 @@ export default function CustomerProfile() {
                     setShowBecomeFundiModal(true);
                     setSelectedUserId(profile._id.toString());
                   }}
-                  className="mt-4 sm:mt-0 bg-orange-500 text-white px-6 py-3 rounded-lg hover:bg-orange-600 transition-colors duration-200 font-semibold flex items-center space-x-2"
+                  className="mt-4 sm:mt-0 bg-orange-500 text-white px-6 py-3 rounded-lg hover:bg-orange-600 transition-colors duration-200   flex items-center space-x-2"
                 >
                   <Briefcase size={20} />
                   <span>Become a Fundi</span>
@@ -162,7 +162,7 @@ export default function CustomerProfile() {
               )}
 
               {profile.fundiProfile?.profileStatus === "pending_review" && (
-                <div className="mt-4 sm:mt-0 bg-green-500 text-white px-6 py-3 rounded-lg font-semibold flex items-center space-x-2">
+                <div className="mt-4 sm:mt-0 bg-green-500 text-white px-6 py-3 rounded-lg   flex items-center space-x-2">
                   <Briefcase size={20} />
                   <span>Fundi Account Pending Approval</span>
                 </div>
@@ -176,7 +176,7 @@ export default function CustomerProfile() {
               {/* Personal Information */}
               <div className="bg-gray-50 rounded-lg p-6 border border-gray-200">
                 <div className="flex items-center justify-between mb-4">
-                  <h2 className="text-lg font-semibold text-[#0A2647] flex items-center space-x-2">
+                  <h2 className="text-lg   text-[#0A2647] flex items-center space-x-2">
                     <User size={20} />
                     <span>Personal Information</span>
                   </h2>
@@ -242,7 +242,7 @@ export default function CustomerProfile() {
               {/* Contact Information */}
               <div className="bg-gray-50 rounded-lg p-6 border border-gray-200">
                 <div className="flex items-center justify-between mb-4">
-                  <h2 className="text-lg font-semibold text-[#0A2647] flex items-center space-x-2">
+                  <h2 className="text-lg   text-[#0A2647] flex items-center space-x-2">
                     <Mail size={20} />
                     <span>Contact Information</span>
                   </h2>
@@ -289,7 +289,7 @@ export default function CustomerProfile() {
               {profile.location && (
                 <div className="bg-gray-50 rounded-lg p-6 border border-gray-200">
                   <div className="flex items-center justify-between mb-4">
-                    <h2 className="text-lg font-semibold text-[#0A2647] flex items-center space-x-2">
+                    <h2 className="text-lg   text-[#0A2647] flex items-center space-x-2">
                       <MapPin size={20} />
                       <span>Location Information</span>
                     </h2>
@@ -332,7 +332,7 @@ export default function CustomerProfile() {
               {/* Account Information */}
               <div className="bg-gray-50 rounded-lg p-6 border border-gray-200">
                 <div className="flex items-center justify-between mb-4">
-                  <h2 className="text-lg font-semibold text-[#0A2647] flex items-center space-x-2">
+                  <h2 className="text-lg   text-[#0A2647] flex items-center space-x-2">
                     <Shield size={20} />
                     <span>Account Information</span>
                   </h2>
@@ -393,7 +393,7 @@ export default function CustomerProfile() {
       {showBecomeFundiModal && (
         <div className="fixed inset-0 bg-black/70 bg-opacity-20 flex items-center justify-center p-4 z-50">
           <div className="bg-white rounded-lg max-w-md w-full p-6">
-            <h3 className="text-xl font-bold text-[#0A2647] mb-4">
+            <h3 className="text-xl font-semibold text-[#0A2647] mb-4">
               Become a Fundi
             </h3>
             <p className="text-gray-600 mb-6">

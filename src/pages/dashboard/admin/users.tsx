@@ -384,12 +384,12 @@ export default function AdminUsers() {
           {/* Modal Header */}
           <div className="flex items-center justify-between p-6 border-b border-gray-200">
             <div className="flex items-center gap-4">
-              <div className="w-12 h-12 bg-gradient-to-br from-[#0A2647] to-[#FF6B35] rounded-full flex items-center justify-center text-white font-semibold text-lg">
+              <div className="w-12 h-12 bg-gradient-to-br from-[#0A2647] to-[#FF6B35] rounded-full flex items-center justify-center text-white   text-lg">
                 {user.profile?.firstName?.[0]}
                 {user.profile?.lastName?.[0]}
               </div>
               <div>
-                <h3 className="text-xl font-bold text-gray-900">
+                <h3 className="text-xl font-semibold text-gray-900">
                   {user.profile?.fullName}
                 </h3>
                 <div className="flex items-center gap-2">
@@ -427,7 +427,7 @@ export default function AdminUsers() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {/* Basic Information */}
               <div className="space-y-4">
-                <h4 className="font-semibold text-gray-900 text-lg flex items-center gap-2">
+                <h4 className="  text-gray-900 text-lg flex items-center gap-2">
                   <User size={18} />
                   Basic Information
                 </h4>
@@ -462,7 +462,7 @@ export default function AdminUsers() {
 
               {/* Location Information */}
               <div className="space-y-4">
-                <h4 className="font-semibold text-gray-900 text-lg flex items-center gap-2">
+                <h4 className="  text-gray-900 text-lg flex items-center gap-2">
                   <MapPin size={18} />
                   Location
                 </h4>
@@ -490,7 +490,7 @@ export default function AdminUsers() {
 
               {/* Account Information */}
               <div className="space-y-4">
-                <h4 className="font-semibold text-gray-900 text-lg flex items-center gap-2">
+                <h4 className="  text-gray-900 text-lg flex items-center gap-2">
                   <Shield size={18} />
                   Account Information
                 </h4>
@@ -545,7 +545,7 @@ export default function AdminUsers() {
               {/* Fundi Specific Information */}
               {user.isFundi && user.fundiProfile && (
                 <div className="space-y-4">
-                  <h4 className="font-semibold text-gray-900 text-lg flex items-center gap-2">
+                  <h4 className="  text-gray-900 text-lg flex items-center gap-2">
                     <Wrench size={18} />
                     Fundi Profile
                   </h4>
@@ -612,7 +612,7 @@ export default function AdminUsers() {
                       setSelectedUser(user);
                       setShowSuspendModal(true);
                     }}
-                    className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors font-semibold flex items-center gap-2"
+                    className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors   flex items-center gap-2"
                   >
                     <Lock size={16} />
                     <span>Suspend Account</span>
@@ -622,7 +622,7 @@ export default function AdminUsers() {
                   <button
                     onClick={() => handleUnsuspendFundi(user._id)}
                     disabled={suspending}
-                    className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors font-semibold flex items-center gap-2"
+                    className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors   flex items-center gap-2"
                   >
                     {suspending ? (
                       <Loader className="animate-spin h-4 w-4" />
@@ -634,11 +634,11 @@ export default function AdminUsers() {
                     </span>
                   </button>
                 )}
-                <button className="border border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-50 transition-colors font-semibold flex items-center gap-2">
+                <button className="border border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-50 transition-colors   flex items-center gap-2">
                   <Edit size={16} />
                   <span>Edit User</span>
                 </button>
-                <button className="border border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-50 transition-colors font-semibold flex items-center gap-2">
+                <button className="border border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-50 transition-colors   flex items-center gap-2">
                   <FileText size={16} />
                   <span>View Activity</span>
                 </button>
@@ -658,7 +658,7 @@ export default function AdminUsers() {
         <div className="bg-white rounded-xl shadow-xl max-w-md w-full">
           <div className="p-6">
             <div className="flex items-center justify-between mb-6">
-              <h3 className="text-xl font-bold text-gray-900">
+              <h3 className="text-xl font-semibold text-gray-900">
                 Suspend Fundi Account
               </h3>
               <button
@@ -675,12 +675,12 @@ export default function AdminUsers() {
 
             <div className="mb-6">
               <div className="flex items-center gap-3 mb-4">
-                <div className="w-10 h-10 bg-gradient-to-br from-[#0A2647] to-[#FF6B35] rounded-full flex items-center justify-center text-white font-semibold">
+                <div className="w-10 h-10 bg-gradient-to-br from-[#0A2647] to-[#FF6B35] rounded-full flex items-center justify-center text-white  ">
                   {selectedUser.profile?.firstName?.[0]}
                   {selectedUser.profile?.lastName?.[0]}
                 </div>
                 <div>
-                  <p className="font-bold text-gray-900">
+                  <p className="font-semibold text-gray-900">
                     {selectedUser.profile?.fullName}
                   </p>
                   <p className="text-sm text-gray-600">{selectedUser.email}</p>
@@ -719,14 +719,14 @@ export default function AdminUsers() {
                     setSuspendReason("");
                     setSuspendError(null);
                   }}
-                  className="flex-1 border border-gray-300 text-gray-700 py-3 rounded-lg hover:bg-gray-50 transition-colors font-semibold"
+                  className="flex-1 border border-gray-300 text-gray-700 py-3 rounded-lg hover:bg-gray-50 transition-colors  "
                 >
                   Cancel
                 </button>
                 <button
                   onClick={() => handleSuspendFundi(selectedUser._id)}
                   disabled={suspending || !suspendReason.trim()}
-                  className="flex-1 bg-red-600 text-white py-3 rounded-lg hover:bg-red-700 transition-colors font-semibold disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                  className="flex-1 bg-red-600 text-white py-3 rounded-lg hover:bg-red-700 transition-colors   disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                 >
                   {suspending ? (
                     <>
@@ -764,13 +764,11 @@ export default function AdminUsers() {
       <div className="flex-1 flex items-center justify-center min-h-screen">
         <div className="text-center max-w-md">
           <AlertCircle className="h-12 w-12 text-red-500 mx-auto mb-4" />
-          <h3 className="text-lg font-semibold text-gray-900 mb-2">
-            Error Loading Users
-          </h3>
+          <h3 className="text-lg   text-gray-900 mb-2">Error Loading Users</h3>
           <p className="text-gray-700 mb-4">{error}</p>
           <button
             onClick={fetchUsers}
-            className="bg-[#0A2647] text-white px-6 py-2 rounded-lg hover:bg-[#0d3157] transition-colors font-semibold"
+            className="bg-[#0A2647] text-white px-6 py-2 rounded-lg hover:bg-[#0d3157] transition-colors  "
           >
             Try Again
           </button>
@@ -786,7 +784,7 @@ export default function AdminUsers() {
         <div className="max-w-7xl mx-auto px-6 py-6">
           <div className="flex items-center justify-between mb-6">
             <div>
-              <h1 className="text-2xl font-bold text-gray-900">
+              <h1 className="text-2xl font-semibold text-gray-900">
                 User Management
               </h1>
               <p className="text-gray-600">
@@ -807,7 +805,7 @@ export default function AdminUsers() {
                   className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#FF6B35] focus:border-transparent text-gray-900"
                 />
               </div>
-              <button className="border border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-50 transition-colors font-semibold flex items-center gap-2">
+              <button className="border border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-50 transition-colors   flex items-center gap-2">
                 <Filter size={16} />
                 <span>Filter</span>
               </button>
@@ -818,7 +816,7 @@ export default function AdminUsers() {
           <div className="flex space-x-1 border-b border-gray-200">
             <button
               onClick={() => setActiveTab("customers")}
-              className={`px-6 py-3 font-semibold text-sm border-b-2 transition-colors ${
+              className={`px-6 py-3   text-sm border-b-2 transition-colors ${
                 activeTab === "customers"
                   ? "border-[#FF6B35] text-[#FF6B35]"
                   : "border-transparent text-gray-600 hover:text-gray-900"
@@ -834,7 +832,7 @@ export default function AdminUsers() {
             </button>
             <button
               onClick={() => setActiveTab("fundis")}
-              className={`px-6 py-3 font-semibold text-sm border-b-2 transition-colors ${
+              className={`px-6 py-3   text-sm border-b-2 transition-colors ${
                 activeTab === "fundis"
                   ? "border-[#FF6B35] text-[#FF6B35]"
                   : "border-transparent text-gray-600 hover:text-gray-900"
@@ -850,7 +848,7 @@ export default function AdminUsers() {
             </button>
             <button
               onClick={() => setActiveTab("admins")}
-              className={`px-6 py-3 font-semibold text-sm border-b-2 transition-colors ${
+              className={`px-6 py-3   text-sm border-b-2 transition-colors ${
                 activeTab === "admins"
                   ? "border-[#FF6B35] text-[#FF6B35]"
                   : "border-transparent text-gray-600 hover:text-gray-900"
@@ -873,7 +871,7 @@ export default function AdminUsers() {
         {filteredUsers.length === 0 ? (
           <div className="text-center py-12">
             <User size={64} className="mx-auto text-gray-400 mb-4" />
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">
+            <h3 className="text-lg   text-gray-900 mb-2">
               No {activeTab} found
             </h3>
             <p className="text-gray-700 max-w-md mx-auto">
@@ -889,25 +887,25 @@ export default function AdminUsers() {
               <table className="w-full">
                 <thead className="bg-gray-50">
                   <tr>
-                    <th className="py-4 px-6 text-left text-sm font-semibold text-gray-900">
+                    <th className="py-4 px-6 text-left text-sm   text-gray-900">
                       User
                     </th>
-                    <th className="py-4 px-6 text-left text-sm font-semibold text-gray-900">
+                    <th className="py-4 px-6 text-left text-sm   text-gray-900">
                       Contact
                     </th>
-                    <th className="py-4 px-6 text-left text-sm font-semibold text-gray-900">
+                    <th className="py-4 px-6 text-left text-sm   text-gray-900">
                       Location
                     </th>
-                    <th className="py-4 px-6 text-left text-sm font-semibold text-gray-900">
+                    <th className="py-4 px-6 text-left text-sm   text-gray-900">
                       Status
                     </th>
-                    <th className="py-4 px-6 text-left text-sm font-semibold text-gray-900">
+                    <th className="py-4 px-6 text-left text-sm   text-gray-900">
                       Joined
                     </th>
-                    <th className="py-4 px-6 text-left text-sm font-semibold text-gray-900">
+                    <th className="py-4 px-6 text-left text-sm   text-gray-900">
                       Actions
                     </th>
-                    <th className="py-4 px-6 text-left text-sm font-semibold text-gray-900 w-12">
+                    <th className="py-4 px-6 text-left text-sm   text-gray-900 w-12">
                       {/* Expand column */}
                     </th>
                   </tr>
@@ -923,12 +921,12 @@ export default function AdminUsers() {
                         <tr key={user._id} className="hover:bg-gray-50">
                           <td className="py-4 px-6">
                             <div className="flex items-center gap-3">
-                              <div className="w-10 h-10 bg-gradient-to-br from-[#0A2647] to-[#FF6B35] rounded-full flex items-center justify-center text-white font-semibold">
+                              <div className="w-10 h-10 bg-gradient-to-br from-[#0A2647] to-[#FF6B35] rounded-full flex items-center justify-center text-white  ">
                                 {user.profile?.firstName?.[0]}
                                 {user.profile?.lastName?.[0]}
                               </div>
                               <div>
-                                <p className="font-semibold text-gray-900">
+                                <p className="  text-gray-900">
                                   {user.profile?.fullName}
                                 </p>
                                 <div className="flex items-center gap-2 mt-1">
@@ -1043,7 +1041,7 @@ export default function AdminUsers() {
                             <td colSpan={7} className="bg-gray-50 px-6 py-4">
                               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                                 <div>
-                                  <h4 className="font-semibold text-gray-900 mb-2">
+                                  <h4 className="  text-gray-900 mb-2">
                                     Verification
                                   </h4>
                                   <div className="space-y-2">
@@ -1095,7 +1093,7 @@ export default function AdminUsers() {
                                 </div>
 
                                 <div>
-                                  <h4 className="font-semibold text-gray-900 mb-2">
+                                  <h4 className="  text-gray-900 mb-2">
                                     Activity
                                   </h4>
                                   <div className="space-y-2">
@@ -1133,7 +1131,7 @@ export default function AdminUsers() {
                                 </div>
 
                                 <div>
-                                  <h4 className="font-semibold text-gray-900 mb-2">
+                                  <h4 className="  text-gray-900 mb-2">
                                     Quick Actions
                                   </h4>
                                   <div className="space-y-2">
@@ -1178,11 +1176,11 @@ export default function AdminUsers() {
               <div className="flex items-center justify-between">
                 <p className="text-gray-700">
                   Showing{" "}
-                  <span className="font-semibold text-gray-900">
+                  <span className="  text-gray-900">
                     {filteredUsers.length}
                   </span>{" "}
                   of{" "}
-                  <span className="font-semibold text-gray-900">
+                  <span className="  text-gray-900">
                     {
                       users.filter((u) => {
                         if (activeTab === "customers")
@@ -1197,7 +1195,7 @@ export default function AdminUsers() {
                   {activeTab}
                 </p>
                 <div className="flex items-center gap-4">
-                  <button className="border border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-50 transition-colors font-semibold flex items-center gap-2">
+                  <button className="border border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-50 transition-colors   flex items-center gap-2">
                     <Download size={16} />
                     <span>Export</span>
                   </button>

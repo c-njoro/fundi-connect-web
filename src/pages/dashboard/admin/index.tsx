@@ -430,19 +430,17 @@ export default function AdminDashboard() {
               </div>
             </div>
           </div>
-          <h3 className="text-xl font-semibold text-gray-900 mb-2">
-            Dashboard Error
-          </h3>
+          <h3 className="text-xl   text-gray-900 mb-2">Dashboard Error</h3>
           <p className="text-gray-700 mb-6">{error}</p>
           <div className="flex gap-3 justify-center">
             <button
               onClick={fetchStats}
-              className="bg-gradient-to-r from-[#0A2647] to-[#1e3a5f] text-white px-6 py-3 rounded-lg hover:shadow-lg transition-all font-semibold flex items-center gap-2"
+              className="bg-gradient-to-r from-[#0A2647] to-[#1e3a5f] text-white px-6 py-3 rounded-lg hover:shadow-lg transition-all   flex items-center gap-2"
             >
               <RefreshCw size={16} />
               Try Again
             </button>
-            <button className="border border-gray-300 text-gray-700 px-6 py-3 rounded-lg hover:bg-gray-50 transition-colors font-semibold">
+            <button className="border border-gray-300 text-gray-700 px-6 py-3 rounded-lg hover:bg-gray-50 transition-colors  ">
               Contact Support
             </button>
           </div>
@@ -479,7 +477,7 @@ export default function AdminDashboard() {
                   <BarChart3 className="text-white" size={24} />
                 </div>
                 <div>
-                  <h1 className="text-2xl font-bold text-gray-900">
+                  <h1 className="text-2xl font-semibold text-gray-900">
                     Admin Analytics Dashboard
                   </h1>
                   <div className="flex items-center gap-2 mt-1">
@@ -496,7 +494,7 @@ export default function AdminDashboard() {
                 </div>
               </div>
             </div>
-            <div className="flex flex-wrap items-center gap-3">
+            <div className="flex flex-col sm:flex-row sm:items-center gap-4">
               <div className="flex bg-gray-100 rounded-lg p-1">
                 {["day", "week", "month", "year"].map((range) => (
                   <button
@@ -515,12 +513,12 @@ export default function AdminDashboard() {
               <div className="flex gap-2">
                 <button
                   onClick={fetchStats}
-                  className="flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-[#0A2647] to-[#1e3a5f] text-white rounded-lg hover:shadow-lg transition-all font-semibold"
+                  className="flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-[#0A2647] to-[#1e3a5f] text-white rounded-lg hover:shadow-lg transition-all  "
                 >
                   <RefreshCw size={16} />
                   Refresh
                 </button>
-                <button className="flex items-center gap-2 px-4 py-2.5 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-semibold">
+                <button className="flex items-center gap-2 px-4 py-2.5 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors  ">
                   <Download size={16} />
                   Export
                 </button>
@@ -554,25 +552,23 @@ export default function AdminDashboard() {
                 </div>
               </div>
               <p className="text-sm text-gray-600">Total Users</p>
-              <p className="text-3xl font-bold text-gray-900 mt-2">
+              <p className="text-3xl font-semibold text-gray-900 mt-2">
                 {statistics.users.total.toLocaleString()}
               </p>
               <div className="grid grid-cols-3 gap-2 mt-4 pt-4 border-t border-gray-100">
                 <div className="text-center">
                   <p className="text-xs text-gray-500">Customers</p>
-                  <p className="font-semibold text-gray-900">
+                  <p className="  text-gray-900">
                     {statistics.users.customers}
                   </p>
                 </div>
                 <div className="text-center">
                   <p className="text-xs text-gray-500">Fundis</p>
-                  <p className="font-semibold text-gray-900">
-                    {statistics.users.fundis}
-                  </p>
+                  <p className="  text-gray-900">{statistics.users.fundis}</p>
                 </div>
                 <div className="text-center">
                   <p className="text-xs text-gray-500">Active</p>
-                  <p className="font-semibold text-gray-900">
+                  <p className="  text-gray-900">
                     {statistics.users.activeUsers}
                   </p>
                 </div>
@@ -587,13 +583,11 @@ export default function AdminDashboard() {
                 </div>
                 <div className="text-right">
                   <p className="text-xs text-gray-500">This Month</p>
-                  <p className="font-semibold text-gray-900">
-                    {statistics.jobs.thisMonth}
-                  </p>
+                  <p className="  text-gray-900">{statistics.jobs.thisMonth}</p>
                 </div>
               </div>
               <p className="text-sm text-gray-600">Total Jobs</p>
-              <p className="text-3xl font-bold text-gray-900 mt-2">
+              <p className="text-3xl font-semibold text-gray-900 mt-2">
                 {statistics.jobs.total.toLocaleString()}
               </p>
               <div className="flex items-center justify-between mt-4 pt-4 border-t border-gray-100">
@@ -601,7 +595,7 @@ export default function AdminDashboard() {
                   <p className="text-xs text-gray-500">Success Rate</p>
                   <div className="flex items-center gap-1">
                     <Target className="text-green-500" size={14} />
-                    <p className="font-semibold text-gray-900">
+                    <p className="  text-gray-900">
                       {statistics.jobs.successRate}%
                     </p>
                   </div>
@@ -610,7 +604,7 @@ export default function AdminDashboard() {
                   <p className="text-xs text-gray-500">Avg. Days</p>
                   <div className="flex items-center gap-1">
                     <Clock className="text-blue-500" size={14} />
-                    <p className="font-semibold text-gray-900">
+                    <p className="  text-gray-900">
                       {statistics.jobs.avgCompletionDays}
                     </p>
                   </div>
@@ -626,25 +620,25 @@ export default function AdminDashboard() {
                 </div>
                 <div className="text-right">
                   <p className="text-xs text-gray-500">Monthly</p>
-                  <p className="font-semibold text-gray-900">
+                  <p className="  text-gray-900">
                     {formatCurrency(statistics.revenue.monthlyRevenue)}
                   </p>
                 </div>
               </div>
               <p className="text-sm text-gray-600">Platform Revenue</p>
-              <p className="text-3xl font-bold text-gray-900 mt-2">
+              <p className="text-3xl font-semibold text-gray-900 mt-2">
                 {formatCurrency(statistics.revenue.platformRevenue)}
               </p>
               <div className="grid grid-cols-2 gap-2 mt-4 pt-4 border-t border-gray-100">
                 <div>
                   <p className="text-xs text-gray-500">Transactions</p>
-                  <p className="font-semibold text-gray-900">
+                  <p className="  text-gray-900">
                     {formatCurrency(statistics.revenue.totalTransactions)}
                   </p>
                 </div>
                 <div>
                   <p className="text-xs text-gray-500">Avg. Value</p>
-                  <p className="font-semibold text-gray-900">
+                  <p className="  text-gray-900">
                     {formatCurrency(statistics.revenue.avgTransactionValue)}
                   </p>
                 </div>
@@ -659,20 +653,18 @@ export default function AdminDashboard() {
                 </div>
                 <div className="text-right">
                   <p className="text-xs text-gray-500">Active</p>
-                  <p className="font-semibold text-gray-900">
-                    {statistics.fundis.active}
-                  </p>
+                  <p className="  text-gray-900">{statistics.fundis.active}</p>
                 </div>
               </div>
               <p className="text-sm text-gray-600">Fundi Management</p>
-              <p className="text-3xl font-bold text-gray-900 mt-2">
+              <p className="text-3xl font-semibold text-gray-900 mt-2">
                 {statistics.fundis.total}
               </p>
               <div className="grid grid-cols-2 gap-2 mt-4 pt-4 border-t border-gray-100">
                 <div className="text-center">
                   <div className="flex items-center justify-center gap-1">
                     <CheckCircle className="text-green-500" size={14} />
-                    <p className="font-semibold text-gray-900">
+                    <p className="  text-gray-900">
                       {statistics.fundis.approved}
                     </p>
                   </div>
@@ -681,7 +673,7 @@ export default function AdminDashboard() {
                 <div className="text-center">
                   <div className="flex items-center justify-center gap-1">
                     <Clock className="text-yellow-500" size={14} />
-                    <p className="font-semibold text-gray-900">
+                    <p className="  text-gray-900">
                       {statistics.fundis.pending}
                     </p>
                   </div>
@@ -700,7 +692,7 @@ export default function AdminDashboard() {
           <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm">
             <div className="flex items-center justify-between mb-6">
               <div>
-                <h2 className="text-xl font-bold text-gray-900">
+                <h2 className="text-xl font-semibold text-gray-900">
                   Revenue Growth
                 </h2>
                 <p className="text-sm text-gray-600">
@@ -774,7 +766,7 @@ export default function AdminDashboard() {
           <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm">
             <div className="flex items-center justify-between mb-6">
               <div>
-                <h2 className="text-xl font-bold text-gray-900">
+                <h2 className="text-xl font-semibold text-gray-900">
                   Job Status Distribution
                 </h2>
                 <p className="text-sm text-gray-600">Current job breakdown</p>
@@ -832,7 +824,7 @@ export default function AdminDashboard() {
           <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm">
             <div className="flex items-center justify-between mb-6">
               <div>
-                <h2 className="text-xl font-bold text-gray-900">
+                <h2 className="text-xl font-semibold text-gray-900">
                   User Growth Trend
                 </h2>
                 <p className="text-sm text-gray-600">
@@ -874,7 +866,7 @@ export default function AdminDashboard() {
           <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm">
             <div className="flex items-center justify-between mb-6">
               <div>
-                <h2 className="text-xl font-bold text-gray-900">
+                <h2 className="text-xl font-semibold text-gray-900">
                   Service Performance
                 </h2>
                 <p className="text-sm text-gray-600">
@@ -926,7 +918,7 @@ export default function AdminDashboard() {
           <div className="lg:col-span-2 bg-white rounded-2xl border border-gray-200 p-6 shadow-sm">
             <div className="flex items-center justify-between mb-6">
               <div>
-                <h2 className="text-xl font-bold text-gray-900">
+                <h2 className="text-xl font-semibold text-gray-900">
                   Recent Activity Timeline
                 </h2>
                 <p className="text-sm text-gray-600">
@@ -935,7 +927,7 @@ export default function AdminDashboard() {
               </div>
               <Link
                 href="/admin/activity"
-                className="text-[#0A2647] hover:text-[#0d3157] font-semibold text-sm flex items-center gap-1"
+                className="text-[#0A2647] hover:text-[#0d3157]   text-sm flex items-center gap-1"
               >
                 View All <ChevronRight size={14} />
               </Link>
@@ -975,7 +967,7 @@ export default function AdminDashboard() {
           {/* System Health */}
           <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm">
             <div className="flex items-center justify-between mb-6">
-              <h3 className="font-bold text-gray-900">System Health</h3>
+              <h3 className="font-semibold text-gray-900">System Health</h3>
               <Server className="text-gray-400" size={20} />
             </div>
             <div className="space-y-6">
@@ -988,7 +980,7 @@ export default function AdminDashboard() {
                 <div key={index}>
                   <div className="flex items-center justify-between mb-2">
                     <span className="text-sm text-gray-600">{metric.name}</span>
-                    <span className="text-sm font-semibold text-gray-900">
+                    <span className="text-sm   text-gray-900">
                       {metric.value}%
                     </span>
                   </div>
@@ -1002,7 +994,7 @@ export default function AdminDashboard() {
               ))}
             </div>
             <div className="mt-8 pt-6 border-t border-gray-200">
-              <h4 className="font-semibold text-gray-900 mb-4">Device Usage</h4>
+              <h4 className="  text-gray-900 mb-4">Device Usage</h4>
               <div className="h-40">
                 <ResponsiveContainer width="100%" height="100%">
                   <RadialBarChart
@@ -1031,7 +1023,7 @@ export default function AdminDashboard() {
 
           {/* Quick Stats */}
           <div className="bg-gradient-to-br from-[#0A2647] to-[#1e3a5f] rounded-2xl p-6 text-white">
-            <h3 className="font-bold text-lg mb-6">Platform Insights</h3>
+            <h3 className="font-semibold text-lg mb-6">Platform Insights</h3>
             <div className="space-y-6">
               <div className="flex items-center justify-between p-4 bg-white/10 rounded-xl backdrop-blur-sm">
                 <div className="flex items-center gap-3">
@@ -1040,7 +1032,7 @@ export default function AdminDashboard() {
                   </div>
                   <div>
                     <p className="text-sm opacity-90">Avg. Response Time</p>
-                    <p className="text-2xl font-bold">2.4s</p>
+                    <p className="text-2xl font-semibold">2.4s</p>
                   </div>
                 </div>
                 <TrendingDown className="text-green-300" size={20} />
@@ -1052,7 +1044,7 @@ export default function AdminDashboard() {
                   </div>
                   <div>
                     <p className="text-sm opacity-90">Customer Satisfaction</p>
-                    <p className="text-2xl font-bold">94%</p>
+                    <p className="text-2xl font-semibold">94%</p>
                   </div>
                 </div>
                 <TrendingUp className="text-green-300" size={20} />
@@ -1064,14 +1056,14 @@ export default function AdminDashboard() {
                   </div>
                   <div>
                     <p className="text-sm opacity-90">Active Sessions</p>
-                    <p className="text-2xl font-bold">247</p>
+                    <p className="text-2xl font-semibold">247</p>
                   </div>
                 </div>
                 <TrendingUp className="text-green-300" size={20} />
               </div>
             </div>
             <div className="mt-8 pt-6 border-t border-white/20">
-              <h4 className="font-semibold mb-4">Regional Distribution</h4>
+              <h4 className="  mb-4">Regional Distribution</h4>
               <div className="h-40">
                 <ResponsiveContainer width="100%" height="100%">
                   <Treemap
@@ -1091,7 +1083,7 @@ export default function AdminDashboard() {
           {/* Recent Top Performers */}
           <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm">
             <div className="flex items-center justify-between mb-6">
-              <h3 className="font-bold text-gray-900">Top Performers</h3>
+              <h3 className="font-semibold text-gray-900">Top Performers</h3>
               <Award className="text-gray-400" size={20} />
             </div>
             <div className="space-y-4">
@@ -1104,7 +1096,7 @@ export default function AdminDashboard() {
                   >
                     <div className="flex items-center gap-3">
                       <div className="relative">
-                        <div className="w-12 h-12 bg-gradient-to-br from-[#0A2647] to-[#FF6B35] rounded-xl flex items-center justify-center text-white font-bold">
+                        <div className="w-12 h-12 bg-gradient-to-br from-[#0A2647] to-[#FF6B35] rounded-xl flex items-center justify-center text-white font-semibold">
                           {fundi.profile.firstName?.[0]}
                           {fundi.profile.lastName?.[0]}
                         </div>
@@ -1115,7 +1107,7 @@ export default function AdminDashboard() {
                         )}
                       </div>
                       <div>
-                        <p className="font-semibold text-gray-900">
+                        <p className="  text-gray-900">
                           {fundi.profile.firstName} {fundi.profile.lastName}
                         </p>
                         <div className="flex items-center gap-2 mt-1">
@@ -1131,7 +1123,7 @@ export default function AdminDashboard() {
                       </div>
                     </div>
                     <div className="text-right">
-                      <p className="text-sm font-semibold text-gray-900">
+                      <p className="text-sm   text-gray-900">
                         +
                         {Math.round(
                           fundi.fundiProfile.completedJobs * 12500
@@ -1143,9 +1135,7 @@ export default function AdminDashboard() {
                 ))}
             </div>
             <div className="mt-8 pt-6 border-t border-gray-200">
-              <h4 className="font-semibold text-gray-900 mb-4">
-                Performance Trend
-              </h4>
+              <h4 className="  text-gray-900 mb-4">Performance Trend</h4>
               <div className="h-32">
                 <ResponsiveContainer width="100%" height="100%">
                   <LineChart

@@ -518,9 +518,7 @@ export default function CustomerJobDetail() {
       <div className="flex-1 flex items-center justify-center min-h-screen">
         <div className="text-center max-w-md">
           <AlertCircle className="h-12 w-12 text-red-500 mx-auto mb-4" />
-          <h3 className="text-lg font-semibold text-gray-900 mb-2">
-            Error Loading Job
-          </h3>
+          <h3 className="text-lg   text-gray-900 mb-2">Error Loading Job</h3>
           <p className="text-gray-600 mb-4">{error}</p>
           <div className="flex gap-3 justify-center">
             <button
@@ -587,7 +585,7 @@ export default function CustomerJobDetail() {
 
               {/* Status Badge */}
               <div
-                className={`inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold ${statusInfo.color}`}
+                className={`inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm   ${statusInfo.color}`}
               >
                 <StatusIcon size={16} className={statusInfo.iconColor} />
                 <span>{statusInfo.label}</span>
@@ -661,7 +659,7 @@ export default function CustomerJobDetail() {
             <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-8">
               <div className="flex items-start justify-between mb-6">
                 <div>
-                  <h1 className="text-3xl font-bold text-gray-900 mb-3">
+                  <h1 className="text-3xl font-semibold text-gray-900 mb-3">
                     {job.jobDetails?.title}
                   </h1>
 
@@ -671,7 +669,7 @@ export default function CustomerJobDetail() {
                     className="inline-flex items-center gap-2 bg-blue-50 text-blue-800 px-4 py-2 rounded-lg hover:bg-blue-100 transition-colors"
                   >
                     <Wrench size={18} />
-                    <span className="font-semibold">{job.serviceId?.name}</span>
+                    <span className=" ">{job.serviceId?.name}</span>
                     {job.subService && (
                       <span className="text-blue-600">• {job.subService}</span>
                     )}
@@ -681,7 +679,7 @@ export default function CustomerJobDetail() {
 
                 {/* Urgency Badge */}
                 <div
-                  className={`inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold ${urgencyInfo.color}`}
+                  className={`inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm   ${urgencyInfo.color}`}
                 >
                   <UrgencyIcon size={16} />
                   <span>{urgencyInfo.label} Priority</span>
@@ -691,9 +689,7 @@ export default function CustomerJobDetail() {
               {/* Job Description */}
               {job.jobDetails?.description && (
                 <div className="mb-6">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-3">
-                    Description
-                  </h3>
+                  <h3 className="text-lg   text-gray-900 mb-3">Description</h3>
                   <p className="text-gray-700 leading-relaxed">
                     {job.jobDetails.description}
                   </p>
@@ -703,9 +699,7 @@ export default function CustomerJobDetail() {
               {/* Images */}
               {job.jobDetails?.images && job.jobDetails.images.length > 0 && (
                 <div>
-                  <h3 className="text-lg font-semibold text-gray-900 mb-3">
-                    Images
-                  </h3>
+                  <h3 className="text-lg   text-gray-900 mb-3">Images</h3>
                   <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                     {job.jobDetails.images.map((image, index) => (
                       <div
@@ -729,7 +723,7 @@ export default function CustomerJobDetail() {
             {/* Proposals Section */}
             <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-8">
               <div className="flex items-center justify-between mb-6">
-                <h2 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
+                <h2 className="text-2xl font-semibold text-gray-900 flex items-center gap-2">
                   <UserCheck size={24} />
                   <span>Proposals</span>
                   <span className="bg-gray-100 text-gray-600 px-3 py-1 rounded-full text-sm font-medium">
@@ -738,7 +732,7 @@ export default function CustomerJobDetail() {
                   </span>
                 </h2>
 
-                <button className="text-[#0A2647] hover:text-[#0d3157] font-semibold flex items-center gap-2">
+                <button className="text-[#0A2647] hover:text-[#0d3157]   flex items-center gap-2">
                   <Send size={16} />
                   <span>Invite Fundis</span>
                 </button>
@@ -757,7 +751,7 @@ export default function CustomerJobDetail() {
                           <div className="flex items-start gap-4 mb-4">
                             {/* Fundi Avatar */}
                             <div className="flex-shrink-0">
-                              <div className="w-16 h-16 bg-gradient-to-br from-[#0A2647] to-[#FF6B35] rounded-full flex items-center justify-center text-white font-semibold text-lg">
+                              <div className="w-16 h-16 bg-gradient-to-br from-[#0A2647] to-[#FF6B35] rounded-full flex items-center justify-center text-white   text-lg">
                                 {proposal.fundiId?.profile?.firstName?.[0]}
                                 {proposal.fundiId?.profile?.lastName?.[0]}
                               </div>
@@ -768,7 +762,7 @@ export default function CustomerJobDetail() {
                               <div className="flex items-center gap-2 mb-2">
                                 <Link
                                   href={`/fundis/${proposal.fundiId?._id}`}
-                                  className="font-bold text-gray-900 hover:text-[#FF6B35] transition-colors flex items-center gap-2"
+                                  className="font-semibold text-gray-900 hover:text-[#FF6B35] transition-colors flex items-center gap-2"
                                 >
                                   {proposal.fundiId?.profile?.firstName}{" "}
                                   {proposal.fundiId?.profile?.lastName}
@@ -790,7 +784,7 @@ export default function CustomerJobDetail() {
                                       size={16}
                                       className="text-yellow-400 fill-current"
                                     />
-                                    <span className="font-semibold text-gray-900">
+                                    <span className="  text-gray-900">
                                       {proposal.fundiId.fundiProfile.ratings.average.toFixed(
                                         1
                                       )}
@@ -832,7 +826,7 @@ export default function CustomerJobDetail() {
                                     size={16}
                                     className="text-green-600"
                                   />
-                                  <span className="font-semibold text-gray-900">
+                                  <span className="  text-gray-900">
                                     KSh {proposal.proposedPrice}
                                   </span>
                                 </div>
@@ -862,32 +856,32 @@ export default function CustomerJobDetail() {
                           {proposal.status === "pending" && (
                             <>
                               <button
-                                className="w-full bg-[#FF6B35] text-white py-2 rounded-lg hover:bg-[#ff5722] transition-colors font-semibold"
+                                className="w-full bg-[#FF6B35] text-white py-2 rounded-lg hover:bg-[#ff5722] transition-colors  "
                                 onClick={() => acceptProposal(job._id, index)}
                                 disabled={accepting}
                               >
                                 {accepting ? "Accepting..." : "Accept Proposal"}
                               </button>
-                              <button className="w-full border border-red-300 text-red-600 py-2 rounded-lg hover:bg-red-50 transition-colors font-semibold">
+                              <button className="w-full border border-red-300 text-red-600 py-2 rounded-lg hover:bg-red-50 transition-colors  ">
                                 Reject
                               </button>
                             </>
                           )}
                           {proposal.status === "accepted" && (
                             <div className="text-center">
-                              <div className="bg-green-100 text-green-800 px-3 py-2 rounded-lg font-semibold">
+                              <div className="bg-green-100 text-green-800 px-3 py-2 rounded-lg  ">
                                 Accepted ✓
                               </div>
                             </div>
                           )}
                           {proposal.status === "rejected" && (
                             <div className="text-center">
-                              <div className="bg-red-100 text-red-800 px-3 py-2 rounded-lg font-semibold">
+                              <div className="bg-red-100 text-red-800 px-3 py-2 rounded-lg  ">
                                 Rejected ✗
                               </div>
                             </div>
                           )}
-                          <button className="w-full border border-gray-300 text-gray-700 py-2 rounded-lg hover:bg-gray-50 transition-colors font-semibold flex items-center justify-center gap-2">
+                          <button className="w-full border border-gray-300 text-gray-700 py-2 rounded-lg hover:bg-gray-50 transition-colors   flex items-center justify-center gap-2">
                             <MessageCircle size={16} />
                             <span>Message</span>
                           </button>
@@ -899,14 +893,14 @@ export default function CustomerJobDetail() {
               ) : (
                 <div className="text-center py-12">
                   <User size={64} className="mx-auto text-gray-400 mb-4" />
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                  <h3 className="text-lg   text-gray-900 mb-2">
                     No Proposals Yet
                   </h3>
                   <p className="text-gray-600 max-w-md mx-auto mb-6">
                     No fundis have submitted proposals for this job yet. You can
                     invite fundis or wait for proposals to come in.
                   </p>
-                  <button className="bg-[#0A2647] text-white px-6 py-2 rounded-lg hover:bg-[#0d3157] transition-colors font-semibold">
+                  <button className="bg-[#0A2647] text-white px-6 py-2 rounded-lg hover:bg-[#0d3157] transition-colors  ">
                     Invite Fundis
                   </button>
                 </div>
@@ -916,7 +910,7 @@ export default function CustomerJobDetail() {
             {/* Work Progress Section */}
             {job.workProgress && job.workProgress.length > 0 && (
               <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-8">
-                <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-2">
+                <h2 className="text-2xl font-semibold text-gray-900 mb-6 flex items-center gap-2">
                   <TrendingUp size={24} />
                   <span>Work Progress</span>
                 </h2>
@@ -933,7 +927,7 @@ export default function CustomerJobDetail() {
                       <div className="bg-gray-50 rounded-lg p-4">
                         <div className="flex items-center justify-between mb-2">
                           <div className="flex items-center gap-2">
-                            <span className="font-semibold text-gray-900 capitalize">
+                            <span className="  text-gray-900 capitalize">
                               {progress.stage?.replace("_", " ")}
                             </span>
                             <span className="text-gray-500 text-sm">
@@ -975,7 +969,7 @@ export default function CustomerJobDetail() {
 
                 {/* Add Progress Update Button */}
                 <div className="mt-6 pt-6 border-t border-gray-200">
-                  <button className="flex items-center gap-2 text-[#0A2647] hover:text-[#0d3157] font-semibold">
+                  <button className="flex items-center gap-2 text-[#0A2647] hover:text-[#0d3157]  ">
                     <Edit size={16} />
                     <span>Add Progress Update</span>
                   </button>
@@ -986,7 +980,7 @@ export default function CustomerJobDetail() {
             {/* Completion Details (if completed) */}
             {job.status === "completed" && job.completion && (
               <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-8">
-                <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-2">
+                <h2 className="text-2xl font-semibold text-gray-900 mb-6 flex items-center gap-2">
                   <CheckCircle size={24} />
                   <span>Completion Details</span>
                 </h2>
@@ -994,7 +988,7 @@ export default function CustomerJobDetail() {
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
                     <span className="text-gray-600">Completed At</span>
-                    <span className="font-semibold text-gray-900">
+                    <span className="  text-gray-900">
                       {formatDateTime(job.completion.completedAt)}
                     </span>
                   </div>
@@ -1003,7 +997,7 @@ export default function CustomerJobDetail() {
                     <div className="flex items-center justify-between">
                       <span className="text-gray-600">Customer Approval</span>
                       <span
-                        className={`font-semibold ${
+                        className={`  ${
                           job.completion.customerApproved
                             ? "text-green-600"
                             : "text-red-600"
@@ -1018,9 +1012,7 @@ export default function CustomerJobDetail() {
 
                   {job.completion.completionNotes && (
                     <div>
-                      <h3 className="font-semibold text-gray-900 mb-2">
-                        Completion Notes
-                      </h3>
+                      <h3 className="  text-gray-900 mb-2">Completion Notes</h3>
                       <p className="text-gray-700 bg-gray-50 p-4 rounded-lg">
                         {job.completion.completionNotes}
                       </p>
@@ -1030,7 +1022,7 @@ export default function CustomerJobDetail() {
                   {job.completion.completionImages &&
                     job.completion.completionImages.length > 0 && (
                       <div>
-                        <h3 className="font-semibold text-gray-900 mb-2">
+                        <h3 className="  text-gray-900 mb-2">
                           Completion Images
                         </h3>
                         <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
@@ -1059,20 +1051,18 @@ export default function CustomerJobDetail() {
           <div className="space-y-6">
             {/* Quick Actions */}
             <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-              <h3 className="font-semibold text-gray-900 mb-4">
-                Quick Actions
-              </h3>
+              <h3 className="  text-gray-900 mb-4">Quick Actions</h3>
 
               <div className="space-y-3">
                 {job.status === "applied" && (
-                  <button className="w-full bg-[#FF6B35] text-white py-3 rounded-lg hover:bg-[#ff5722] transition-colors font-semibold text-center">
+                  <button className="w-full bg-[#FF6B35] text-white py-3 rounded-lg hover:bg-[#ff5722] transition-colors   text-center">
                     Update Job Details
                   </button>
                 )}
 
                 {job.status === "in_progress" && (
                   <>
-                    <button className="w-full border border-red-300 text-red-600 py-3 rounded-lg hover:bg-red-50 transition-colors font-semibold text-center">
+                    <button className="w-full border border-red-300 text-red-600 py-3 rounded-lg hover:bg-red-50 transition-colors   text-center">
                       Report Issue
                     </button>
                   </>
@@ -1081,7 +1071,7 @@ export default function CustomerJobDetail() {
                 {job.status === "completed" &&
                   !job.completion?.customerApproved && (
                     <button
-                      className="w-full bg-[#0A2647] text-white py-3 rounded-lg hover:bg-[#0d3157] transition-colors font-semibold text-center"
+                      className="w-full bg-[#0A2647] text-white py-3 rounded-lg hover:bg-[#0d3157] transition-colors   text-center"
                       onClick={() => approveJobPayment(job._id)}
                     >
                       {approvingPayment
@@ -1090,12 +1080,12 @@ export default function CustomerJobDetail() {
                     </button>
                   )}
 
-                <button className="w-full border border-gray-300 text-gray-700 py-3 rounded-lg hover:bg-gray-50 transition-colors font-semibold text-center flex items-center justify-center gap-2">
+                <button className="w-full border border-gray-300 text-gray-700 py-3 rounded-lg hover:bg-gray-50 transition-colors   text-center flex items-center justify-center gap-2">
                   <Download size={16} />
                   <span>Download Receipt</span>
                 </button>
 
-                <button className="w-full border border-gray-300 text-gray-700 py-3 rounded-lg hover:bg-gray-50 transition-colors font-semibold text-center flex items-center justify-center gap-2">
+                <button className="w-full border border-gray-300 text-gray-700 py-3 rounded-lg hover:bg-gray-50 transition-colors   text-center flex items-center justify-center gap-2">
                   <MessageCircle size={16} />
                   <span>Contact Support</span>
                 </button>
@@ -1104,14 +1094,14 @@ export default function CustomerJobDetail() {
 
             {/* Job Details */}
             <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-              <h3 className="font-semibold text-gray-900 mb-4">Job Details</h3>
+              <h3 className="  text-gray-900 mb-4">Job Details</h3>
 
               <div className="space-y-4">
                 {/* Budget */}
                 <div className="flex justify-between items-center">
                   <span className="text-gray-600">Budget</span>
                   <div className="text-right">
-                    <div className="font-bold text-gray-900">
+                    <div className="font-semibold text-gray-900">
                       KSh {job.jobDetails?.estimatedBudget?.min}
                       {job.jobDetails?.estimatedBudget?.max &&
                         ` - KSh ${job.jobDetails.estimatedBudget.max}`}
@@ -1126,7 +1116,7 @@ export default function CustomerJobDetail() {
                 {job.agreedPrice && (
                   <div className="flex justify-between items-center">
                     <span className="text-gray-600">Agreed Price</span>
-                    <div className="font-bold text-green-600">
+                    <div className="font-semibold text-green-600">
                       KSh {job.agreedPrice}
                     </div>
                   </div>
@@ -1135,7 +1125,7 @@ export default function CustomerJobDetail() {
                 {/* Created Date */}
                 <div className="flex justify-between items-center">
                   <span className="text-gray-600">Created</span>
-                  <span className="font-semibold text-gray-900">
+                  <span className="  text-gray-900">
                     {job.createdAt ? formatDate(job.createdAt) : "N/A"}
                   </span>
                 </div>
@@ -1143,7 +1133,7 @@ export default function CustomerJobDetail() {
                 {/* Last Updated */}
                 <div className="flex justify-between items-center">
                   <span className="text-gray-600">Last Updated</span>
-                  <span className="font-semibold text-gray-900">
+                  <span className="  text-gray-900">
                     {job.updatedAt ? formatDate(job.updatedAt) : "N/A"}
                   </span>
                 </div>
@@ -1160,7 +1150,7 @@ export default function CustomerJobDetail() {
 
             {/* Location Details */}
             <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-              <h3 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
+              <h3 className="  text-gray-900 mb-4 flex items-center gap-2">
                 <MapPinIcon size={18} />
                 <span>Location</span>
               </h3>
@@ -1195,7 +1185,7 @@ export default function CustomerJobDetail() {
                   </div>
                 )}
 
-                <button className="w-full text-[#0A2647] hover:text-[#0d3157] font-semibold text-sm flex items-center gap-2">
+                <button className="w-full text-[#0A2647] hover:text-[#0d3157]   text-sm flex items-center gap-2">
                   <MapPin size={16} />
                   <span>View on Map</span>
                 </button>
@@ -1204,7 +1194,7 @@ export default function CustomerJobDetail() {
 
             {/* Scheduling */}
             <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-              <h3 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
+              <h3 className="  text-gray-900 mb-4 flex items-center gap-2">
                 <CalendarDays size={18} />
                 <span>Scheduling</span>
               </h3>
@@ -1212,7 +1202,7 @@ export default function CustomerJobDetail() {
               <div className="space-y-3">
                 <div>
                   <p className="text-sm text-gray-500">Preferred Date</p>
-                  <p className="font-semibold text-gray-900">
+                  <p className="  text-gray-900">
                     {job.scheduling?.preferredDate
                       ? formatDate(job.scheduling.preferredDate)
                       : "Flexible"}
@@ -1222,7 +1212,7 @@ export default function CustomerJobDetail() {
                 {job.scheduling?.preferredTime && (
                   <div>
                     <p className="text-sm text-gray-500">Preferred Time</p>
-                    <p className="font-semibold text-gray-900">
+                    <p className="  text-gray-900">
                       {formatTime(job.scheduling.preferredTime)}
                     </p>
                   </div>
@@ -1231,7 +1221,7 @@ export default function CustomerJobDetail() {
                 {job.scheduling?.flexibility && (
                   <div>
                     <p className="text-sm text-gray-500">Flexibility</p>
-                    <p className="font-semibold text-gray-900 capitalize">
+                    <p className="  text-gray-900 capitalize">
                       {job.scheduling.flexibility}
                     </p>
                   </div>
@@ -1241,7 +1231,7 @@ export default function CustomerJobDetail() {
 
             {/* Payment Information */}
             <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-              <h3 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
+              <h3 className="  text-gray-900 mb-4 flex items-center gap-2">
                 <CreditCard size={18} />
                 <span>Payment</span>
               </h3>
@@ -1271,7 +1261,7 @@ export default function CustomerJobDetail() {
                   (job.payment?.escrowAmount > 0 && (
                     <div className="flex justify-between items-center">
                       <span className="text-gray-600">Escrow Amount</span>
-                      <span className="font-bold text-gray-900">
+                      <span className="font-semibold text-gray-900">
                         KSh {job.payment.escrowAmount}
                       </span>
                     </div>
@@ -1280,7 +1270,7 @@ export default function CustomerJobDetail() {
                 {job.payment?.releaseDate && (
                   <div className="flex justify-between items-center">
                     <span className="text-gray-600">Released On</span>
-                    <span className="font-semibold text-gray-900">
+                    <span className="  text-gray-900">
                       {formatDate(job.payment.releaseDate)}
                     </span>
                   </div>
@@ -1291,15 +1281,15 @@ export default function CustomerJobDetail() {
             {/* Assigned Fundi (if any) */}
             {job.fundiId && (
               <div className="bg-gradient-to-br from-[#0A2647] to-[#1e3a5f] rounded-xl p-6 text-white">
-                <h3 className="font-semibold mb-3">Assigned Fundi</h3>
+                <h3 className="  mb-3">Assigned Fundi</h3>
 
                 <div className="flex items-center gap-3 mb-4">
-                  <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center font-semibold">
+                  <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center  ">
                     {job.fundiId.profile?.firstName?.[0]}
                     {job.fundiId.profile?.lastName?.[0]}
                   </div>
                   <div>
-                    <p className="font-bold">
+                    <p className="font-semibold">
                       {job.fundiId.profile?.firstName}{" "}
                       {job.fundiId.profile?.lastName}
                     </p>
@@ -1313,11 +1303,11 @@ export default function CustomerJobDetail() {
                 </div>
 
                 <div className="space-y-2">
-                  <button className="w-full bg-white text-[#0A2647] py-2 rounded-lg font-semibold hover:bg-gray-100 transition-colors flex items-center justify-center gap-2">
+                  <button className="w-full bg-white text-[#0A2647] py-2 rounded-lg   hover:bg-gray-100 transition-colors flex items-center justify-center gap-2">
                     <Phone size={16} />
                     <span>Call Fundi</span>
                   </button>
-                  <button className="w-full border border-white text-white py-2 rounded-lg font-semibold hover:bg-white/10 transition-colors flex items-center justify-center gap-2">
+                  <button className="w-full border border-white text-white py-2 rounded-lg   hover:bg-white/10 transition-colors flex items-center justify-center gap-2">
                     <MessageCircle size={16} />
                     <span>Message</span>
                   </button>

@@ -76,9 +76,7 @@ function LocationMarker({
     <Marker position={position} icon={createOrangeMarkerIcon()}>
       <Popup>
         <div className="p-2 min-w-[200px]">
-          <div className="font-semibold text-[#0A2647]">
-            📍 Selected Location
-          </div>
+          <div className="  text-[#0A2647]">📍 Selected Location</div>
           <div className="text-sm text-gray-600 mt-1">
             <div className="grid grid-cols-2 gap-1">
               <span className="font-medium">Latitude:</span>
@@ -499,7 +497,7 @@ export default function LocationMap({
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
-              <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-blue-100 text-blue-600 text-xs font-bold">
+              <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-blue-100 text-blue-600 text-xs font-semibold">
                 L
               </span>
               Latitude
@@ -510,7 +508,7 @@ export default function LocationMap({
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
-              <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-green-100 text-green-600 text-xs font-bold">
+              <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-green-100 text-green-600 text-xs font-semibold">
                 N
               </span>
               Longitude
@@ -626,12 +624,10 @@ export default function LocationMap({
             <MapPin className="text-white" size={20} />
           </div>
           <div>
-            <h4 className="font-semibold text-gray-900">
-              How to select your location:
-            </h4>
+            <h4 className="  text-gray-900">How to select your location:</h4>
             <div className="mt-2 grid grid-cols-1 md:grid-cols-2 gap-3">
               <div className="flex items-start gap-2">
-                <div className="w-6 h-6 rounded-full bg-blue-100 text-blue-600 text-xs font-bold flex items-center justify-center flex-shrink-0 mt-0.5">
+                <div className="w-6 h-6 rounded-full bg-blue-100 text-blue-600 text-xs font-semibold flex items-center justify-center flex-shrink-0 mt-0.5">
                   1
                 </div>
                 <div className="text-sm text-gray-700">
@@ -640,7 +636,7 @@ export default function LocationMap({
                 </div>
               </div>
               <div className="flex items-start gap-2">
-                <div className="w-6 h-6 rounded-full bg-green-100 text-green-600 text-xs font-bold flex items-center justify-center flex-shrink-0 mt-0.5">
+                <div className="w-6 h-6 rounded-full bg-green-100 text-green-600 text-xs font-semibold flex items-center justify-center flex-shrink-0 mt-0.5">
                   2
                 </div>
                 <div className="text-sm text-gray-700">
@@ -649,7 +645,7 @@ export default function LocationMap({
                 </div>
               </div>
               <div className="flex items-start gap-2">
-                <div className="w-6 h-6 rounded-full bg-purple-100 text-purple-600 text-xs font-bold flex items-center justify-center flex-shrink-0 mt-0.5">
+                <div className="w-6 h-6 rounded-full bg-purple-100 text-purple-600 text-xs font-semibold flex items-center justify-center flex-shrink-0 mt-0.5">
                   3
                 </div>
                 <div className="text-sm text-gray-700">
@@ -658,7 +654,7 @@ export default function LocationMap({
                 </div>
               </div>
               <div className="flex items-start gap-2">
-                <div className="w-6 h-6 rounded-full bg-red-100 text-red-600 text-xs font-bold flex items-center justify-center flex-shrink-0 mt-0.5">
+                <div className="w-6 h-6 rounded-full bg-red-100 text-red-600 text-xs font-semibold flex items-center justify-center flex-shrink-0 mt-0.5">
                   4
                 </div>
                 <div className="text-sm text-gray-700">

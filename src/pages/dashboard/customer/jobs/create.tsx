@@ -66,7 +66,6 @@ export default function CreateJob() {
   const [subServices, setSubServices] = useState<string[]>([]);
   const [clearing, setClearing] = useState(false);
   const [isLocationModalOpen, setIsLocationModalOpen] = useState(false);
-  // Remove the imageUrls state as we'll use ImageUpload component
 
   const [formData, setFormData] = useState<CreateJobFormData>({
     serviceId: "",
@@ -300,7 +299,7 @@ export default function CreateJob() {
         <div className="mb-8">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
             <div>
-              <h1 className="text-3xl font-bold text-[#0A2647] flex items-center gap-3">
+              <h1 className="text-3xl font-semibold text-[#0A2647] flex items-center gap-3">
                 <Wrench size={32} />
                 <span>Create New Job</span>
               </h1>
@@ -318,7 +317,7 @@ export default function CreateJob() {
                 size={20}
               />
               <div>
-                <h3 className="font-semibold text-red-800">Error</h3>
+                <h3 className="  text-red-800">Error</h3>
                 <p className="text-red-700 text-sm">{error}</p>
                 <button
                   onClick={fetchServices}
@@ -337,7 +336,7 @@ export default function CreateJob() {
                 size={20}
               />
               <div>
-                <h3 className="font-semibold text-red-800">Error</h3>
+                <h3 className="  text-red-800">Error</h3>
                 <p className="text-red-700 text-sm">{createError}</p>
               </div>
             </div>
@@ -350,7 +349,7 @@ export default function CreateJob() {
                 size={20}
               />
               <div>
-                <h3 className="font-semibold text-green-800">Success!</h3>
+                <h3 className="  text-green-800">Success!</h3>
                 <p className="text-green-700 text-sm">
                   Job created successfully. You can view it in your jobs list.
                 </p>
@@ -371,9 +370,7 @@ export default function CreateJob() {
                 <Wrench size={20} className="text-blue-600" />
               </div>
               <div>
-                <h2 className="text-xl font-semibold text-[#0A2647]">
-                  Service Details
-                </h2>
+                <h2 className="text-xl   text-[#0A2647]">Service Details</h2>
                 <p className="text-gray-600 text-sm">
                   Select the service you need
                 </p>
@@ -456,9 +453,7 @@ export default function CreateJob() {
                 <Clock size={20} className="text-purple-600" />
               </div>
               <div>
-                <h2 className="text-xl font-semibold text-[#0A2647]">
-                  Job Details
-                </h2>
+                <h2 className="text-xl   text-[#0A2647]">Job Details</h2>
                 <p className="text-gray-600 text-sm">
                   Describe what you need done
                 </p>
@@ -501,9 +496,7 @@ export default function CreateJob() {
                     <ImageIcon size={20} className="text-pink-600" />
                   </div>
                   <div>
-                    <h3 className="text-lg font-semibold text-gray-900">
-                      Images
-                    </h3>
+                    <h3 className="text-lg   text-gray-900">Images</h3>
                     <p className="text-gray-600 text-sm">
                       Upload images to help fundis understand the job better
                     </p>
@@ -604,9 +597,7 @@ export default function CreateJob() {
                 <MapPin size={20} className="text-green-600" />
               </div>
               <div>
-                <h2 className="text-xl font-semibold text-[#0A2647]">
-                  Location Details
-                </h2>
+                <h2 className="text-xl   text-[#0A2647]">Location Details</h2>
                 <p className="text-gray-600 text-sm">
                   Where should the work be done?
                 </p>
@@ -706,7 +697,7 @@ export default function CreateJob() {
                       </div>
 
                       <div>
-                        <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                        <h3 className="text-lg   text-gray-900 mb-2">
                           {formData.location.coordinates.lat !== 0 &&
                           formData.location.coordinates.lng !== 0
                             ? "Location Selected ✓"
@@ -791,9 +782,7 @@ export default function CreateJob() {
                 <Calendar size={20} className="text-orange-600" />
               </div>
               <div>
-                <h2 className="text-xl font-semibold text-[#0A2647]">
-                  Scheduling
-                </h2>
+                <h2 className="text-xl   text-[#0A2647]">Scheduling</h2>
                 <p className="text-gray-600 text-sm">
                   When should the work be done?
                 </p>
@@ -869,9 +858,7 @@ export default function CreateJob() {
                 <CreditCard size={20} className="text-indigo-600" />
               </div>
               <div>
-                <h2 className="text-xl font-semibold text-[#0A2647]">
-                  Payment
-                </h2>
+                <h2 className="text-xl   text-[#0A2647]">Payment</h2>
                 <p className="text-gray-600 text-sm">
                   Select your preferred payment method
                 </p>
@@ -942,7 +929,7 @@ export default function CreateJob() {
               <button
                 type="submit"
                 disabled={creating}
-                className="flex-1 bg-[#FF6B35] text-white py-4 px-6 rounded-lg hover:bg-[#ff5722] transition-colors font-semibold text-lg flex items-center justify-center gap-3 disabled:bg-gray-400 disabled:cursor-not-allowed"
+                className="flex-1 bg-[#FF6B35] text-white py-4 px-6 rounded-lg hover:bg-[#ff5722] transition-colors   text-lg flex items-center justify-center gap-3 disabled:bg-gray-400 disabled:cursor-not-allowed"
               >
                 {creating ? (
                   <>
@@ -1049,16 +1036,14 @@ export default function CreateJob() {
         <div className="mt-8 bg-gradient-to-r from-[#0A2647] to-[#1e3a5f] rounded-2xl p-6 text-white">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>
-              <h3 className="text-lg font-semibold mb-2">
-                Need Help Creating Your Job?
-              </h3>
+              <h3 className="text-lg   mb-2">Need Help Creating Your Job?</h3>
               <p className="text-blue-100 text-sm">
                 Contact support if you need assistance filling out this form or
                 have questions about the job posting process.
               </p>
             </div>
             <div className="flex gap-3">
-              <button className="bg-white text-[#0A2647] px-4 py-2 rounded-lg hover:bg-gray-100 transition-colors font-semibold text-sm">
+              <button className="bg-white text-[#0A2647] px-4 py-2 rounded-lg hover:bg-gray-100 transition-colors   text-sm">
                 Contact Support
               </button>
             </div>

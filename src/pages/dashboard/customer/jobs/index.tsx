@@ -199,7 +199,7 @@ export default function CustomerDashboard() {
         <div className="mb-8">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
             <div>
-              <h1 className="text-3xl font-bold text-[#0A2647] flex items-center gap-3">
+              <h1 className="text-3xl font-semibold text-[#0A2647] flex items-center gap-3">
                 <Briefcase size={32} />
                 <span>My Jobs</span>
               </h1>
@@ -210,7 +210,7 @@ export default function CustomerDashboard() {
 
             <Link
               href="/dashboard/customer/jobs/create"
-              className="bg-[#FF6B35] text-white px-6 py-3 rounded-lg hover:bg-[#ff5722] transition-colors font-semibold flex items-center gap-2"
+              className="bg-[#FF6B35] text-white px-6 py-3 rounded-lg hover:bg-[#ff5722] transition-colors   flex items-center gap-2"
             >
               <Plus size={20} />
               <span>Create New Job</span>
@@ -225,7 +225,7 @@ export default function CustomerDashboard() {
                 size={20}
               />
               <div>
-                <h3 className="font-semibold text-red-800">Error</h3>
+                <h3 className="  text-red-800">Error</h3>
                 <p className="text-red-700 text-sm">{error}</p>
                 <button
                   onClick={fetchJobs}
@@ -243,7 +243,7 @@ export default function CustomerDashboard() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-gray-500 text-sm">Total Jobs</p>
-                  <p className="text-3xl font-bold text-gray-900">
+                  <p className="text-3xl font-semibold text-gray-900">
                     {stats.total}
                   </p>
                 </div>
@@ -257,7 +257,7 @@ export default function CustomerDashboard() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-gray-500 text-sm">Applied</p>
-                  <p className="text-3xl font-bold text-gray-900">
+                  <p className="text-3xl font-semibold text-gray-900">
                     {stats.applied}
                   </p>
                 </div>
@@ -271,7 +271,7 @@ export default function CustomerDashboard() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-gray-500 text-sm">In Progress</p>
-                  <p className="text-3xl font-bold text-gray-900">
+                  <p className="text-3xl font-semibold text-gray-900">
                     {stats.inProgress}
                   </p>
                 </div>
@@ -285,7 +285,7 @@ export default function CustomerDashboard() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-gray-500 text-sm">Completed</p>
-                  <p className="text-3xl font-bold text-gray-900">
+                  <p className="text-3xl font-semibold text-gray-900">
                     {stats.completed}
                   </p>
                 </div>
@@ -299,7 +299,7 @@ export default function CustomerDashboard() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-gray-500 text-sm">Cancelled</p>
-                  <p className="text-3xl font-bold text-gray-900">
+                  <p className="text-3xl font-semibold text-gray-900">
                     {stats.cancelled}
                   </p>
                 </div>
@@ -315,16 +315,14 @@ export default function CustomerDashboard() {
         {jobs.length === 0 ? (
           <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-12 text-center">
             <Briefcase size={64} className="mx-auto text-gray-400 mb-4" />
-            <h3 className="text-xl font-semibold text-gray-900 mb-2">
-              No Jobs Yet
-            </h3>
+            <h3 className="text-xl   text-gray-900 mb-2">No Jobs Yet</h3>
             <p className="text-gray-600 max-w-md mx-auto mb-6">
               You haven't created any job requests yet. Start by creating your
               first job request.
             </p>
             <Link
               href="/dashboard/customer/jobs/create"
-              className="inline-flex items-center gap-2 bg-[#FF6B35] text-white px-6 py-3 rounded-lg hover:bg-[#ff5722] transition-colors font-semibold"
+              className="inline-flex items-center gap-2 bg-[#FF6B35] text-white px-6 py-3 rounded-lg hover:bg-[#ff5722] transition-colors  "
             >
               <Plus size={20} />
               <span>Create Your First Job</span>
@@ -355,7 +353,7 @@ export default function CustomerDashboard() {
                       <div className="flex-1">
                         <div className="flex items-start justify-between mb-4">
                           <div>
-                            <h3 className="text-xl font-bold text-gray-900 mb-2">
+                            <h3 className="text-xl font-semibold text-gray-900 mb-2">
                               {job.jobDetails?.title}
                             </h3>
                             <p className="text-gray-600 line-clamp-2">
@@ -365,7 +363,7 @@ export default function CustomerDashboard() {
 
                           {/* Status Badge */}
                           <div
-                            className={`inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold ${statusInfo.color}`}
+                            className={`inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm   ${statusInfo.color}`}
                           >
                             <StatusIcon
                               size={16}
@@ -512,7 +510,7 @@ export default function CustomerDashboard() {
                       <div className="lg:w-48 flex flex-col gap-3">
                         {/* View Details Button */}
                         <div className="text-center">
-                          <span className="text-[#FF6B35] font-semibold text-sm flex items-center justify-center gap-1">
+                          <span className="text-[#FF6B35]   text-sm flex items-center justify-center gap-1">
                             View Details
                             <svg
                               className="w-4 h-4"
@@ -559,21 +557,19 @@ export default function CustomerDashboard() {
           <div className="mt-8 bg-gradient-to-r from-[#0A2647] to-[#1e3a5f] rounded-2xl p-6 text-white">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
               <div>
-                <h3 className="text-lg font-semibold mb-2">
-                  Need Help With Your Job?
-                </h3>
+                <h3 className="text-lg   mb-2">Need Help With Your Job?</h3>
                 <p className="text-blue-100 text-sm">
                   Contact support for assistance with your job requests,
                   payments, or disputes.
                 </p>
               </div>
               <div className="flex gap-3">
-                <button className="bg-white text-[#0A2647] px-4 py-2 rounded-lg hover:bg-gray-100 transition-colors font-semibold text-sm">
+                <button className="bg-white text-[#0A2647] px-4 py-2 rounded-lg hover:bg-gray-100 transition-colors   text-sm">
                   Contact Support
                 </button>
                 <Link
                   href="/dashboard/customer/jobs/create"
-                  className="border-2 border-white text-white px-4 py-2 rounded-lg hover:bg-white hover:text-[#0A2647] transition-colors font-semibold text-sm"
+                  className="border-2 border-white text-white px-4 py-2 rounded-lg hover:bg-white hover:text-[#0A2647] transition-colors   text-sm"
                 >
                   Create Another Job
                 </Link>
