@@ -62,7 +62,12 @@ interface IFundi {
     gender?: string | null;
     languages?: string[];
     isVerified: boolean;
-    verificationDocuments?: any[];
+    verificationDocuments?: {
+      type: string;
+      url: string;
+      status: string;
+      uploadedAt: Date;
+    }[];
     dateOfBirth?: string;
     fullName: string;
   };

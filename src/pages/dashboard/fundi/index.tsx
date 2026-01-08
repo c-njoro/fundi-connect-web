@@ -1075,8 +1075,10 @@ export default function FundiDashboard() {
                     cx="50%"
                     cy="50%"
                     labelLine={false}
-                    label={({ name, percent }) =>
-                      `${name}: ${(percent * 100).toFixed(0)}%`
+                    label={(props) =>
+                      `${props.name}: ${((props.percent ?? 0) * 100).toFixed(
+                        0
+                      )}%`
                     }
                     outerRadius={80}
                     fill="#8884d8"
@@ -1259,9 +1261,11 @@ export default function FundiDashboard() {
               <div className="space-y-4">
                 {getRecentAssignedJobs().map((job) => {
                   const StatusIcon =
-                    statusConfig[job.status]?.icon || AlertCircle;
+                    statusConfig[job.status as keyof typeof statusConfig]
+                      ?.icon || AlertCircle;
                   const statusInfo =
-                    statusConfig[job.status] || statusConfig.posted;
+                    statusConfig[job.status as keyof typeof statusConfig] ||
+                    statusConfig.posted;
 
                   return (
                     <div

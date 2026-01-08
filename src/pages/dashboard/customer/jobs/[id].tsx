@@ -69,7 +69,12 @@ export interface IJob {
       gender?: string | null;
       languages?: string[];
       isVerified: boolean;
-      verificationDocuments?: any[];
+      verificationDocuments?: {
+        type: string;
+        url: string;
+        status: string;
+        uploadedAt: Date;
+      }[];
       fullName: string;
     };
     location?: {
@@ -156,7 +161,12 @@ export interface IJob {
         gender?: string;
         languages?: string[];
         isVerified: boolean;
-        verificationDocuments?: any[];
+        verificationDocuments?: {
+          type: string;
+          url: string;
+          status: string;
+          uploadedAt: Date;
+        }[];
         dateOfBirth?: string;
         fullName: string;
       };
@@ -206,7 +216,12 @@ export interface IJob {
       gender?: string;
       languages?: string[];
       isVerified: boolean;
-      verificationDocuments?: any[];
+      verificationDocuments?: {
+        type: string;
+        url: string;
+        status: string;
+        uploadedAt: Date;
+      }[];
       dateOfBirth?: string;
       fullName: string;
     };
@@ -556,8 +571,11 @@ export default function CustomerJobDetail() {
     );
   }
 
-  const StatusIcon = statusConfig[job.status]?.icon || AlertCircle;
-  const statusInfo = statusConfig[job.status] || statusConfig.applied;
+  const StatusIcon =
+    statusConfig[job.status as keyof typeof statusConfig]?.icon || AlertCircle;
+  const statusInfo =
+    statusConfig[job.status as keyof typeof statusConfig] ||
+    statusConfig.applied;
   const urgencyInfo =
     urgencyConfig[job.jobDetails?.urgency] || urgencyConfig.low;
   const UrgencyIcon = urgencyInfo.icon;

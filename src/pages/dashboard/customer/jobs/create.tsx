@@ -16,8 +16,14 @@ import {
   CreditCard,
 } from "lucide-react";
 import ImageUpload from "@/components/ImageUpload"; // Import the ImageUpload component
-import LocationMap from "@/components/LocationMap";
-import LocationMapModal from "@/components/LocationMapModal";
+import dynamic from "next/dynamic";
+const LocationMap = dynamic(() => import("@/components/LocationMap"), {
+  ssr: false,
+});
+const LocationMapModal = dynamic(
+  () => import("@/components/LocationMapModal"),
+  { ssr: false }
+);
 
 type CreateJobFormData = {
   serviceId: string;

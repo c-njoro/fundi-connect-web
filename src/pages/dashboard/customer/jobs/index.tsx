@@ -332,9 +332,12 @@ export default function CustomerDashboard() {
           <div className="space-y-6">
             {/* Job Cards */}
             {jobs.map((job) => {
-              const StatusIcon = statusConfig[job.status]?.icon || AlertCircle;
+              const StatusIcon =
+                statusConfig[job.status as keyof typeof statusConfig]?.icon ||
+                AlertCircle;
               const statusInfo =
-                statusConfig[job.status] || statusConfig.applied;
+                statusConfig[job.status as keyof typeof statusConfig] ||
+                statusConfig.applied;
               const urgencyInfo =
                 urgencyConfig[job.jobDetails?.urgency] || urgencyConfig.low;
               const paymentInfo =

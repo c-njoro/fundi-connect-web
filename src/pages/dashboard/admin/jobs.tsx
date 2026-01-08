@@ -447,8 +447,12 @@ export default function AdminJobs() {
     if (!selectedJob || !showJobModal) return null;
 
     const job = selectedJob;
-    const StatusIcon = statusConfig[job.status]?.icon || AlertCircle;
-    const statusInfo = statusConfig[job.status] || statusConfig.posted;
+    const StatusIcon =
+      statusConfig[job.status as keyof typeof statusConfig]?.icon ||
+      AlertCircle;
+    const statusInfo =
+      statusConfig[job.status as keyof typeof statusConfig] ||
+      statusConfig.posted;
     const urgencyInfo =
       urgencyConfig[job.jobDetails?.urgency] || urgencyConfig.low;
     const UrgencyIcon = urgencyInfo.icon;
@@ -749,8 +753,10 @@ export default function AdminJobs() {
                       <span className="text-gray-600">Payment Status</span>
                       <div
                         className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${
-                          paymentStatusConfig[job.payment.status]?.color ||
-                          "bg-gray-100 text-gray-800"
+                          paymentStatusConfig[
+                            job.payment
+                              .status as keyof typeof paymentStatusConfig
+                          ]?.color || "bg-gray-100 text-gray-800"
                         }`}
                       >
                         {job.payment.status.charAt(0).toUpperCase() +
@@ -1191,9 +1197,11 @@ export default function AdminJobs() {
                 <tbody className="divide-y divide-gray-200">
                   {filteredJobs.map((job) => {
                     const StatusIcon =
-                      statusConfig[job.status]?.icon || AlertCircle;
+                      statusConfig[job.status as keyof typeof statusConfig]
+                        ?.icon || AlertCircle;
                     const statusInfo =
-                      statusConfig[job.status] || statusConfig.posted;
+                      statusConfig[job.status as keyof typeof statusConfig] ||
+                      statusConfig.posted;
                     const urgencyInfo =
                       urgencyConfig[job.jobDetails.urgency] ||
                       urgencyConfig.low;

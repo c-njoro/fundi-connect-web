@@ -1,7 +1,13 @@
 import { useAuth } from "@/contexts/AuthContext";
 import { use, useEffect, useState } from "react";
 import { userService, serviceService } from "@/lib/api/services";
-import LocationMapModal from "@/components/LocationMapModal"; // Add this import
+import dynamic from "next/dynamic";
+const LocationMapModal = dynamic(
+  () => import("@/components/LocationMapModal"),
+  {
+    ssr: false,
+  }
+);
 import {
   Loader,
   User,

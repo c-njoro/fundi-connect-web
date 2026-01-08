@@ -64,7 +64,12 @@ export interface IJob {
       gender?: string | null;
       languages?: string[];
       isVerified: boolean;
-      verificationDocuments?: any[];
+      verificationDocuments?: {
+        type: string;
+        url: string;
+        status: string;
+        uploadedAt: Date;
+      }[];
       fullName: string;
     };
     location?: {
@@ -138,7 +143,12 @@ export interface IJob {
         gender?: string;
         languages?: string[];
         isVerified: boolean;
-        verificationDocuments?: any[];
+        verificationDocuments?: {
+          type: string;
+          url: string;
+          status: string;
+          uploadedAt: Date;
+        }[];
         dateOfBirth?: string;
         fullName: string;
       };
@@ -182,7 +192,12 @@ export interface IJob {
       gender?: string;
       languages?: string[];
       isVerified: boolean;
-      verificationDocuments?: any[];
+      verificationDocuments?: {
+        type: string;
+        url: string;
+        status: string;
+        uploadedAt: Date;
+      }[];
       dateOfBirth?: string;
       fullName: string;
     };
@@ -596,8 +611,11 @@ export default function FundiJobDetail() {
     );
   }
 
-  const StatusIcon = statusConfig[job.status]?.icon || AlertCircle;
-  const statusInfo = statusConfig[job.status] || statusConfig.applied;
+  const StatusIcon =
+    statusConfig[job.status as keyof typeof statusConfig]?.icon || AlertCircle;
+  const statusInfo =
+    statusConfig[job.status as keyof typeof statusConfig] ||
+    statusConfig.applied;
 
   return (
     <div className="flex-1 bg-gray-50 min-h-screen">

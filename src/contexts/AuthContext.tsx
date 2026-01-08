@@ -25,7 +25,12 @@ interface User {
     gender?: string;
     languages?: string[];
     isVerified?: boolean;
-    verificationDocuments?: any[];
+    verificationDocuments?: {
+      type: string;
+      url: string;
+      status: string;
+      uploadedAt: Date;
+    }[];
     dateOfBirth?: string;
   };
 

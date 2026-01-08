@@ -8,12 +8,9 @@ import {
   MessageSquare,
   Bell,
   User,
-  DollarSign,
-  Star,
   Calendar,
   Users,
   Settings,
-  FileText,
 } from "lucide-react";
 
 export default function Sidebar() {

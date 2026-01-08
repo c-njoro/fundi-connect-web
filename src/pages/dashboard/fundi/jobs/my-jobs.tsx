@@ -205,7 +205,7 @@ export default function FundiJobsDashboard() {
     try {
       const data = await jobService.getMyJobs();
       if (data.success) {
-        const jobs = data.data || [];
+        const jobs: IJob[] = data.data || [];
         setAllJobs(jobs);
 
         // Split jobs into posted (customer) and assigned (fundi)
@@ -502,7 +502,7 @@ export default function FundiJobsDashboard() {
                   : fundiStatusConfig;
 
                 // Get status based on role
-                let jobStatus = job.status;
+                let jobStatus: string = job.status;
                 if (!isCustomerJob && jobStatus === "assigned") {
                   jobStatus = "hired"; // For fundi, assigned means hired
                 }

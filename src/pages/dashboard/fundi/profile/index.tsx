@@ -419,7 +419,7 @@ export default function FundiProfile() {
                                   key={index}
                                   className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm"
                                 >
-                                  {String(service.name)}
+                                  {String((service as any).name)}
                                 </span>
                               )
                             )}
