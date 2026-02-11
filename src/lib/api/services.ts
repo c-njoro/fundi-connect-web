@@ -89,7 +89,7 @@ export const jobService = {
     try {
       const response = await apiClient.post(
         `/jobs/${jobId}/submit-proposal`,
-        data
+        data,
       );
       return response.data;
     } catch (err: any) {
@@ -104,7 +104,7 @@ export const jobService = {
   acceptProposal: async (jobId: string, proposalIndex: number) => {
     try {
       const response = await apiClient.patch(
-        `/jobs/${jobId}/proposals/${proposalIndex}/accept`
+        `/jobs/${jobId}/proposals/${proposalIndex}/accept`,
       );
       return response.data;
     } catch (err: any) {
@@ -222,6 +222,22 @@ export const userService = {
     }
   },
 
+  changePassword: async (oldPassword: string, newPassword: string) => {
+    try {
+      const response = await apiClient.put("/users/change-password", {
+        currentPassword: oldPassword,
+        newPassword,
+      });
+      return response.data;
+    } catch (err: any) {
+      return {
+        success: false,
+        message: err?.response?.data?.message || "Change password failed",
+        errors: err?.response?.data?.errors,
+      };
+    }
+  },
+
   updateFundiProfile: async (data: any) => {
     try {
       const response = await apiClient.put("/users/fundi-profile", data);
@@ -303,12 +319,12 @@ export const userService = {
   updateFundiStatus: async (
     userId: string,
     status: string,
-    reason?: string
+    reason?: string,
   ) => {
     try {
       const response = await apiClient.patch(
         `/users/admin/fundi/${userId}/status`,
-        { status, reason }
+        { status, reason },
       );
       return response.data;
     } catch (err: any) {
@@ -656,6 +672,60 @@ export const uploadService = {
       return {
         success: false,
         message: err?.response?.data?.message || "Image deletion failed",
+        errors: err?.response?.data?.errors,
+      };
+    }
+  },
+};
+
+export const resetPasswordService = {
+  requestReset: async (phoneNumber: string) => {
+    try {
+      const response = await apiClient.post("/password-reset/forgot-password", {
+        phone: phoneNumber,
+      });
+      return response.data;
+    } catch (err: any) {
+      return {
+        success: false,
+        message:
+          err?.response?.data?.message || "Password reset request failed",
+        errors: err?.response?.data?.errors,
+      };
+    }
+  },
+
+  resetPassword: async (
+    phoneNumber: string,
+    code: string,
+    newPassword: string,
+  ) => {
+    try {
+      const response = await apiClient.post("/password-reset/reset-password", {
+        phone: phoneNumber,
+        code,
+        newPassword,
+      });
+      return response.data;
+    } catch (err: any) {
+      return {
+        success: false,
+        message: err?.response?.data?.message || "Password reset failed",
+        errors: err?.response?.data?.errors,
+      };
+    }
+  },
+
+  resendCode: async (phoneNumber: string) => {
+    try {
+      const response = await apiClient.post("/password-reset/resend-code", {
+        phone: phoneNumber,
+      });
+      return response.data;
+    } catch (err: any) {
+      return {
+        success: false,
+        message: err?.response?.data?.message || "Failed to resend code",
         errors: err?.response?.data?.errors,
       };
     }

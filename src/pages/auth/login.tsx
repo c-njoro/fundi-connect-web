@@ -27,7 +27,7 @@ export default function LoginPage() {
     const phoneRegex = /^07\d{8}$/;
     if (!phoneRegex.test(phone)) {
       setError(
-        "Enter a valid Kenyan phone number starting with 07 and 10 digits"
+        "Enter a valid Kenyan phone number starting with 07 and 10 digits",
       );
       setLoading(false);
       return;
@@ -152,6 +152,15 @@ export default function LoginPage() {
                     placeholder="Enter your password"
                   />
                 </div>
+              </div>
+
+              <div className="mt-3">
+                <Link
+                  href="/auth/forgot-password"
+                  className="text-[#0A2647] hover:text-orange-500 font-medium text-xs"
+                >
+                  Forgot Password?
+                </Link>
               </div>
 
               <button
